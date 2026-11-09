@@ -25,3 +25,8 @@ Written as found, not at the end. Each line says what, why, and what a user shou
   runs the signer as a separate binary with an argument array.
 - **SPEL-generated client patched at build time.** Two defects in the generated client are
   worked around in `lez_adapter_v03/build.rs` (docs/BUGS_FILED.md #1, #2).
+- **Android is not built or tested.** The prize lists Android from testnet 0.4 as recommended,
+  not required; CI covers Linux, macOS and Windows for the Rust crates only (W9).
+- **LEZ 0.4 wallet passwords.** The 0.4 wallet encrypts its storage; scripts pass the password in
+  `LEE_WALLET_PASSWORD` (read from a 0600 file), because the wallet otherwise prompts on the
+  terminal (docs/BUGS_FILED.md #9).

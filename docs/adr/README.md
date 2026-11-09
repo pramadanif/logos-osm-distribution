@@ -2,9 +2,9 @@
 
 | ADR | Title | Status |
 |-----|-------|--------|
-| [0001](0001-registry-layout.md) | Registry layout: one account per region | Proposed (needs SC-B.4/B.5 on a real sequencer) |
+| [0001](0001-registry-layout.md) | Registry layout: one account per region | Accepted (proven on v0.3.1 and 0.4-rc sequencers) |
 | [0002](0002-entry-model-write-rules.md) | Entry model and write rules | Accepted |
-| [0003](0003-init-and-front-running.md) | No init authority; front-running is harmless | Proposed (needs SC-B.5) |
+| [0003](0003-init-and-front-running.md) | No init authority; front-running is harmless | Accepted (probes p01–p03 on v0.3.1) |
 | [0004](0004-storage-adapter.md) | Storage adapter | Accepted |
 | [0005](0005-retrieval-node.md) | Retrieval proof with an independent node | Accepted |
 | [0006](0006-external-services.md) | External services and network calls | Accepted |

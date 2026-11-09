@@ -1,6 +1,6 @@
 # ADR 0001: Registry layout, one account per region
 
-Status: Proposed. Becomes Accepted when SC-B.4 and SC-B.5 pass on a real sequencer.
+Status: Accepted 2026-11-09: deploy, register, batch and read-back on a v0.3.1 sequencer (docs/status/phase-B.md) and the same layout on a v0.4.0-rc1 sequencer (docs/status/lez-04-port.md).
 Changes plan §2 row "Registry layout" (one account per program instance).
 
 ## Context

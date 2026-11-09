@@ -1,6 +1,6 @@
 # ADR 0003: No init authority; front-running is harmless (H30, H31)
 
-Status: Proposed. Accepted when the SC-B.5 negative tests pass on a real sequencer.
+Status: Accepted 2026-11-09: probes p01 (copied register), p03 (same signer 3+ times) and the out-of-set cases pass on a v0.3.1 sequencer (probes/results.txt).
 
 ## Decision
 

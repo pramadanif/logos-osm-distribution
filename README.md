@@ -73,7 +73,9 @@ on-chain; an included-but-not-applied transaction is an error (S103).
 For the v0.3 testnet: `--rpc https://testnet.lez.logos.co --program 5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS`.
 Funds for fees come from the [lez-faucet](https://github.com/logos-co/lez-faucet) app (0.1 LEZ per
 claim); each transaction needs 38,400,000 lepta available for the fee reserve. The wallet writes
-`storage.json` world-readable; run `chmod 600 "$LEE_WALLET_HOME_DIR/storage.json"`.
+`storage.json` world-readable; run `chmod 600 "$LEE_WALLET_HOME_DIR/storage.json"`. The LEZ 0.4
+wallet encrypts that file and prompts for its password; for scripts set `LEE_WALLET_PASSWORD`
+(never commit it).
 
 ## Verify
 
