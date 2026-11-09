@@ -81,3 +81,17 @@ jobs:
         run: |
           diff -u idl/osm_registry.json "$RUNNER_TEMP/osm_registry.json"
           diff -u programs/osm_registry/osm_registry-idl.json "$RUNNER_TEMP/osm_registry.json"
+
+  ffi-sanitizers:
+    # H37: the C ABI called from C under AddressSanitizer and UndefinedBehaviorSanitizer.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup show active-toolchain || rustup toolchain install
+      - run: cargo build --locked --release -p osm_ffi
+      - name: C smoke test with ASan + UBSan
+        run: |
+          set -euo pipefail
+          cc -fsanitize=address,undefined -fno-sanitize-recover=all -g -I osm_ffi/include \
+            osm_ffi/tests/c/smoke.c target/release/libosm_ffi.a -lpthread -ldl -lm -o osm_ffi_smoke
+          ./osm_ffi_smoke

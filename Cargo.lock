@@ -509,6 +509,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "osm_ffi"
+version = "0.0.1"
+dependencies = [
+ "osm_core",
+ "osm_sdk",
+ "serde_json",
+ "tempfile",
+]
+
+[[package]]
 name = "osm_sdk"
 version = "0.0.1"
 dependencies = [

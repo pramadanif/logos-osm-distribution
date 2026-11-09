@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["osm_core", "osm_sdk", "osm_cli"]
+members = ["osm_core", "osm_sdk", "osm_cli", "osm_ffi"]
 exclude = ["programs"]
 
 [workspace.package]

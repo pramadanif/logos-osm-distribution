@@ -1,0 +1,18 @@
+[package]
+name = "osm_ffi"
+description = "C ABI over the LP-0018 OSM SDK consumer API (JSON in, JSON out) for Basecamp modules"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[dependencies]
+osm_core = { path = "../osm_core" }
+osm_sdk = { path = "../osm_sdk" }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
