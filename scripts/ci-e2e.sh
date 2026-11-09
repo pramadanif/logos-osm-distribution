@@ -85,3 +85,10 @@ if [ "${BLOCK_GEOFABRIK:-0}" = "1" ]; then
   echo "OFFLINE OK"
   echo "::endgroup::"
 fi
+
+# H32: capture the region account this run wrote and run the decoder tests on those real bytes.
+echo "::group::decoder on freshly captured accounts"
+acct="$(cd "$root" && cargo run -q --locked -p osm_sdk --example region_account -- "$program" china/henan)"
+RPC=http://127.0.0.1:3040 PROGRAM="$program" "$root/tools/capture-registry-fixture.sh" "$WORK/live-fixture.json" "china/henan=$acct"
+(cd "$root" && OSM_REQUIRE_LIVE_FIXTURE=1 OSM_LIVE_FIXTURE="$WORK/live-fixture.json" cargo test -q --locked -p osm_sdk --test fixture_live)
+echo "::endgroup::"

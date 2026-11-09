@@ -257,9 +257,11 @@ def _():
     return bool(last) and last[-1].endswith("fails=0"), last[-1] if last else "no b5 run recorded"
 
 
-@check(26, "Fixture regeneration reproduces committed fixtures (H32)")
+@check(26, "Decoder tested on accounts captured from a real sequencer in CI (H32)")
 def _():
-    return False, "fixture regeneration job not in CI yet"
+    # scripts/ci-e2e.sh captures the account it wrote and runs osm_sdk's fixture_live test on it.
+    c = check_runs(PIN).get("e2e-sequencer")
+    return c == "success", f"e2e-sequencer (includes live fixture capture): {c}"
 
 
 @check(27, "liveness job green within 24 h; VERSIONS.md matches flake and README (H35)")
