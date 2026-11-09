@@ -5,7 +5,7 @@ Session 1, 2026-11-09. Status per SC is binary.
 | SC | Status | Evidence / reason |
 |----|--------|-------------------|
 | SC-−1.1 nix, cargo, rzup, r0vm, gh | HUMAN_BLOCKED | cargo 1.95.0, rzup, r0vm 3.0.6, gh present (`command -v`, docs/status/env.md). nix missing; the installer needs sudo |
-| SC-−1.2 LEZ v0.4.0-rc1 standalone sequencer runs | HUMAN_BLOCKED | Tag checked out at `1806e873…` in `.deps/`. `cargo build --release --features standalone -p sequencer_service` was refused by this session's permission classifier (it runs upstream build scripts). Needs the human to allow building pinned upstream code |
+| SC-−1.2 LEZ v0.4.0-rc1 standalone sequencer runs | LOCKED | `cargo build --release --features standalone -p sequencer_service` at `1806e873` exit 0 (7m37s, log .deps/build-lez-v04rc1.log). `sequencer_service setup ... --config lez/sequencer/service/networks/local.json --create-channel` then `start`: log "Starting RPC Server on 127.0.0.1:3040", "Block production scheduler started". JSON-RPC: `checkHealth` → null result (ok), `getLastBlockId` 2 then 3 after 20 s, `getProgramIds` → `privacy_preserving_circuit`. 2026-11-09T03:28Z |
 | SC-−1.2b 0.4 core/node module split notes | NOT LOCKED | 0.4 breaking changes recorded from the release notes (env.md); Basecamp module split not yet read |
 | SC-−1.3 Storage node upload/download by CID | NOT LOCKED | logos-storage-nim v0.5.3 and logos-storage-module v3.0.2 identified; no node run yet (same build permission needed) |
 | SC-−1.4 Basecamp + hello mkLogosModule | HUMAN_BLOCKED | needs nix |
