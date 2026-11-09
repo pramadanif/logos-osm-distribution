@@ -23,3 +23,26 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --locked --all-targets -- -D warnings
       - run: cargo test --locked
+
+  storage-retrieval:
+    # H3 / SC-E.2: node B fetches a CID that only node A holds, over the network.
+    runs-on: ubuntu-latest
+    env:
+      STORAGE_VERSION: v0.5.3
+      OSM_REQUIRE_REAL_STORAGE: "1"
+      STORAGE_SHA256: 1086fae4f283cab882f133abe4d5a88cfae8d61edba9f0094c7f75b368ec9d56
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup show active-toolchain || rustup toolchain install
+      - name: Fetch pinned Logos Storage node
+        run: |
+          set -euo pipefail
+          curl -fsSL -o storage.zip "https://github.com/logos-storage/logos-storage-nim/releases/download/$STORAGE_VERSION/logos-storage-linux-amd64-$STORAGE_VERSION.zip"
+          echo "$STORAGE_SHA256  storage.zip" | sha256sum -c -
+          unzip -q storage.zip -d storage-bin
+          chmod +x storage-bin/*
+      - name: Start two nodes
+        run: |
+          set -euo pipefail
+          scripts/storage-two-nodes.sh "$(ls storage-bin/logos-storage-*)" "$RUNNER_TEMP/storage" | tee -a "$GITHUB_ENV"
+      - run: cargo test --locked -p osm_sdk --test real_storage -- --nocapture

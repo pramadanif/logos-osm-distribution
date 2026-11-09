@@ -3,7 +3,8 @@
 //!     OSM_STORAGE_A=http://127.0.0.1:8081/api/storage/v1 \
 //!     OSM_STORAGE_B=http://127.0.0.1:8082/api/storage/v1 cargo test -p osm_sdk --test real_storage
 //!
-//! When the variables are set, an unreachable node fails the test; it is never skipped silently.
+//! When the variables are set, an unreachable node fails the test. With OSM_REQUIRE_REAL_STORAGE
+//! set (CI storage-retrieval job), missing variables fail too.
 
 use osm_sdk::hash::md5_file;
 use osm_sdk::rest_storage::RestStorage;
@@ -18,6 +19,11 @@ fn upload_on_a_fetch_on_b_over_the_network() {
         std::env::var("OSM_STORAGE_A"),
         std::env::var("OSM_STORAGE_B"),
     ) else {
+        // The CI storage-retrieval job sets OSM_REQUIRE_REAL_STORAGE so a lost variable fails there.
+        assert!(
+            std::env::var_os("OSM_REQUIRE_REAL_STORAGE").is_none(),
+            "OSM_REQUIRE_REAL_STORAGE is set but OSM_STORAGE_A / OSM_STORAGE_B are not"
+        );
         eprintln!("OSM_STORAGE_A / OSM_STORAGE_B not set: real-node test not run");
         return;
     };
