@@ -9,13 +9,16 @@ use crate::{is_valid_position, lookup, Level};
 pub const GEOFABRIK_BASE: &str = "https://download.geofabrik.de/";
 /// Largest accepted PBF (64 GiB). The biggest file in the set is a few GB.
 pub const MAX_SIZE_BYTES: u64 = 64 * 1024 * 1024 * 1024;
-/// Earliest accepted registration time, 2026-11-01T00:00:00Z.
-pub const MIN_TIMESTAMP: u64 = 1_761_955_200;
-/// Half width of the validity window around a client timestamp, in seconds.
-pub const TIMESTAMP_WINDOW_SECS: u64 = 600;
+/// Earliest accepted registration time, 2026-11-01T00:00:00Z, in Unix **milliseconds**: LEZ block
+/// timestamps and validity windows are milliseconds (observed on a v0.3.1 sequencer, 2026-11-09).
+pub const MIN_TIMESTAMP_MS: u64 = 1_793_491_200_000;
+/// Half width of the validity window around a client timestamp: 10 minutes, in milliseconds.
+pub const TIMESTAMP_WINDOW_MS: u64 = 600_000;
 /// Bounds per region account (ADR 0001).
 pub const MAX_HISTORY: usize = 8;
 pub const MAX_HOSTS: usize = 16;
+/// Regions per `register_batch` transaction. Raised only after cycle and size measurements (Phase G).
+pub const MAX_BATCH: usize = 16;
 /// CID length bounds in characters.
 pub const MIN_CID_LEN: usize = 46;
 pub const MAX_CID_LEN: usize = 96;
@@ -32,6 +35,9 @@ pub enum EntryError {
     BadChecksum = 6,
     SizeOutOfRange = 7,
     TimestampOutOfRange = 8,
+    BatchTooLarge = 10,
+    DuplicateInBatch = 11,
+    AccountMismatch = 12,
 }
 
 impl EntryError {
@@ -45,6 +51,9 @@ impl EntryError {
             EntryError::BadChecksum => "P006",
             EntryError::SizeOutOfRange => "P007",
             EntryError::TimestampOutOfRange => "P008",
+            EntryError::BatchTooLarge => "P010",
+            EntryError::DuplicateInBatch => "P011",
+            EntryError::AccountMismatch => "P012",
         }
     }
 }
@@ -60,7 +69,8 @@ pub struct EntryInput<'a> {
     pub checksum_hex: &'a str,
     pub version: u32,
     pub size_bytes: u64,
-    pub timestamp: u64,
+    /// Unix milliseconds.
+    pub timestamp_ms: u64,
 }
 
 /// Validated values the program stores.
@@ -86,7 +96,7 @@ pub fn validate_entry(e: &EntryInput<'_>) -> Result<ValidEntry, EntryError> {
     if e.size_bytes == 0 || e.size_bytes > MAX_SIZE_BYTES {
         return Err(EntryError::SizeOutOfRange);
     }
-    if e.timestamp < MIN_TIMESTAMP {
+    if e.timestamp_ms < MIN_TIMESTAMP_MS {
         return Err(EntryError::TimestampOutOfRange);
     }
     Ok(ValidEntry {
@@ -95,9 +105,9 @@ pub fn validate_entry(e: &EntryInput<'_>) -> Result<ValidEntry, EntryError> {
     })
 }
 
-/// True when `timestamp` is within the validity window around `block_time`.
-pub fn timestamp_in_window(timestamp: u64, block_time: u64) -> bool {
-    timestamp >= MIN_TIMESTAMP && timestamp.abs_diff(block_time) <= TIMESTAMP_WINDOW_SECS
+/// True when `timestamp_ms` is within the validity window around `block_time_ms`.
+pub fn timestamp_in_window(timestamp_ms: u64, block_time_ms: u64) -> bool {
+    timestamp_ms >= MIN_TIMESTAMP_MS && timestamp_ms.abs_diff(block_time_ms) <= TIMESTAMP_WINDOW_MS
 }
 
 const BASE58: &[u8] = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -162,4 +172,21 @@ pub fn snapshot_from_source_url(region: &str, url: &str) -> Result<u32, EntryErr
         return Err(EntryError::BadSourceUrl);
     }
     Ok(yy * 10_000 + mm * 100 + dd)
+}
+
+/// Batch shape checks shared by program and SDK: 1..=MAX_BATCH regions, all vectors the same
+/// length, no region twice.
+pub fn validate_batch_shape(regions: &[&str], other_lengths: &[usize]) -> Result<(), EntryError> {
+    if regions.is_empty() || regions.len() > MAX_BATCH {
+        return Err(EntryError::BatchTooLarge);
+    }
+    if other_lengths.iter().any(|&n| n != regions.len()) {
+        return Err(EntryError::BatchTooLarge);
+    }
+    for (i, r) in regions.iter().enumerate() {
+        if regions[..i].contains(r) {
+            return Err(EntryError::DuplicateInBatch);
+        }
+    }
+    Ok(())
 }

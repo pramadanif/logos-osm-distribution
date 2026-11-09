@@ -19,7 +19,7 @@ fn ok() -> EntryInput<'static> {
         checksum_hex: MD5,
         version: 261001,
         size_bytes: 1_741_362_950,
-        timestamp: MIN_TIMESTAMP + 1,
+        timestamp_ms: MIN_TIMESTAMP_MS + 1,
     }
 }
 
@@ -173,10 +173,11 @@ fn rejects_sizes_and_timestamps_at_the_edges() {
         ..ok()
     })
     .unwrap();
-    for ts in [0, 1, MIN_TIMESTAMP - 1] {
+    // 0, 1, the floor minus one, and the floor in seconds (the unit mistake this guards against).
+    for ts in [0, 1, MIN_TIMESTAMP_MS - 1, MIN_TIMESTAMP_MS / 1000] {
         assert_eq!(
             err(EntryInput {
-                timestamp: ts,
+                timestamp_ms: ts,
                 ..ok()
             }),
             EntryError::TimestampOutOfRange
@@ -186,12 +187,16 @@ fn rejects_sizes_and_timestamps_at_the_edges() {
 
 #[test]
 fn timestamp_window_is_symmetric_and_overflow_safe() {
-    let now = MIN_TIMESTAMP + 10_000;
+    assert_eq!(
+        MIN_TIMESTAMP_MS, 1_793_491_200_000,
+        "2026-11-01T00:00:00Z in ms"
+    );
+    let now = MIN_TIMESTAMP_MS + 10_000_000;
     assert!(timestamp_in_window(now, now));
-    assert!(timestamp_in_window(now - TIMESTAMP_WINDOW_SECS, now));
-    assert!(timestamp_in_window(now + TIMESTAMP_WINDOW_SECS, now));
-    assert!(!timestamp_in_window(now - TIMESTAMP_WINDOW_SECS - 1, now));
-    assert!(!timestamp_in_window(now + TIMESTAMP_WINDOW_SECS + 1, now));
+    assert!(timestamp_in_window(now - TIMESTAMP_WINDOW_MS, now));
+    assert!(timestamp_in_window(now + TIMESTAMP_WINDOW_MS, now));
+    assert!(!timestamp_in_window(now - TIMESTAMP_WINDOW_MS - 1, now));
+    assert!(!timestamp_in_window(now + TIMESTAMP_WINDOW_MS + 1, now));
     assert!(!timestamp_in_window(u64::MAX, now));
     assert!(!timestamp_in_window(now, u64::MAX));
     assert!(!timestamp_in_window(0, 0));
@@ -209,8 +214,33 @@ fn error_codes_match_docs() {
         EntryError::BadChecksum,
         EntryError::SizeOutOfRange,
         EntryError::TimestampOutOfRange,
+        EntryError::BatchTooLarge,
+        EntryError::DuplicateInBatch,
+        EntryError::AccountMismatch,
     ] {
         let row = format!("| {} | `{:?}` |", e.code(), e);
         assert!(doc.contains(&row), "docs/error-codes.md lacks {row}");
     }
+}
+
+#[test]
+fn batch_shape() {
+    validate_batch_shape(&["germany", "france"], &[2, 2]).unwrap();
+    assert_eq!(
+        validate_batch_shape(&[], &[]),
+        Err(EntryError::BatchTooLarge)
+    );
+    let many = vec!["germany"; MAX_BATCH + 1];
+    assert_eq!(
+        validate_batch_shape(&many, &[]),
+        Err(EntryError::BatchTooLarge)
+    );
+    assert_eq!(
+        validate_batch_shape(&["germany", "france"], &[2, 1]),
+        Err(EntryError::BatchTooLarge)
+    );
+    assert_eq!(
+        validate_batch_shape(&["germany", "france", "germany"], &[3]),
+        Err(EntryError::DuplicateInBatch)
+    );
 }

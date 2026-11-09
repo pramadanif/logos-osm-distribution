@@ -46,3 +46,17 @@ jobs:
           set -euo pipefail
           scripts/storage-two-nodes.sh "$(ls storage-bin/logos-storage-*)" "$RUNNER_TEMP/storage" | tee -a "$GITHUB_ENV"
       - run: cargo test --locked -p osm_sdk --test real_storage -- --nocapture
+
+  idl:
+    # H1 / SC-B.3: the committed IDL must equal what SPEL generates from the program source.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup show active-toolchain || rustup toolchain install
+      - name: Regenerate IDL with SPEL
+        working-directory: programs/osm_registry
+        run: cargo run --locked --bin generate_idl > "$RUNNER_TEMP/osm_registry.json"
+      - name: Diff against committed IDL
+        run: |
+          diff -u idl/osm_registry.json "$RUNNER_TEMP/osm_registry.json"
+          diff -u programs/osm_registry/osm_registry-idl.json "$RUNNER_TEMP/osm_registry.json"

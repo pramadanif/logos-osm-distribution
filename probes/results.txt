@@ -1,0 +1,16 @@
+# probes/results.txt: one line per probe run. Format: <date> <probe> <network> <program> <result>
+# b5_negative_v03.sh, 2026-11-09, local LEZ v0.3.1 standalone sequencer, program header iwELKovd9oFg1bsFAFPVz2qdezP8cgfpfxsBkpGzVwk
+# ImageID 31b5afeedd86f574cbf67bf44ebed0a33dfd790923336e7d75b141229184e185 (source before register_batch), REGION=vietnam
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p00_create first register creates the region shard
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p03a_same_signer_repeat same signer, same CID: idempotent
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p01_copy_by_other_signer copied register only adds the copier as a host; ours stays
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p03b_same_signer_new_cid same signer, third call, new CID appends
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p03c_unhost B removes only itself
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p06a_timestamp_past_window timestamp 1 h old rejected, state unchanged
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p06b_timestamp_in_seconds seconds instead of ms rejected
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p04a_region_outside_set planet never gets a shard
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p04b_decomposed_country india (decomposed) never gets a shard
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p04c_wrong_parent wrong parent rejected
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p04d_undated_source -latest source URL rejected
+2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p06c_size_u64_max size u64::MAX rejected
+2026-11-09 b5_negative_v03 localnet-v0.3.1 SUMMARY fails=0

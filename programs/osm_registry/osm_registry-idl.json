@@ -106,6 +106,78 @@
       "accounts": [
         {
           "init": false,
+          "name": "region_accounts",
+          "rest": true,
+          "signer": false,
+          "writable": true
+        },
+        {
+          "init": false,
+          "name": "host",
+          "signer": true,
+          "writable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "regions",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "parents",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "levels",
+          "type": {
+            "vec": "u8"
+          }
+        },
+        {
+          "name": "cids",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "source_urls",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "checksums",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "versions",
+          "type": {
+            "vec": "u64"
+          }
+        },
+        {
+          "name": "sizes",
+          "type": {
+            "vec": "u64"
+          }
+        },
+        {
+          "name": "timestamp",
+          "type": "u64"
+        }
+      ],
+      "name": "register_batch"
+    },
+    {
+      "accounts": [
+        {
+          "init": false,
           "name": "region_account",
           "pda": {
             "seeds": [

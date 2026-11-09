@@ -137,6 +137,92 @@ mod osm_registry {
             .expect("P008 TimestampOutOfRange: empty validity window"))
     }
 
+    /// Register up to `MAX_BATCH` regions in one transaction (P-F7). Vectors are parallel: element
+    /// `i` of every vector describes `region_accounts[i]`. Each account must be the PDA of its
+    /// region, checked here because a `Vec<AccountMeta>` carries no seed constraint.
+    #[plan]
+    pub fn register_batch(
+        ctx: ProgramContext,
+        #[account(mut)]
+        region_accounts: Vec<AccountMeta>,
+        #[account(signer)]
+        host: AccountMeta,
+        regions: Vec<String>,
+        parents: Vec<String>,
+        levels: Vec<u8>,
+        cids: Vec<String>,
+        source_urls: Vec<String>,
+        checksums: Vec<String>,
+        versions: Vec<u64>,
+        sizes: Vec<u64>,
+        timestamp: u64,
+    ) -> SpelResult {
+        let names: Vec<&str> = regions.iter().map(String::as_str).collect();
+        osm_core::entry::validate_batch_shape(
+            &names,
+            &[
+                region_accounts.len(),
+                parents.len(),
+                levels.len(),
+                cids.len(),
+                source_urls.len(),
+                checksums.len(),
+                versions.len(),
+                sizes.len(),
+            ],
+        )
+        .unwrap_or_else(|e| panic!("{} {:?}", e.code(), e));
+        let signer = *host.account_id.value();
+        let mut out = SpelOutput::empty();
+        for i in 0..regions.len() {
+            let expected = spel_framework::pda::compute_pda_multi(
+                &ctx.self_account_id,
+                &[&"osm-region", &regions[i].as_str()],
+            );
+            assert!(
+                region_accounts[i].account_id == expected,
+                "P012 AccountMismatch: account {i} is not the PDA of {}",
+                regions[i]
+            );
+            let version = u32::try_from(versions[i]).expect("P005 VersionMismatch: version overflows u32");
+            let parent_opt = (!parents[i].is_empty()).then_some(parents[i].as_str());
+            let valid = validate_entry(&EntryInput {
+                region: &regions[i],
+                parent: parent_opt,
+                level: level_of(levels[i]),
+                cid: &cids[i],
+                source_url: &source_urls[i],
+                checksum_hex: &checksums[i],
+                version,
+                size_bytes: sizes[i],
+                timestamp_ms: timestamp,
+            })
+            .unwrap_or_else(|e| panic!("{} {:?} at {}", e.code(), e, regions[i]));
+            let effect = Effect::ApplyRegister(Register {
+                region: regions[i].clone(),
+                parent: parents[i].clone(),
+                level: levels[i],
+                entry: Entry {
+                    cid: cids[i].clone(),
+                    source_url: source_urls[i].clone(),
+                    checksum: valid.checksum,
+                    version: valid.version,
+                    size_bytes: sizes[i],
+                    hosted: true,
+                    timestamp,
+                    registered_by: signer,
+                    hosts: vec![signer],
+                },
+            });
+            out = out.effect(&region_accounts[i], ctx.self_account_id, &effect);
+        }
+        let window = timestamp.saturating_sub(TIMESTAMP_WINDOW_MS)
+            ..timestamp.saturating_add(TIMESTAMP_WINDOW_MS);
+        Ok(out
+            .try_with_timestamp_validity_window(window)
+            .expect("P008 TimestampOutOfRange: empty validity window"))
+    }
+
     /// Remove the signer from the hosts of `cid` in `region`.
     #[plan]
     pub fn unhost(
