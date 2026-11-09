@@ -144,3 +144,79 @@ fn discover_falls_back_when_disabled_unreachable_or_throttled() {
         "{src:?}"
     );
 }
+
+fn md5_hex(b: &[u8]) -> String {
+    use md5::{Digest, Md5};
+    Md5::digest(b).iter().map(|x| format!("{x:02x}")).collect()
+}
+
+#[test]
+fn download_snapshot_full_resume_and_mismatch() {
+    let id = lookup("china/henan").unwrap();
+    let body: Vec<u8> = (0..300_000u32).map(|i| (i % 251) as u8).collect();
+    let md5_line = format!("{}  henan-261101.osm.pbf\n", md5_hex(&body)).into_bytes();
+    let dir = tempfile::tempdir().unwrap();
+
+    // Full download.
+    let (base, rx) = serve(vec![
+        ("200 OK", vec![], md5_line.clone()),
+        ("200 OK", vec![], body.clone()),
+    ]);
+    let (path, _) = Geofabrik::with_base(&base)
+        .download_snapshot(id, 261101, dir.path(), |_, _| {})
+        .unwrap();
+    assert_eq!(std::fs::read(&path).unwrap(), body);
+    assert_eq!(path.file_name().unwrap(), "henan-261101.osm.pbf");
+    rx.recv().unwrap();
+    assert_eq!(
+        rx.recv().unwrap().0,
+        "GET /asia/china/henan-261101.osm.pbf HTTP/1.1"
+    );
+    std::fs::remove_file(&path).unwrap();
+
+    // Resume: a .part with the first 100 000 bytes, server answers 206 with the rest.
+    std::fs::write(
+        dir.path().join("henan-261101.osm.pbf.part"),
+        &body[..100_000],
+    )
+    .unwrap();
+    let (base, rx) = serve(vec![
+        ("200 OK", vec![], md5_line.clone()),
+        ("206 Partial Content", vec![], body[100_000..].to_vec()),
+    ]);
+    let (path, _) = Geofabrik::with_base(&base)
+        .download_snapshot(id, 261101, dir.path(), |_, _| {})
+        .unwrap();
+    assert_eq!(std::fs::read(&path).unwrap(), body);
+    rx.recv().unwrap();
+    let (_, headers, _) = rx.recv().unwrap();
+    assert!(
+        headers
+            .iter()
+            .any(|h| h.eq_ignore_ascii_case("range: bytes=100000-")),
+        "{headers:?}"
+    );
+    std::fs::remove_file(&path).unwrap();
+
+    // Wrong bytes: typed error, .part removed, no final file.
+    let mut bad = body.clone();
+    bad[5] ^= 1;
+    let (base, _rx) = serve(vec![
+        ("200 OK", vec![], md5_line.clone()),
+        ("200 OK", vec![], bad),
+    ]);
+    let e = Geofabrik::with_base(&base)
+        .download_snapshot(id, 261101, dir.path(), |_, _| {})
+        .unwrap_err();
+    assert_eq!(e.code(), "S130");
+    assert!(!dir.path().join("henan-261101.osm.pbf.part").exists());
+    assert!(!dir.path().join("henan-261101.osm.pbf").exists());
+}
+
+#[test]
+fn free_space_check() {
+    let dir = tempfile::tempdir().unwrap();
+    osm_sdk::geofabrik::ensure_free_space(dir.path(), 1).unwrap();
+    let e = osm_sdk::geofabrik::ensure_free_space(dir.path(), u64::MAX).unwrap_err();
+    assert_eq!(e.code(), "S150");
+}

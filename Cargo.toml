@@ -18,5 +18,6 @@ tempfile = "3"
 borsh = { version = "1", features = ["derive"] }
 sha2 = "0.10"
 bs58 = "0.5"
+fs2 = "0.4"
 clap = { version = "4", features = ["derive"] }
 ureq = { version = "2", default-features = false, features = ["tls"] }

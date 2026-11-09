@@ -6,6 +6,7 @@
 pub mod datadir;
 pub mod discovery;
 pub mod error;
+pub mod fetch;
 pub mod geofabrik;
 pub mod hash;
 pub mod registry;

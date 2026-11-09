@@ -97,7 +97,14 @@ impl StorageBackend for RestStorage {
         })?;
         let part = dest.with_extension("part");
         let res = (|| -> io::Result<()> {
-            let mut out = File::create(&part)?;
+            let mut opts = fs::OpenOptions::new();
+            opts.write(true).create(true).truncate(true);
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::OpenOptionsExt;
+                opts.mode(0o600); // owner-only (H38)
+            }
+            let mut out = opts.open(&part)?;
             io::copy(&mut resp.into_reader(), &mut out)?;
             out.sync_all()?;
             fs::rename(&part, dest)

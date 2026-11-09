@@ -16,6 +16,10 @@ pub enum SdkError {
     CidNotFound { cid: String },
     #[error("S113 DownloadedHashMismatch: {path} does not match the registered checksum")]
     DownloadedHashMismatch { path: PathBuf },
+    #[error("S140 RegionNotHosted: {region} is not hosted on Logos Storage yet")]
+    RegionNotHosted { region: String },
+    #[error("S141 NoVerifiedEntry: {region} has {entries} entries, but none downloaded and matched its checksum")]
+    NoVerifiedEntry { region: String, entries: usize },
     #[error("S120 GeofabrikUnreachable: {cause}")]
     GeofabrikUnreachable { cause: String },
     #[error("S122 SnapshotGone: Geofabrik no longer serves {file}")]
@@ -30,6 +34,8 @@ pub enum SdkError {
     },
     #[error("S132 NotAPbf: {path} is not an OSM PBF file")]
     NotAPbf { path: PathBuf },
+    #[error("S150 DiskFull: not enough free disk in {path}: {need} bytes needed, {have} free")]
+    DiskFull { path: PathBuf, need: u64, have: u64 },
     #[error("S152 DataDirUnsafe: {path} has unsafe permissions")]
     DataDirUnsafe { path: PathBuf },
     #[error("S160 InvalidInput: {field}: {why}")]
@@ -52,10 +58,13 @@ impl SdkError {
             SdkError::StorageUploadExhausted { .. } => "S111",
             SdkError::CidNotFound { .. } => "S112",
             SdkError::DownloadedHashMismatch { .. } => "S113",
+            SdkError::RegionNotHosted { .. } => "S140",
+            SdkError::NoVerifiedEntry { .. } => "S141",
             SdkError::GeofabrikUnreachable { .. } => "S120",
             SdkError::SnapshotGone { .. } => "S122",
             SdkError::ImportChecksumMismatch { .. } => "S130",
             SdkError::NotAPbf { .. } => "S132",
+            SdkError::DiskFull { .. } => "S150",
             SdkError::DataDirUnsafe { .. } => "S152",
             SdkError::InvalidInput { .. } => "S160",
             SdkError::Io { .. } => "I/O",

@@ -111,6 +111,14 @@ fn download_is_atomic_and_404_is_permanent() {
     let (base, rx) = serve_once("200 OK", b"map data".to_vec());
     client(&base).download_to_file(CID, &dest).unwrap();
     assert_eq!(std::fs::read(&dest).unwrap(), b"map data");
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        assert_eq!(
+            std::fs::metadata(&dest).unwrap().permissions().mode() & 0o777,
+            0o600
+        );
+    }
     assert_eq!(
         rx.recv().unwrap().0,
         format!("GET /api/storage/v1/data/{CID}/network/stream HTTP/1.1")

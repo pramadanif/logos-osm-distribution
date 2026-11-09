@@ -3,14 +3,16 @@
 //! Geofabrik is optional (P-R4). When it is disabled or unreachable, discovery falls back to the
 //! bundled set and the caller is told why.
 
-use std::io::Read;
+use std::fs::{self, OpenOptions};
+use std::io::{Read, Write};
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 use osm_core::entry::GEOFABRIK_BASE;
 use osm_core::RegionDef;
 
 use crate::discovery::{discover_from_index, discover_offline, Discovery};
-use crate::snapshot::{parse_md5_file, snapshot_from_location};
+use crate::snapshot::{parse_md5_file, snapshot_from_location, snapshot_url};
 use crate::SdkError;
 
 /// The index is about 0.5 MB today; anything above this is refused.
@@ -123,6 +125,107 @@ impl Geofabrik {
             why: "not UTF-8".into(),
         })?;
         parse_md5_file(&text, &file)
+    }
+}
+
+/// Space kept free on top of the file itself (index, logs, the OS).
+pub const DISK_MARGIN_BYTES: u64 = 512 * 1024 * 1024;
+
+/// Fails with `DiskFull` unless `dir` has `need` bytes plus the margin free.
+pub fn ensure_free_space(dir: &Path, need: u64) -> Result<(), SdkError> {
+    let have = fs2::available_space(dir).map_err(|e| SdkError::io(dir, e))?;
+    let want = need.saturating_add(DISK_MARGIN_BYTES);
+    if have < want {
+        return Err(SdkError::DiskFull {
+            path: dir.to_path_buf(),
+            need: want,
+            have,
+        });
+    }
+    Ok(())
+}
+
+impl Geofabrik {
+    /// Streams the dated snapshot into `dir`, resuming a previous `.part` with a `Range` request,
+    /// then checks it against Geofabrik's MD5 for that snapshot. Returns the file path and MD5.
+    /// Nothing is held in memory beyond a 1 MiB buffer (H27).
+    pub fn download_snapshot(
+        &self,
+        def: &RegionDef,
+        yymmdd: u32,
+        dir: &Path,
+        mut progress: impl FnMut(u64, Option<u64>),
+    ) -> Result<(PathBuf, [u8; 16]), SdkError> {
+        let want_md5 = self.snapshot_md5(def, yymmdd)?;
+        let public_url = snapshot_url(def, yymmdd)?;
+        let name = crate::snapshot::file_name(&public_url).to_string();
+        let url = self.url(&public_url[GEOFABRIK_BASE.len()..]);
+        let dest = dir.join(&name);
+        let part = dir.join(format!("{name}.part"));
+        // A finished, verified copy is reused instead of downloading again (H26).
+        if dest.exists() && crate::hash::md5_file(&dest, |_| {})? == want_md5 {
+            return Ok((dest, want_md5));
+        }
+        let have = fs::metadata(&part).map(|m| m.len()).unwrap_or(0);
+        let mut req = self.agent.get(&url);
+        if have > 0 {
+            req = req.set("range", &format!("bytes={have}-"));
+        }
+        let resp = req.call().map_err(|e| unreachable_or_gone(&url, e))?;
+        let resumed = resp.status() == 206;
+        let start = if resumed { have } else { 0 };
+        let total = resp
+            .header("content-length")
+            .and_then(|v| v.parse::<u64>().ok())
+            .map(|n| n.saturating_add(start));
+        ensure_free_space(dir, total.unwrap_or(0).saturating_sub(start))?;
+        let mut opts = OpenOptions::new();
+        opts.create(true)
+            .write(true)
+            .append(resumed)
+            .truncate(!resumed);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::OpenOptionsExt;
+            opts.mode(0o600); // owner-only, like the rest of the data dir (H38)
+        }
+        let mut out = opts.open(&part).map_err(|e| SdkError::io(&part, e))?;
+        let mut reader = resp.into_reader();
+        let mut buf = vec![0u8; 1 << 20];
+        let mut done = start;
+        loop {
+            let n = reader
+                .read(&mut buf)
+                .map_err(|e| SdkError::GeofabrikUnreachable {
+                    cause: format!("{url}: {e} after {done} bytes; run again to resume"),
+                })?;
+            if n == 0 {
+                break;
+            }
+            out.write_all(&buf[..n])
+                .map_err(|e| SdkError::io(&part, e))?;
+            done = done.saturating_add(n as u64);
+            progress(done, total);
+        }
+        out.sync_all().map_err(|e| SdkError::io(&part, e))?;
+        if let Some(t) = total {
+            if done != t {
+                return Err(SdkError::GeofabrikUnreachable {
+                    cause: format!("{url}: got {done} of {t} bytes; run again to resume"),
+                });
+            }
+        }
+        let got = crate::hash::md5_file(&part, |_| {})?;
+        if got != want_md5 {
+            let _ = fs::remove_file(&part);
+            return Err(SdkError::ImportChecksumMismatch {
+                got: crate::hash::to_hex(&got),
+                want: crate::hash::to_hex(&want_md5),
+                snapshot: name,
+            });
+        }
+        fs::rename(&part, &dest).map_err(|e| SdkError::io(&dest, e))?;
+        Ok((dest, want_md5))
     }
 }
 

@@ -1,7 +1,8 @@
 //! `osm`: command line for the LP-0018 OSM registry. Commands that need the chain are added with
 //! the LEZ adapter; everything here works without it.
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
@@ -9,7 +10,10 @@ use osm_core::{lookup, RegionDef, PREDEFINED};
 use osm_sdk::geofabrik::{discover, Geofabrik, Source};
 use osm_sdk::hash::{to_hex, verify_import};
 use osm_sdk::registry::{RegisteredEntry, Registry, RpcRegistry};
-use osm_sdk::snapshot::snapshot_url;
+use osm_sdk::rest_storage::RestStorage;
+use osm_sdk::retry::{RetryPolicy, XorShift};
+use osm_sdk::snapshot::{first_of_month, snapshot_url};
+use osm_sdk::storage::upload_with_retry;
 use osm_sdk::SdkError;
 use serde_json::json;
 
@@ -38,6 +42,55 @@ enum Cmd {
     Discover,
     /// Show today's dated snapshot of a region and Geofabrik's MD5 for it.
     Snapshot { region: String },
+    /// Host regions: download the dated Geofabrik snapshot, check its MD5, upload it to Logos
+    /// Storage, and register it on-chain (one region, or several in one batch transaction).
+    Host {
+        /// Region to host; repeat for a bulk host (up to 16).
+        #[arg(long = "region", required = true)]
+        regions: Vec<String>,
+        /// Snapshot date YYMMDD; default: first of the current month.
+        #[arg(long)]
+        snapshot: Option<u32>,
+        /// Storage node REST API root.
+        #[arg(
+            long,
+            env = "OSM_STORAGE",
+            default_value = "http://127.0.0.1:8080/api/storage/v1"
+        )]
+        storage: String,
+        /// Folder for downloaded PBFs (created owner-only).
+        #[arg(long, env = "OSM_CACHE_DIR")]
+        cache_dir: PathBuf,
+        #[arg(long, env = "OSM_RPC")]
+        rpc: String,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: String,
+        /// Hosting account (signs and pays).
+        #[arg(long, env = "OSM_HOST_ACCOUNT")]
+        host: String,
+        /// The `osm-chain` binary that signs with the LEZ wallet (LEE_WALLET_HOME_DIR).
+        #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
+        chain_bin: PathBuf,
+    },
+    /// Download a region: from Logos Storage by CID when hosted (newest entry whose bytes match
+    /// the registered MD5), from Geofabrik only when nobody hosts it.
+    Download {
+        #[arg(long)]
+        region: String,
+        /// Folder to write the PBF into.
+        #[arg(long)]
+        dir: PathBuf,
+        #[arg(
+            long,
+            env = "OSM_STORAGE",
+            default_value = "http://127.0.0.1:8080/api/storage/v1"
+        )]
+        storage: String,
+        #[arg(long, env = "OSM_RPC")]
+        rpc: String,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: String,
+    },
     /// Look up registry entries by region, parent or CID (sorted by timestamp).
     Lookup {
         #[arg(long, conflicts_with_all = ["parent", "cid"])]
@@ -69,6 +122,7 @@ fn exit_for(e: &SdkError) -> u8 {
     match e.code() {
         "S110" | "S111" | "S112" | "S113" => 5,
         "S120" | "S121" | "S122" => 6,
+        "S140" | "S141" => 8,
         "S130" | "S131" | "S132" => 7,
         "S150" | "S151" | "S152" => 9,
         "S100" | "S170" => 3,
@@ -92,6 +146,49 @@ fn geofabrik(cli: &Cli) -> Result<Geofabrik, SdkError> {
         });
     }
     Ok(Geofabrik::new())
+}
+
+/// Runs `osm-chain register` with an argument array (no shell) and returns its JSON answer.
+fn chain_register(
+    bin: &Path,
+    rpc: &str,
+    program: &str,
+    host: &str,
+    entries: &[String],
+) -> Result<serde_json::Value, SdkError> {
+    let mut cmd = Command::new(bin);
+    cmd.args([
+        "register",
+        "--rpc",
+        rpc,
+        "--program",
+        program,
+        "--host",
+        host,
+    ]);
+    for e in entries {
+        cmd.args(["--entry", e]);
+    }
+    let out = cmd.output().map_err(|e| SdkError::Io {
+        path: bin.to_path_buf(),
+        source: e,
+    })?;
+    // The LEZ wallet library may print its own lines on stdout; the answer is the last JSON line.
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    let last = stdout
+        .lines()
+        .rev()
+        .find(|l| l.trim_start().starts_with('{'))
+        .unwrap_or("");
+    let v: serde_json::Value = serde_json::from_str(last).map_err(|_| SdkError::InvalidInput {
+        field: "osm-chain",
+        why: format!(
+            "unexpected output (exit {:?}): {}",
+            out.status.code(),
+            String::from_utf8_lossy(&out.stderr)
+        ),
+    })?;
+    Ok(v)
 }
 
 fn entry_json(r: &RegisteredEntry) -> serde_json::Value {
@@ -170,6 +267,136 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                 );
             } else {
                 println!("{} {snap:06} {} {url}", def.region, to_hex(&md5));
+            }
+        }
+        Cmd::Host {
+            regions,
+            snapshot,
+            storage,
+            cache_dir,
+            rpc,
+            program,
+            host,
+            chain_bin,
+        } => {
+            if regions.len() > osm_core::entry::MAX_BATCH {
+                return Err(SdkError::InvalidInput {
+                    field: "--region",
+                    why: format!("at most {} per run", osm_core::entry::MAX_BATCH),
+                });
+            }
+            let defs: Vec<_> = regions
+                .iter()
+                .map(|r| region(r))
+                .collect::<Result<_, _>>()?;
+            let g = geofabrik(cli)?;
+            osm_sdk::datadir::ensure_private_dir(cache_dir)?;
+            let mut store = RestStorage::new(storage, std::time::Duration::from_secs(120));
+            let mut entries = Vec::new();
+            let mut rows = Vec::new();
+            for def in defs {
+                let snap = match snapshot {
+                    Some(s) => *s,
+                    None => first_of_month(g.latest_snapshot(def)?),
+                };
+                let url = snapshot_url(def, snap)?;
+                eprintln!("{}: downloading {url}", def.region);
+                let (path, md5) = g.download_snapshot(def, snap, cache_dir, |done, total| {
+                    if let Some(t) = total {
+                        if done == t || done % (64 << 20) < (1 << 20) {
+                            eprintln!("  {} / {} MB", done >> 20, t >> 20);
+                        }
+                    }
+                })?;
+                let size = std::fs::metadata(&path)
+                    .map_err(|e| SdkError::Io {
+                        path: path.clone(),
+                        source: e,
+                    })?
+                    .len();
+                eprintln!(
+                    "{}: MD5 {} matches Geofabrik; uploading to Storage",
+                    def.region,
+                    to_hex(&md5)
+                );
+                let cid = upload_with_retry(
+                    &mut store,
+                    &path,
+                    &RetryPolicy::default(),
+                    &mut XorShift::seeded(),
+                    std::thread::sleep,
+                )?;
+                eprintln!("{}: stored as {cid}", def.region);
+                entries.push(format!(
+                    "{}|{}|{}|{}|{:06}|{}",
+                    def.region,
+                    cid,
+                    url,
+                    to_hex(&md5),
+                    snap,
+                    size
+                ));
+                rows.push(json!({"region": def.region, "cid": cid, "source_url": url, "md5": to_hex(&md5), "snapshot": snap, "size_bytes": size}));
+            }
+            let res = chain_register(chain_bin, rpc, program, host, &entries)?;
+            let ok = res["ok"].as_bool() == Some(true);
+            if cli.json {
+                println!("{}", json!({"ok": ok, "hosted": rows, "chain": res}));
+            } else {
+                println!(
+                    "{}",
+                    if ok {
+                        format!("registered: {}", res["outcome"])
+                    } else {
+                        format!("NOT registered: {}", res["error"])
+                    }
+                );
+            }
+            if !ok {
+                // Upload succeeded but registration did not: never report success (H33).
+                std::process::exit(4);
+            }
+        }
+        Cmd::Download {
+            region: id,
+            dir,
+            storage,
+            rpc,
+            program,
+        } => {
+            let def = region(id)?;
+            osm_sdk::datadir::ensure_private_dir(dir)?;
+            let reg = Registry {
+                source: RpcRegistry::new(rpc, program)?,
+                program: program.clone(),
+            };
+            let mut store = RestStorage::new(storage, std::time::Duration::from_secs(120));
+            let g = (!cli.no_geofabrik).then(Geofabrik::new);
+            let f = osm_sdk::fetch::fetch_region(&reg, &mut store, g.as_ref(), def.region, dir)?;
+            let (kind, from) = match &f.source {
+                osm_sdk::fetch::Source::Storage { cid } => ("storage", cid.clone()),
+                osm_sdk::fetch::Source::Geofabrik { url } => ("geofabrik", url.clone()),
+            };
+            if cli.json {
+                let skipped: Vec<_> = f
+                    .skipped
+                    .iter()
+                    .map(|(c, why)| json!({"cid": c, "why": why}))
+                    .collect();
+                println!(
+                    "{}",
+                    json!({"ok": true, "region": def.region, "path": f.path, "source": kind, "from": from, "md5": to_hex(&f.md5), "skipped": skipped})
+                );
+            } else {
+                for (c, why) in &f.skipped {
+                    eprintln!("warning: skipped {c}: {why}");
+                }
+                println!(
+                    "{} -> {} (from {kind} {from}, MD5 {} verified)",
+                    def.region,
+                    f.path.display(),
+                    to_hex(&f.md5)
+                );
             }
         }
         Cmd::Lookup {
