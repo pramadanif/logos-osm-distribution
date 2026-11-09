@@ -42,3 +42,7 @@
 
 # cargo fuzz decode_region (H37, E87), 2026-11-09, macOS arm64, nightly, seeds = real v0.3.1 accounts
 2026-11-09 fuzz_decode_region local PASS runs=4554055 seconds=121 crashes=0 cov=385
+
+# p10_atomic_kill.sh (H38), 2026-11-09, macOS arm64, 4 MiB documents
+2026-11-09 p10_atomic_kill local FAIL(before fix) rounds=200 invalid=0 temp_files_left=142
+2026-11-09 p10_atomic_kill local PASS rounds=200 invalid=0 temp_files_left=0

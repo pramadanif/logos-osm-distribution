@@ -18,13 +18,25 @@ fn main() {
     let size = std::fs::metadata(file).expect("file").len();
     let t = Instant::now();
     let mut up = RestStorage::new(node_a, Duration::from_secs(600));
-    let cid = upload_with_retry(&mut up, file.as_ref(), &RetryPolicy::default(), &mut XorShift::seeded(), std::thread::sleep).expect("upload");
+    let cid = upload_with_retry(
+        &mut up,
+        file.as_ref(),
+        &RetryPolicy::default(),
+        &mut XorShift::seeded(),
+        std::thread::sleep,
+    )
+    .expect("upload");
     let up_s = t.elapsed().as_secs_f64();
     let dest = std::path::Path::new(out).join("transfer.bin");
     let t = Instant::now();
-    RestStorage::new(node_b, Duration::from_secs(600)).download_to_file(&cid, &dest).expect("download");
+    RestStorage::new(node_b, Duration::from_secs(600))
+        .download_to_file(&cid, &dest)
+        .expect("download");
     let down_s = t.elapsed().as_secs_f64();
-    let (x, y) = (md5_file(file.as_ref(), |_| {}).unwrap(), md5_file(&dest, |_| {}).unwrap());
+    let (x, y) = (
+        md5_file(file.as_ref(), |_| {}).unwrap(),
+        md5_file(&dest, |_| {}).unwrap(),
+    );
     println!("size={size} cid={cid} upload_s={up_s:.1} download_s={down_s:.1} md5_src={} md5_dst={} equal={}", to_hex(&x), to_hex(&y), x == y);
     let _ = std::fs::remove_file(&dest);
     if x != y {

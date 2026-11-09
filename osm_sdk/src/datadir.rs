@@ -49,7 +49,17 @@ pub fn atomic_write(
         .file_name()
         .map(|n| n.to_string_lossy().into_owned())
         .unwrap_or_default();
-    let tmp = dir.join(format!(".{name}.tmp-{}", std::process::id()));
+    // Temp files left by a writer that was killed mid-write (seen in probes/p10) are removed
+    // first. The data dir belongs to one profile, so no other live writer uses these names.
+    let prefix = format!(".{name}.tmp-");
+    if let Ok(entries) = fs::read_dir(dir) {
+        for e in entries.flatten() {
+            if e.file_name().to_string_lossy().starts_with(&prefix) {
+                let _ = fs::remove_file(e.path());
+            }
+        }
+    }
+    let tmp = dir.join(format!("{prefix}{}", std::process::id()));
     let mut opts = OpenOptions::new();
     opts.write(true).create_new(true);
     #[cfg(unix)]
