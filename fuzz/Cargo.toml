@@ -1,0 +1,23 @@
+[package]
+name = "osm_fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+osm_sdk = { path = "../osm_sdk" }
+osm_core = { path = "../osm_core" }
+
+[[bin]]
+name = "decode_region"
+path = "fuzz_targets/decode_region.rs"
+test = false
+doc = false
+bench = false
+
+[workspace]

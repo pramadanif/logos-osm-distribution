@@ -55,3 +55,19 @@ jobs:
           t="LEZ ${{ steps.tags.outputs.latest }} released"
           gh issue list --search "$t in:title" --json number --jq 'length' | grep -q '^0$' && \
             gh issue create --title "$t" --body "A LEZ tag not in VERSIONS.md appeared. Rebuild, rerun e2e and probes against it; for 0.4 follow scripts/port-testnet.sh." || echo "issue already open"
+
+  fuzz:
+    # H37 / E87: five minutes of libFuzzer on the registry decoder every day; a crash fails the job
+    # and keeps the reproducer as an artifact.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install nightly --profile minimal && cargo install --locked cargo-fuzz --version 0.13.2
+      - name: Fuzz
+        working-directory: fuzz
+        run: cargo +nightly fuzz run decode_region corpus/decode_region -- -max_total_time=300 -max_len=16384
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: fuzz-artifacts
+          path: fuzz/artifacts

@@ -39,3 +39,6 @@
 
 # examples/transfer (H27), 2026-11-09, macOS arm64, two local logos-storage v0.5.3 nodes
 2026-11-09 transfer_2GiB local-storage PASS size=2147483648 upload_s=12.9 download_s=192.2 md5_equal=true peak_rss_bytes=2785280 (/usr/bin/time -l)
+
+# cargo fuzz decode_region (H37, E87), 2026-11-09, macOS arm64, nightly, seeds = real v0.3.1 accounts
+2026-11-09 fuzz_decode_region local PASS runs=4554055 seconds=121 crashes=0 cov=385

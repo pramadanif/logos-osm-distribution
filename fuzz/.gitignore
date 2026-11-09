@@ -1,0 +1,6 @@
+target/
+artifacts/
+# libFuzzer grows the corpus; only the seeds captured from a real sequencer are kept.
+corpus/decode_region/*
+!corpus/decode_region/philippines
+!corpus/decode_region/egypt

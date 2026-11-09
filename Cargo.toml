@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = ["osm_core", "osm_sdk", "osm_cli", "osm_ffi"]
-exclude = ["programs"]
+exclude = ["programs", "fuzz"]
 
 [workspace.package]
 version = "0.0.1"
