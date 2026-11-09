@@ -3,6 +3,7 @@
 # complete, valid document (old or new), never empty or truncated, and stale temp files from
 # killed writers are cleaned up (at most the one from the last killed run may remain).
 #   probes/p10_atomic_kill.sh [rounds]
+# no-required-input
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 rounds="${1:-200}"

@@ -3,7 +3,9 @@
 use osm_sdk::datadir::atomic_write;
 
 fn main() {
-    let path = std::env::args().nth(1).expect("usage: atomic_writer <file>");
+    let path = std::env::args()
+        .nth(1)
+        .expect("usage: atomic_writer <file>");
     let doc = |c: char| format!("{{\"fill\":\"{}\"}}", c.to_string().repeat(4 << 20));
     let (a, b) = (doc('a'), doc('b'));
     let valid = |bytes: &[u8]| serde_json::from_slice::<serde_json::Value>(bytes).is_ok();
