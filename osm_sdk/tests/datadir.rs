@@ -24,6 +24,14 @@ fn modes_are_owner_only() {
 }
 
 #[test]
+fn private_dir_is_created_on_every_platform() {
+    let root = tempfile::tempdir().unwrap();
+    let dir = root.path().join("x/y");
+    assert_eq!(ensure_private_dir(&dir).unwrap(), dir);
+    assert!(dir.is_dir());
+}
+
+#[test]
 fn invalid_content_never_replaces_good_file() {
     let root = tempfile::tempdir().unwrap();
     let f = root.path().join("settings.json");
