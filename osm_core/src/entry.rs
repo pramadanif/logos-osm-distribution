@@ -104,8 +104,9 @@ const BASE58: &[u8] = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwx
 
 /// Accepts a CIDv0 (`Qm` + 44 base58 characters) or a base58btc CIDv1 (`z` + base58).
 ///
-/// Structural check only; the exact codec prefix Logos Storage emits is pinned once a real
-/// upload has been captured (docs/status/phase--1.md, SC-−1.3).
+/// Structural check. A real logos-storage v0.5.3 upload returned a 52-character CIDv1 starting
+/// `zDvZRwzm` (docs/status/phase--1.md, SC-−1.3); the prefix is not enforced because other
+/// manifest codecs may appear after upgrades.
 pub fn validate_cid(cid: &str) -> Result<(), EntryError> {
     let b = cid.as_bytes();
     if !(MIN_CID_LEN..=MAX_CID_LEN).contains(&b.len()) || !b.iter().all(|c| BASE58.contains(c)) {

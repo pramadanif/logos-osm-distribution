@@ -31,9 +31,8 @@ check-runs for HEAD through the API, and compared README statements with the cod
 
 **M2 (fixed). CI never ran.** Green on 3 OSes at 9bee462 (run 42555186573).
 
-**L1. CID validation is structural.** `validate_cid` accepts any base58btc string starting with
-`z` of 46–96 characters; the test CID is synthetic. Pinned to the real Storage format after the
-first real upload (SC-−1.3).
+**L1 (fixed). Test CID was synthetic.** Tests now use a CID from a real v0.5.3 upload; the SDK
+client was also run against two real nodes. Validation stays structural on purpose.
 
 ## What works
 

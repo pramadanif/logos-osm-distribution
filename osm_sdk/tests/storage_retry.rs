@@ -30,7 +30,7 @@ impl Jitter for Max {
     }
 }
 
-const CID: &str = "zDvZRwzmAkhzDRPH5EW242gJBNZ2T7aoH2v1fVH66FxXL4kSbvyM"; // syntactic example
+const CID: &str = "zDvZRwzmDhJHVcQyvkFBDXtck1bhACLTjt94z6puHN3dsfm5U7wb"; // real v0.5.3 upload, 2026-11-09
 
 fn run(
     script: Vec<Result<String, StorageFault>>,

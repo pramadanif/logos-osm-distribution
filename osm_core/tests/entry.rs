@@ -3,9 +3,9 @@
 use osm_core::entry::*;
 use osm_core::Level;
 
-// Syntactic example only, not a captured Storage CID. Replaced by a CID from a real upload once
-// SC-−1.3 runs (H32). MD5 and URL are real: `curl .../asia/indonesia-261001.osm.pbf.md5` on 2026-11-09.
-const CID: &str = "zDvZRwzmAkhzDRPH5EW242gJBNZ2T7aoH2v1fVH66FxXL4kSbvyM";
+// CID returned by a real logos-storage v0.5.3 node for a 5 MiB upload on 2026-11-09
+// (docs/status/phase--1.md, SC-−1.3). MD5 and URL: `curl .../asia/indonesia-261001.osm.pbf.md5`, same day.
+const CID: &str = "zDvZRwzmDhJHVcQyvkFBDXtck1bhACLTjt94z6puHN3dsfm5U7wb";
 const MD5: &str = "ade51ccd0faa1702cbeab207f927e0a8";
 const URL: &str = "https://download.geofabrik.de/asia/indonesia-261001.osm.pbf";
 
@@ -82,8 +82,8 @@ fn rejects_bad_cids() {
         "Qm",
         "QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5", // 45 chars
         "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi", // base32, not base58btc
-        "zDvZRwzmAkhzDRPH5EW242gJBNZ2T7aoH2v1fVH66FxXL4kSbvy0", // '0' not base58
-        "zDvZRwzmAkhzDRPH5EW242gJBNZ2T7aoH2v1fVH66FxXL4kSbvy<b>",
+        "zDvZRwzmDhJHVcQyvkFBDXtck1bhACLTjt94z6puHN3dsfm5U7w0", // '0' not base58
+        "zDvZRwzmDhJHVcQyvkFBDXtck1bhACLTjt94z6puHN3dsfm5U7<b>",
     ] {
         assert_eq!(validate_cid(cid), Err(EntryError::BadCid), "{cid}");
     }

@@ -8,7 +8,7 @@ use std::net::TcpListener;
 use std::sync::mpsc;
 use std::time::Duration;
 
-const CID: &str = "zDvZRwzmAkhzDRPH5EW242gJBNZ2T7aoH2v1fVH66FxXL4kSbvyM"; // syntactic example
+const CID: &str = "zDvZRwzmDhJHVcQyvkFBDXtck1bhACLTjt94z6puHN3dsfm5U7wb"; // real v0.5.3 upload, 2026-11-09
 
 type Seen = mpsc::Receiver<(String, Vec<String>, Vec<u8>)>;
 
@@ -126,6 +126,14 @@ fn download_is_atomic_and_404_is_permanent() {
 fn exists_parses_json_and_rejects_bad_cid_before_any_request() {
     let (base, _rx) = serve_once("200 OK", br#"{"has":true}"#.to_vec());
     assert!(client(&base).exists(CID).unwrap());
+    // Shape a real v0.5.3 node returns (captured 2026-11-09).
+    let (base, _rx) = serve_once("200 OK", format!(r#"{{"{CID}":false}}"#).into_bytes());
+    assert!(!client(&base).exists(CID).unwrap());
+    let (base, _rx) = serve_once("200 OK", br#"{"other":true}"#.to_vec());
+    assert!(matches!(
+        client(&base).exists(CID),
+        Err(StorageFault::Permanent(_))
+    ));
     let (base, _rx) = serve_once("200 OK", b"<html>".to_vec());
     assert!(matches!(
         client(&base).exists(CID),

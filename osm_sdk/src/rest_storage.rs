@@ -108,11 +108,9 @@ impl StorageBackend for RestStorage {
         })
     }
 
+    /// v0.5.3 answers `{"<cid>": <bool>}` (observed 2026-11-09), although `openapi.yaml` documents
+    /// `{"has": <bool>}`. Both are accepted; any other shape is an error.
     fn exists(&mut self, cid: &str) -> Result<bool, StorageFault> {
-        #[derive(serde::Deserialize)]
-        struct Has {
-            has: bool,
-        }
         let url = self.url(cid, "/exists")?;
         let resp = self.agent.get(&url).call().map_err(classify)?;
         let mut body = Vec::new();
@@ -120,8 +118,11 @@ impl StorageBackend for RestStorage {
             .take(4096)
             .read_to_end(&mut body)
             .map_err(|e| io_fault("reading exists", e))?;
-        serde_json::from_slice::<Has>(&body)
-            .map(|h| h.has)
-            .map_err(|e| StorageFault::Permanent(format!("bad exists response: {e}")))
+        let v: serde_json::Value = serde_json::from_slice(&body)
+            .map_err(|e| StorageFault::Permanent(format!("bad exists response: {e}")))?;
+        v.get(cid)
+            .or_else(|| v.get("has"))
+            .and_then(serde_json::Value::as_bool)
+            .ok_or_else(|| StorageFault::Permanent(format!("bad exists response: {v}")))
     }
 }
