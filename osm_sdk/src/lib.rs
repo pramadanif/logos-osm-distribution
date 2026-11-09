@@ -6,6 +6,7 @@
 pub mod datadir;
 pub mod discovery;
 pub mod error;
+pub mod geofabrik;
 pub mod hash;
 pub mod rest_storage;
 pub mod retry;

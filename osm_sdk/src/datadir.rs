@@ -1,6 +1,6 @@
 //! Private, durable local data (H38): folder 0700, files 0600, atomic writes.
 
-use std::fs::{self, File, OpenOptions};
+use std::fs::{self, OpenOptions};
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
@@ -63,7 +63,7 @@ pub fn atomic_write(
         f.sync_all()?;
         fs::rename(&tmp, dest)?;
         #[cfg(unix)]
-        File::open(dir)?.sync_all()?;
+        fs::File::open(dir)?.sync_all()?;
         Ok(())
     };
     write().map_err(|e| {
