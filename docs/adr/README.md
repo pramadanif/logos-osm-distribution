@@ -12,3 +12,4 @@
 
 Status words: Proposed = written, not yet proven by a run; Accepted = binding; Superseded = replaced.
 A change to plan §2 needs an ADR here.
+| [0008](0008-basecamp-modules.md) | Basecamp modules, names and wiring | Accepted (names, structure); modules not built yet |
