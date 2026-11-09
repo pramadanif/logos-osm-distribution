@@ -61,3 +61,32 @@ fn no_geofabrik_refuses_commands_that_need_it() {
     assert_eq!(out.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&out.stderr).contains("needs Geofabrik"));
 }
+
+#[test]
+fn lookup_without_selector_is_invalid_input() {
+    let out = osm(&[
+        "lookup",
+        "--rpc",
+        "http://127.0.0.1:1",
+        "--program",
+        "G4s9EP4n9DbaD8HdfbyFYDTSVnHSnfsoP3SEPxVQACJ",
+    ]);
+    assert_eq!(out.status.code(), Some(2));
+}
+
+#[test]
+fn lookup_with_unreachable_rpc_exits_3() {
+    let out = osm(&[
+        "lookup",
+        "--region",
+        "egypt",
+        "--rpc",
+        "http://127.0.0.1:1",
+        "--program",
+        "G4s9EP4n9DbaD8HdfbyFYDTSVnHSnfsoP3SEPxVQACJ",
+        "--json",
+    ]);
+    assert_eq!(out.status.code(), Some(3));
+    let v: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+    assert_eq!(v["code"], "S100");
+}
