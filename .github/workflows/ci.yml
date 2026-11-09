@@ -95,3 +95,10 @@ jobs:
           cc -fsanitize=address,undefined -fno-sanitize-recover=all -g -I osm_ffi/include \
             osm_ffi/tests/c/smoke.c target/release/libosm_ffi.a -lpthread -ldl -lm -o osm_ffi_smoke
           ./osm_ffi_smoke
+
+  scripts:
+    # H35: scripts are strict and fail loudly without their inputs.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash tests/scripts.sh

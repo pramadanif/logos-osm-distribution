@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # Regenerates osm_sdk/tests/fixtures/geofabrik-index-subset.json from the live Geofabrik index (H32).
 # Keeps the 72 predefined leaves, the 4 decomposed parents and a few look-alikes; drops geometry.
-# Manual only: CI never calls Geofabrik (H26).
+# Manual only: CI never calls Geofabrik (H26). Pass --live to download the index, or set INDEX_FILE.
 set -euo pipefail
+if [[ -z "${INDEX_FILE:-}" && "${1:-}" != "--live" ]]; then
+  echo "refusing to contact Geofabrik without --live (or INDEX_FILE=<downloaded index>)" >&2; exit 2
+fi
 root="$(cd "$(dirname "$0")/.." && pwd)"
 tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
 if [[ -n "${INDEX_FILE:-}" ]]; then

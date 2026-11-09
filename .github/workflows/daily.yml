@@ -1,0 +1,55 @@
+name: daily
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  liveness:
+    # H35: the deployment the app points to must still exist after testnet resets.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Default profile's program header still carries the recorded ImageID
+        id: check
+        run: |
+          set -euo pipefail
+          read -r rpc program want < <(python3 -I -c 'import json; d=json.load(open("networks.json")); p=d["profiles"][d["default"]]; print(p["rpc"], p["program"], p["program_image_id"])')
+          got="$(curl -fsS --max-time 30 -X POST "$rpc" -H 'content-type: application/json' \
+            -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getAccount\",\"params\":[\"$program\"]}" \
+            | python3 -I -c 'import json,sys; s=json.load(sys.stdin)["result"]["data"]["shards"]; v=[x for x in s.values() if len(x)>=32]; print(bytes(v[0][:32]).hex() if v else "missing")')"
+          echo "rpc=$rpc program=$program image=$got"
+          [ "$got" = "$want" ]
+      - name: Open an issue when the deployment is gone or changed
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "liveness: default deployment unreachable or changed ($(date -u +%F))" --body "The daily liveness job could not confirm the program header in networks.json's default profile. Run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+  lez-tags:
+    # SC-A.5: notice new LEZ releases (rc2, 0.4 final) the day they appear.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare the newest LEZ tag with VERSIONS.md
+        id: tags
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          latest="$(gh api repos/logos-blockchain/logos-execution-zone/tags --jq '.[0].name')"
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+          if grep -q "\`$latest\`" VERSIONS.md; then echo "known: $latest"; else echo "new LEZ tag: $latest"; echo "new=1" >> "$GITHUB_OUTPUT"; fi
+      - name: Open an issue for a new tag
+        if: steps.tags.outputs.new == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          t="LEZ ${{ steps.tags.outputs.latest }} released"
+          gh issue list --search "$t in:title" --json number --jq 'length' | grep -q '^0$' && \
+            gh issue create --title "$t" --body "A LEZ tag not in VERSIONS.md appeared. Rebuild, rerun e2e and probes against it; for 0.4 follow scripts/port-testnet.sh." || echo "issue already open"
