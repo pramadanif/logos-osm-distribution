@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["osm_core"]
+members = ["osm_core", "osm_sdk"]
 
 [workspace.package]
 version = "0.0.1"
@@ -11,3 +11,6 @@ repository = "https://github.com/pramadanif/lp-0018-osm-distribution"
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+md-5 = "0.10"
+thiserror = "2"
+tempfile = "3"
