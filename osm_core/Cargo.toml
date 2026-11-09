@@ -1,0 +1,13 @@
+[package]
+name = "osm_core"
+description = "Region set, types and validation shared by the LP-0018 registry program and SDK"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+
+[dev-dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }

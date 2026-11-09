@@ -1,0 +1,587 @@
+{
+  "schema": 1,
+  "source": "logos-co/lambda-prize prizes/LP-0018.md @ dbf3365952afaae9ec256f803fa2c5116ac6b82c, section Predefined Regions (closed set)",
+  "geofabrik_index_checked": "2026-11-09",
+  "notes": [
+    "region = prize leaf id; geofabrik_id = id in index-v1-nogeom.json; geofabrik_path = URL path without -latest.osm.pbf",
+    "Ireland -> ireland-and-northern-ireland and Malaysia -> malaysia-singapore-brunei: the prize gives names only, see docs/status/conflicts.md C1"
+  ],
+  "regions": [
+    {
+      "region": "germany",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "germany",
+      "geofabrik_path": "europe/germany"
+    },
+    {
+      "region": "france",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "france",
+      "geofabrik_path": "europe/france"
+    },
+    {
+      "region": "great-britain",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "great-britain",
+      "geofabrik_path": "europe/great-britain"
+    },
+    {
+      "region": "italy",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "italy",
+      "geofabrik_path": "europe/italy"
+    },
+    {
+      "region": "spain",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "spain",
+      "geofabrik_path": "europe/spain"
+    },
+    {
+      "region": "poland",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "poland",
+      "geofabrik_path": "europe/poland"
+    },
+    {
+      "region": "netherlands",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "netherlands",
+      "geofabrik_path": "europe/netherlands"
+    },
+    {
+      "region": "belgium",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "belgium",
+      "geofabrik_path": "europe/belgium"
+    },
+    {
+      "region": "switzerland",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "switzerland",
+      "geofabrik_path": "europe/switzerland"
+    },
+    {
+      "region": "austria",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "austria",
+      "geofabrik_path": "europe/austria"
+    },
+    {
+      "region": "czech-republic",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "czech-republic",
+      "geofabrik_path": "europe/czech-republic"
+    },
+    {
+      "region": "sweden",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "sweden",
+      "geofabrik_path": "europe/sweden"
+    },
+    {
+      "region": "norway",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "norway",
+      "geofabrik_path": "europe/norway"
+    },
+    {
+      "region": "denmark",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "denmark",
+      "geofabrik_path": "europe/denmark"
+    },
+    {
+      "region": "finland",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "finland",
+      "geofabrik_path": "europe/finland"
+    },
+    {
+      "region": "portugal",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "portugal",
+      "geofabrik_path": "europe/portugal"
+    },
+    {
+      "region": "greece",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "greece",
+      "geofabrik_path": "europe/greece"
+    },
+    {
+      "region": "ireland-and-northern-ireland",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "ireland-and-northern-ireland",
+      "geofabrik_path": "europe/ireland-and-northern-ireland"
+    },
+    {
+      "region": "hungary",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "hungary",
+      "geofabrik_path": "europe/hungary"
+    },
+    {
+      "region": "romania",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "romania",
+      "geofabrik_path": "europe/romania"
+    },
+    {
+      "region": "bulgaria",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "bulgaria",
+      "geofabrik_path": "europe/bulgaria"
+    },
+    {
+      "region": "ukraine",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "ukraine",
+      "geofabrik_path": "europe/ukraine"
+    },
+    {
+      "region": "belarus",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "belarus",
+      "geofabrik_path": "europe/belarus"
+    },
+    {
+      "region": "turkey",
+      "parent": null,
+      "level": "country",
+      "continent": "europe",
+      "geofabrik_id": "turkey",
+      "geofabrik_path": "europe/turkey"
+    },
+    {
+      "region": "canada",
+      "parent": null,
+      "level": "country",
+      "continent": "north-america",
+      "geofabrik_id": "canada",
+      "geofabrik_path": "north-america/canada"
+    },
+    {
+      "region": "mexico",
+      "parent": null,
+      "level": "country",
+      "continent": "north-america",
+      "geofabrik_id": "mexico",
+      "geofabrik_path": "north-america/mexico"
+    },
+    {
+      "region": "japan",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "japan",
+      "geofabrik_path": "asia/japan"
+    },
+    {
+      "region": "south-korea",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "south-korea",
+      "geofabrik_path": "asia/south-korea"
+    },
+    {
+      "region": "indonesia",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "indonesia",
+      "geofabrik_path": "asia/indonesia"
+    },
+    {
+      "region": "thailand",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "thailand",
+      "geofabrik_path": "asia/thailand"
+    },
+    {
+      "region": "vietnam",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "vietnam",
+      "geofabrik_path": "asia/vietnam"
+    },
+    {
+      "region": "malaysia-singapore-brunei",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "malaysia-singapore-brunei",
+      "geofabrik_path": "asia/malaysia-singapore-brunei"
+    },
+    {
+      "region": "philippines",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "philippines",
+      "geofabrik_path": "asia/philippines"
+    },
+    {
+      "region": "pakistan",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "pakistan",
+      "geofabrik_path": "asia/pakistan"
+    },
+    {
+      "region": "bangladesh",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "bangladesh",
+      "geofabrik_path": "asia/bangladesh"
+    },
+    {
+      "region": "iran",
+      "parent": null,
+      "level": "country",
+      "continent": "asia",
+      "geofabrik_id": "iran",
+      "geofabrik_path": "asia/iran"
+    },
+    {
+      "region": "australia",
+      "parent": null,
+      "level": "country",
+      "continent": "oceania",
+      "geofabrik_id": "australia",
+      "geofabrik_path": "australia-oceania/australia"
+    },
+    {
+      "region": "brazil",
+      "parent": null,
+      "level": "country",
+      "continent": "south-america",
+      "geofabrik_id": "brazil",
+      "geofabrik_path": "south-america/brazil"
+    },
+    {
+      "region": "argentina",
+      "parent": null,
+      "level": "country",
+      "continent": "south-america",
+      "geofabrik_id": "argentina",
+      "geofabrik_path": "south-america/argentina"
+    },
+    {
+      "region": "colombia",
+      "parent": null,
+      "level": "country",
+      "continent": "south-america",
+      "geofabrik_id": "colombia",
+      "geofabrik_path": "south-america/colombia"
+    },
+    {
+      "region": "peru",
+      "parent": null,
+      "level": "country",
+      "continent": "south-america",
+      "geofabrik_id": "peru",
+      "geofabrik_path": "south-america/peru"
+    },
+    {
+      "region": "chile",
+      "parent": null,
+      "level": "country",
+      "continent": "south-america",
+      "geofabrik_id": "chile",
+      "geofabrik_path": "south-america/chile"
+    },
+    {
+      "region": "south-africa",
+      "parent": null,
+      "level": "country",
+      "continent": "africa",
+      "geofabrik_id": "south-africa",
+      "geofabrik_path": "africa/south-africa"
+    },
+    {
+      "region": "egypt",
+      "parent": null,
+      "level": "country",
+      "continent": "africa",
+      "geofabrik_id": "egypt",
+      "geofabrik_path": "africa/egypt"
+    },
+    {
+      "region": "nigeria",
+      "parent": null,
+      "level": "country",
+      "continent": "africa",
+      "geofabrik_id": "nigeria",
+      "geofabrik_path": "africa/nigeria"
+    },
+    {
+      "region": "kenya",
+      "parent": null,
+      "level": "country",
+      "continent": "africa",
+      "geofabrik_id": "kenya",
+      "geofabrik_path": "africa/kenya"
+    },
+    {
+      "region": "morocco",
+      "parent": null,
+      "level": "country",
+      "continent": "africa",
+      "geofabrik_id": "morocco",
+      "geofabrik_path": "africa/morocco"
+    },
+    {
+      "region": "ethiopia",
+      "parent": null,
+      "level": "country",
+      "continent": "africa",
+      "geofabrik_id": "ethiopia",
+      "geofabrik_path": "africa/ethiopia"
+    },
+    {
+      "region": "us/california",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/california",
+      "geofabrik_path": "north-america/us/california"
+    },
+    {
+      "region": "us/texas",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/texas",
+      "geofabrik_path": "north-america/us/texas"
+    },
+    {
+      "region": "us/florida",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/florida",
+      "geofabrik_path": "north-america/us/florida"
+    },
+    {
+      "region": "us/new-york",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/new-york",
+      "geofabrik_path": "north-america/us/new-york"
+    },
+    {
+      "region": "us/washington",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/washington",
+      "geofabrik_path": "north-america/us/washington"
+    },
+    {
+      "region": "us/illinois",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/illinois",
+      "geofabrik_path": "north-america/us/illinois"
+    },
+    {
+      "region": "us/georgia",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/georgia",
+      "geofabrik_path": "north-america/us/georgia"
+    },
+    {
+      "region": "us/pennsylvania",
+      "parent": "us",
+      "level": "subregion",
+      "continent": "north-america",
+      "geofabrik_id": "us/pennsylvania",
+      "geofabrik_path": "north-america/us/pennsylvania"
+    },
+    {
+      "region": "india/central-zone",
+      "parent": "india",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "central-zone",
+      "geofabrik_path": "asia/india/central-zone"
+    },
+    {
+      "region": "india/eastern-zone",
+      "parent": "india",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "eastern-zone",
+      "geofabrik_path": "asia/india/eastern-zone"
+    },
+    {
+      "region": "india/north-eastern-zone",
+      "parent": "india",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "north-eastern-zone",
+      "geofabrik_path": "asia/india/north-eastern-zone"
+    },
+    {
+      "region": "india/northern-zone",
+      "parent": "india",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "northern-zone",
+      "geofabrik_path": "asia/india/northern-zone"
+    },
+    {
+      "region": "india/southern-zone",
+      "parent": "india",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "southern-zone",
+      "geofabrik_path": "asia/india/southern-zone"
+    },
+    {
+      "region": "india/western-zone",
+      "parent": "india",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "western-zone",
+      "geofabrik_path": "asia/india/western-zone"
+    },
+    {
+      "region": "china/guangdong",
+      "parent": "china",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "guangdong",
+      "geofabrik_path": "asia/china/guangdong"
+    },
+    {
+      "region": "china/jiangsu",
+      "parent": "china",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "jiangsu",
+      "geofabrik_path": "asia/china/jiangsu"
+    },
+    {
+      "region": "china/shandong",
+      "parent": "china",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "shandong",
+      "geofabrik_path": "asia/china/shandong"
+    },
+    {
+      "region": "china/zhejiang",
+      "parent": "china",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "zhejiang",
+      "geofabrik_path": "asia/china/zhejiang"
+    },
+    {
+      "region": "china/sichuan",
+      "parent": "china",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "sichuan",
+      "geofabrik_path": "asia/china/sichuan"
+    },
+    {
+      "region": "china/henan",
+      "parent": "china",
+      "level": "subregion",
+      "continent": "asia",
+      "geofabrik_id": "henan",
+      "geofabrik_path": "asia/china/henan"
+    },
+    {
+      "region": "russia/central-fed-district",
+      "parent": "russia",
+      "level": "subregion",
+      "continent": "russia",
+      "geofabrik_id": "central-fed-district",
+      "geofabrik_path": "russia/central-fed-district"
+    },
+    {
+      "region": "russia/northwestern-fed-district",
+      "parent": "russia",
+      "level": "subregion",
+      "continent": "russia",
+      "geofabrik_id": "northwestern-fed-district",
+      "geofabrik_path": "russia/northwestern-fed-district"
+    },
+    {
+      "region": "russia/volga-fed-district",
+      "parent": "russia",
+      "level": "subregion",
+      "continent": "russia",
+      "geofabrik_id": "volga-fed-district",
+      "geofabrik_path": "russia/volga-fed-district"
+    },
+    {
+      "region": "russia/siberian-fed-district",
+      "parent": "russia",
+      "level": "subregion",
+      "continent": "russia",
+      "geofabrik_id": "siberian-fed-district",
+      "geofabrik_path": "russia/siberian-fed-district"
+    }
+  ]
+}
