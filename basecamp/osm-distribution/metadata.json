@@ -9,6 +9,7 @@
   "author": "pramadanif",
   "main": "pramadani_osm_distribution_plugin",
   "dependencies": [],
+  "optional_dependencies": ["lez_core"],
 
   "codegen": {
     "rust": { "crate": "rust-lib", "trait": "PramadaniOsmDistributionModule" }

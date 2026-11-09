@@ -16,7 +16,8 @@ crate-type = ["staticlib"]
 serde_json = "1"
 # The SDK and its JSON API, pinned to a commit of this repository (ADR 0008). Bump the rev before
 # a release so the package matches a commit on main (H18, H29).
-osm_ffi = { git = "https://github.com/pramadanif/logos-osm-distribution", rev = "a65b66c5810c1164856dbf04a57a86d42ec4b66c" }
-osm_sdk = { git = "https://github.com/pramadanif/logos-osm-distribution", rev = "a65b66c5810c1164856dbf04a57a86d42ec4b66c" }
+osm_ffi = { git = "https://github.com/pramadanif/logos-osm-distribution", rev = "4ea1d4c18b14640305bc749c0fc44a6cdf3947d5" }
+osm_core = { git = "https://github.com/pramadanif/logos-osm-distribution", rev = "4ea1d4c18b14640305bc749c0fc44a6cdf3947d5" }
+osm_sdk = { git = "https://github.com/pramadanif/logos-osm-distribution", rev = "4ea1d4c18b14640305bc749c0fc44a6cdf3947d5" }
 # Staged by the builder from the same logos-rust-sdk revision its code generator comes from.
 logos-rust-sdk = { path = "../logos-rust-sdk-src" }

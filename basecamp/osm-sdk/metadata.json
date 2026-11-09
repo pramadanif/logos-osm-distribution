@@ -1,0 +1,31 @@
+{
+  "name": "pramadani_osm_sdk",
+  "display_name": "OSM Registry SDK (LP-0018)",
+  "version": "0.1.0",
+  "type": "core",
+  "interface": "cdylib",
+  "category": "maps",
+  "description": "Read-only OSM registry SDK for other Basecamp modules: discover regions, resolve a region to its CID and metadata, download and verify it. No wallet, no writes (LP-0018 consumer subset).",
+  "author": "pramadanif",
+  "main": "pramadani_osm_sdk_plugin",
+  "dependencies": [],
+  "codegen": {
+    "rust": {
+      "crate": "rust-lib",
+      "trait": "PramadaniOsmSdkModule"
+    }
+  },
+  "nix": {
+    "packages": {
+      "build": [],
+      "runtime": []
+    },
+    "external_libraries": [],
+    "cmake": {
+      "find_packages": [],
+      "extra_sources": [],
+      "extra_include_dirs": [],
+      "extra_link_libraries": []
+    }
+  }
+}

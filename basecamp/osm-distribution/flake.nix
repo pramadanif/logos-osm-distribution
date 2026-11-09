@@ -3,6 +3,8 @@
 
   inputs = {
     logos-module-builder.url = "github:logos-co/logos-module-builder";
+    # The LEZ wallet module; signs registry writes. Optional at runtime: reads work without it.
+    lez_core.url = "github:logos-blockchain/logos-execution-zone-module";
   };
 
   outputs = inputs@{ logos-module-builder, ... }:
