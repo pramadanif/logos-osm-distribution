@@ -121,6 +121,21 @@ enum Cmd {
         #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
         chain_bin: PathBuf,
     },
+    /// Stop hosting: remove your account from the hosts of a CID.
+    Unhost {
+        #[arg(long)]
+        region: String,
+        #[arg(long)]
+        cid: String,
+        #[arg(long, env = "OSM_RPC")]
+        rpc: String,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: String,
+        #[arg(long, env = "OSM_HOST_ACCOUNT")]
+        host: String,
+        #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
+        chain_bin: PathBuf,
+    },
     /// Download a region: from Logos Storage by CID when hosted (newest entry whose bytes match
     /// the registered MD5), from Geofabrik only when nobody hosts it.
     Download {
@@ -580,6 +595,62 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                 );
             }
             if failed {
+                std::process::exit(4);
+            }
+        }
+        Cmd::Unhost {
+            region: id,
+            cid,
+            rpc,
+            program,
+            host,
+            chain_bin,
+        } => {
+            let def = region(id)?;
+            osm_core::entry::validate_cid(cid).map_err(|_| SdkError::InvalidInput {
+                field: "--cid",
+                why: format!("{cid:?} is not a CID"),
+            })?;
+            let out = Command::new(chain_bin)
+                .args([
+                    "unhost",
+                    "--rpc",
+                    rpc,
+                    "--program",
+                    program,
+                    "--host",
+                    host,
+                    "--region",
+                    def.region,
+                    "--cid",
+                    cid,
+                ])
+                .output()
+                .map_err(|e| SdkError::Io {
+                    path: chain_bin.clone(),
+                    source: e,
+                })?;
+            let stdout = String::from_utf8_lossy(&out.stdout);
+            let last = stdout
+                .lines()
+                .rev()
+                .find(|l| l.trim_start().starts_with('{'))
+                .unwrap_or("{}");
+            let res: serde_json::Value = serde_json::from_str(last).unwrap_or_default();
+            let ok = res["ok"].as_bool() == Some(true);
+            if cli.json {
+                println!("{res}");
+            } else {
+                println!(
+                    "{}",
+                    if ok {
+                        format!("unhosted: {}", res["outcome"])
+                    } else {
+                        format!("NOT unhosted: {}", res["error"])
+                    }
+                );
+            }
+            if !ok {
                 std::process::exit(4);
             }
         }

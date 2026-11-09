@@ -7,7 +7,7 @@
 use std::io::Read;
 use std::time::Duration;
 
-use borsh::BorshDeserialize;
+use borsh::{BorshDeserialize, BorshSerialize};
 use osm_core::entry::{validate_cid, MAX_HISTORY, MAX_HOSTS};
 use osm_core::{Level, PREDEFINED};
 use sha2::{Digest, Sha256};
@@ -64,7 +64,7 @@ pub fn region_account_id(program: &str, region: &str) -> Result<String, SdkError
 }
 
 /// One registered copy, as stored on-chain (layout 1).
-#[derive(BorshDeserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(BorshDeserialize, BorshSerialize, Clone, Debug, PartialEq, Eq)]
 pub struct Entry {
     pub cid: String,
     pub source_url: String,
@@ -78,7 +78,7 @@ pub struct Entry {
     pub hosts: Vec<[u8; 32]>,
 }
 
-#[derive(BorshDeserialize, Clone, Debug, PartialEq, Eq)]
+#[derive(BorshDeserialize, BorshSerialize, Clone, Debug, PartialEq, Eq)]
 pub struct RegionAccount {
     pub layout: u8,
     pub region: String,
@@ -351,4 +351,39 @@ impl<S: RegistrySource> Registry<S> {
                 timestamp_ms: e.timestamp,
             }))
     }
+}
+
+/// Native balance of an account in lepta (`getAccountBalance`). The JSON number can exceed u64,
+/// so its digits are read directly.
+pub fn account_balance(rpc: &str, account_b58: &str) -> Result<u128, SdkError> {
+    decode_account_id(account_b58)?;
+    let unreachable = |cause: String| SdkError::RpcUnreachable {
+        url: rpc.to_string(),
+        cause,
+    };
+    let body = serde_json::json!({"jsonrpc": "2.0", "id": 1, "method": "getAccountBalance", "params": [account_b58]});
+    let resp = ureq::AgentBuilder::new()
+        .timeout_connect(Duration::from_secs(10))
+        .timeout_read(Duration::from_secs(30))
+        .build()
+        .post(rpc)
+        .set("content-type", "application/json")
+        .send_string(&body.to_string())
+        .map_err(|e| unreachable(e.to_string()))?;
+    let mut raw = String::new();
+    resp.into_reader()
+        .take(4096)
+        .read_to_string(&mut raw)
+        .map_err(|e| unreachable(e.to_string()))?;
+    let digits: String = raw
+        .split("\"result\":")
+        .nth(1)
+        .unwrap_or("")
+        .trim_start()
+        .chars()
+        .take_while(char::is_ascii_digit)
+        .collect();
+    digits
+        .parse()
+        .map_err(|_| unreachable(format!("no balance in answer: {raw}")))
 }

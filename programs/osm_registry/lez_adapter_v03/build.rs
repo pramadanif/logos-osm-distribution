@@ -13,10 +13,19 @@ fn main() {
     let text = fs::read_to_string(&src).expect("generated client present; run `make ffi-gen`");
     let from = "#[derive(Clone, Debug, Serialize, Deserialize)]\npub enum OsmRegistryInstruction";
     let to = "#[derive(Clone, Debug, Serialize, Deserialize, borsh::BorshSerialize)]\npub enum OsmRegistryInstruction";
-    assert!(text.contains(from), "generated client changed shape; revisit lez_adapter_v03/build.rs");
+    assert!(
+        text.contains(from),
+        "generated client changed shape; revisit lez_adapter_v03/build.rs"
+    );
     let fetch = "    /// Fetch and deserialize the `region_account` account state.";
-    let start = text.find(fetch).expect("generated client changed shape: fetch_region_account");
-    let end = text[start..].find("\n    }\n").expect("end of fetch_region_account") + start + "\n    }\n".len();
+    let start = text
+        .find(fetch)
+        .expect("generated client changed shape: fetch_region_account");
+    let end = text[start..]
+        .find("\n    }\n")
+        .expect("end of fetch_region_account")
+        + start
+        + "\n    }\n".len();
     let text = format!("{}{}", &text[..start], &text[end..]);
     let text: String = text
         .replace(from, to)

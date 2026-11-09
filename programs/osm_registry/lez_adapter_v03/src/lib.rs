@@ -45,6 +45,8 @@ pub enum AdapterError {
     /// S103: sent, but the change is not visible after the timeout (not included, or rejected
     /// during execution).
     TxNotIncluded { tx_hash: String, secs: u64 },
+    /// S105: the paying account cannot cover the fee the sequencer reserves up front.
+    InsufficientFunds { have: u128, need: u128 },
     /// S104: the sequencer refused the transaction.
     TxRejected(String),
     /// S106: wallet could not be opened or holds no key for the signer.
@@ -58,6 +60,7 @@ impl AdapterError {
         match self {
             AdapterError::TxNotIncluded { .. } => "S103",
             AdapterError::TxRejected(_) => "S104",
+            AdapterError::InsufficientFunds { .. } => "S105",
             AdapterError::Wallet(_) => "S106",
             AdapterError::Sdk(e) => e.code(),
         }
@@ -72,6 +75,10 @@ impl std::fmt::Display for AdapterError {
                 "S103 TxNotIncluded: transaction {tx_hash} was sent but the registry shows no change after {secs} s. Nothing was registered."
             ),
             AdapterError::TxRejected(m) => write!(f, "S104 TxRejected: the network rejected the transaction: {m}"),
+            AdapterError::InsufficientFunds { have, need } => write!(
+                f,
+                "S105 InsufficientFunds: the paying account has {have} lepta; about {need} lepta must be available for this transaction's fee reserve. Claim from the faucet or fund it first."
+            ),
             AdapterError::Wallet(m) => write!(f, "S106 Wallet: {m}"),
             AdapterError::Sdk(e) => write!(f, "{e}"),
         }
@@ -93,6 +100,17 @@ pub struct Adapter {
     pub confirm_timeout: Duration,
 }
 
+/// Fee the sequencer reserves before running a transaction, with the gas limit the SPEL client
+/// uses (`SPEL_GAS_LIMIT`, default 500,000): `(gas_limit + 100,000) * 64` lepta. Measured actual
+/// fees on LEZ v0.3.1 were far lower (register 414,960 lepta), but the reserve must be available.
+pub fn fee_reserve() -> u128 {
+    let gas_limit: u64 = std::env::var("SPEL_GAS_LIMIT")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(500_000);
+    (u128::from(gas_limit) + 100_000) * 64
+}
+
 fn now_ms() -> u64 {
     std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
@@ -104,13 +122,29 @@ impl Adapter {
     /// Opens the wallet from `LEE_WALLET_HOME_DIR`.
     pub async fn from_env(rpc: &str, program_b58: &str) -> Result<Self, AdapterError> {
         osm_sdk::registry::decode_account_id(program_b58)?;
-        let wallet = WalletCore::from_env().await.map_err(|e| AdapterError::Wallet(e.to_string()))?;
+        let wallet = WalletCore::from_env()
+            .await
+            .map_err(|e| AdapterError::Wallet(e.to_string()))?;
         Ok(Adapter {
             wallet,
             program_b58: program_b58.to_string(),
             rpc: rpc.to_string(),
             confirm_timeout: Duration::from_secs(120),
         })
+    }
+
+    /// Native balance of an account, in lepta.
+    pub fn balance(&self, account_b58: &str) -> Result<u128, AdapterError> {
+        Ok(osm_sdk::registry::account_balance(&self.rpc, account_b58)?)
+    }
+
+    fn ensure_funds(&self, payer_b58: &str) -> Result<(), AdapterError> {
+        let have = self.balance(payer_b58)?;
+        let need = fee_reserve();
+        if have < need {
+            return Err(AdapterError::InsufficientFunds { have, need });
+        }
+        Ok(())
     }
 
     fn registry(&self) -> Result<Registry<RpcRegistry>, AdapterError> {
@@ -124,11 +158,19 @@ impl Adapter {
         Ok(self
             .registry()?
             .region(region)?
-            .map(|a| a.history.iter().any(|e| e.cid == cid && e.hosts.contains(signer)))
+            .map(|a| {
+                a.history
+                    .iter()
+                    .any(|e| e.cid == cid && e.hosts.contains(signer))
+            })
             .unwrap_or(false))
     }
 
-    async fn wait_until(&self, tx_hash: String, done: impl Fn() -> Result<bool, AdapterError>) -> Result<Outcome, AdapterError> {
+    async fn wait_until(
+        &self,
+        tx_hash: String,
+        done: impl Fn() -> Result<bool, AdapterError>,
+    ) -> Result<Outcome, AdapterError> {
         let start = Instant::now();
         loop {
             if done()? {
@@ -146,19 +188,28 @@ impl Adapter {
 
     /// Registers (or mirrors) up to `MAX_BATCH` entries as `host` and waits until every one is
     /// visible with `host` among its hosts. One entry uses `register`, more use `register_batch`.
-    pub async fn register(&self, host_b58: &str, entries: &[NewEntry]) -> Result<Outcome, AdapterError> {
+    pub async fn register(
+        &self,
+        host_b58: &str,
+        entries: &[NewEntry],
+    ) -> Result<Outcome, AdapterError> {
         let host = osm_sdk::registry::decode_account_id(host_b58)?;
         let ts = now_ms();
         // Validate everything locally first, with the program's own rules (osm_core).
         let names: Vec<&str> = entries.iter().map(|e| e.region.as_str()).collect();
-        osm_core::entry::validate_batch_shape(&names, &[])
-            .map_err(|e| osm_sdk::SdkError::InvalidInput { field: "batch", why: format!("{} {e:?}", e.code()) })?;
+        osm_core::entry::validate_batch_shape(&names, &[]).map_err(|e| {
+            osm_sdk::SdkError::InvalidInput {
+                field: "batch",
+                why: format!("{} {e:?}", e.code()),
+            }
+        })?;
         let mut pending = Vec::new();
         for e in entries {
-            let def = osm_core::lookup(&e.region).ok_or_else(|| osm_sdk::SdkError::InvalidInput {
-                field: "region",
-                why: format!("{:?} is not in the predefined set", e.region),
-            })?;
+            let def =
+                osm_core::lookup(&e.region).ok_or_else(|| osm_sdk::SdkError::InvalidInput {
+                    field: "region",
+                    why: format!("{:?} is not in the predefined set", e.region),
+                })?;
             osm_core::entry::validate_entry(&osm_core::entry::EntryInput {
                 region: &e.region,
                 parent: def.parent,
@@ -170,7 +221,10 @@ impl Adapter {
                 size_bytes: e.size_bytes,
                 timestamp_ms: ts,
             })
-            .map_err(|err| osm_sdk::SdkError::InvalidInput { field: "entry", why: format!("{}: {} {err:?}", e.region, err.code()) })?;
+            .map_err(|err| osm_sdk::SdkError::InvalidInput {
+                field: "entry",
+                why: format!("{}: {} {err:?}", e.region, err.code()),
+            })?;
             if !self.hosts(&e.region, &e.cid, &host)? {
                 pending.push((e.clone(), def));
             }
@@ -178,14 +232,19 @@ impl Adapter {
         if pending.is_empty() {
             return Ok(Outcome::AlreadyRegistered);
         }
-        let program = client::parse_program_id_hex(&self.program_b58).map_err(AdapterError::TxRejected)?;
+        self.ensure_funds(host_b58)?;
+        let program =
+            client::parse_program_id_hex(&self.program_b58).map_err(AdapterError::TxRejected)?;
         let signer = nssa::AccountId::new(host);
         let c = OsmRegistryClient::new(&self.wallet, program);
         let level = |d: &osm_core::RegionDef| u8::from(d.level == osm_core::Level::Subregion);
         let tx_hash = if pending.len() == 1 {
             let (e, d) = &pending[0];
             c.register(
-                client::RegisterAccounts { region_account: client::compute_region_account_pda(&program, &e.region), host: signer },
+                client::RegisterAccounts {
+                    region_account: client::compute_region_account_pda(&program, &e.region),
+                    host: signer,
+                },
                 e.region.clone(),
                 d.parent.unwrap_or("").to_string(),
                 level(d),
@@ -201,10 +260,16 @@ impl Adapter {
             c.register_batch(
                 client::RegisterBatchAccounts {
                     host: signer,
-                    region_accounts: pending.iter().map(|(e, _)| client::compute_region_account_pda(&program, &e.region)).collect(),
+                    region_accounts: pending
+                        .iter()
+                        .map(|(e, _)| client::compute_region_account_pda(&program, &e.region))
+                        .collect(),
                 },
                 pending.iter().map(|(e, _)| e.region.clone()).collect(),
-                pending.iter().map(|(_, d)| d.parent.unwrap_or("").to_string()).collect(),
+                pending
+                    .iter()
+                    .map(|(_, d)| d.parent.unwrap_or("").to_string())
+                    .collect(),
                 pending.iter().map(|(_, d)| level(d)).collect(),
                 pending.iter().map(|(e, _)| e.cid.clone()).collect(),
                 pending.iter().map(|(e, _)| e.source_url.clone()).collect(),
@@ -225,5 +290,42 @@ impl Adapter {
             Ok(true)
         })
         .await
+    }
+
+    /// Removes `host` from the hosts of `cid` in `region` and waits until that is visible.
+    pub async fn unhost(
+        &self,
+        host_b58: &str,
+        region: &str,
+        cid: &str,
+    ) -> Result<Outcome, AdapterError> {
+        let host = osm_sdk::registry::decode_account_id(host_b58)?;
+        if osm_core::lookup(region).is_none() {
+            return Err(osm_sdk::SdkError::InvalidInput {
+                field: "region",
+                why: format!("{region:?} is not in the predefined set"),
+            }
+            .into());
+        }
+        if !self.hosts(region, cid, &host)? {
+            return Ok(Outcome::AlreadyRegistered);
+        }
+        self.ensure_funds(host_b58)?;
+        let program =
+            client::parse_program_id_hex(&self.program_b58).map_err(AdapterError::TxRejected)?;
+        let c = OsmRegistryClient::new(&self.wallet, program);
+        let tx_hash = c
+            .unhost(
+                client::UnhostAccounts {
+                    region_account: client::compute_region_account_pda(&program, region),
+                    host: nssa::AccountId::new(host),
+                },
+                region.to_string(),
+                cid.to_string(),
+            )
+            .await
+            .map_err(AdapterError::TxRejected)?;
+        self.wait_until(tx_hash, || Ok(!self.hosts(region, cid, &host)?))
+            .await
     }
 }

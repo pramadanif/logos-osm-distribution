@@ -196,3 +196,51 @@ fn resolve_picks_newest_hosted_entry() {
     assert!(reg.resolve("germany").unwrap().is_none());
     assert_eq!(reg.resolve("planet").unwrap_err().code(), "S160");
 }
+
+#[test]
+fn account_at_maximum_fill_stays_far_under_the_lez_limit() {
+    // SC-B.2 / §2 guard 3: 8 history entries x 16 hosts, every string at its longest.
+    use osm_core::entry::{MAX_CID_LEN, MAX_HISTORY, MAX_HOSTS};
+    let region = "russia/northwestern-fed-district"; // longest id, 32 bytes
+    let url =
+        "https://download.geofabrik.de/russia/northwestern-fed-district-261101.osm.pbf".to_string();
+    let entry = Entry {
+        cid: format!("z{}", "1".repeat(MAX_CID_LEN - 1)),
+        source_url: url,
+        checksum: [0xff; 16],
+        version: 261101,
+        size_bytes: u64::MAX,
+        hosted: true,
+        timestamp: u64::MAX,
+        registered_by: [9; 32],
+        hosts: vec![[7; 32]; MAX_HOSTS],
+    };
+    let acc = RegionAccount {
+        layout: 1,
+        region: region.into(),
+        parent: "russia".into(),
+        level: 1,
+        history: vec![entry; MAX_HISTORY],
+    };
+    let bytes = borsh::to_vec(&acc).unwrap();
+    assert!(bytes.len() < 8 * 1024, "{} bytes", bytes.len());
+    assert!(bytes.len() < MAX_ACCOUNT_BYTES);
+    assert_eq!(decode_region(&bytes, region, "max-fill").unwrap(), acc);
+    // One host or one entry more is refused by the decoder (the program refuses it on write).
+    let mut over = acc.clone();
+    over.history[0].hosts.push([1; 32]);
+    assert_eq!(
+        decode_region(&borsh::to_vec(&over).unwrap(), region, "x")
+            .unwrap_err()
+            .code(),
+        "S170"
+    );
+    let mut over = acc;
+    over.history.push(over.history[0].clone());
+    assert_eq!(
+        decode_region(&borsh::to_vec(&over).unwrap(), region, "x")
+            .unwrap_err()
+            .code(),
+        "S170"
+    );
+}

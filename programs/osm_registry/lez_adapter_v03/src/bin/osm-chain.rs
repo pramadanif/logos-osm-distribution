@@ -14,15 +14,22 @@ fn arg(args: &[String], name: &str) -> Option<String> {
 fn parse_entry(s: &str) -> Result<NewEntry, String> {
     let p: Vec<&str> = s.split('|').collect();
     if p.len() != 6 {
-        return Err(format!("--entry needs 6 '|' separated fields, got {}", p.len()));
+        return Err(format!(
+            "--entry needs 6 '|' separated fields, got {}",
+            p.len()
+        ));
     }
     Ok(NewEntry {
         region: p[0].into(),
         cid: p[1].into(),
         source_url: p[2].into(),
         checksum: p[3].into(),
-        version: p[4].parse().map_err(|_| format!("version {:?} is not a number", p[4]))?,
-        size_bytes: p[5].parse().map_err(|_| format!("size {:?} is not a number", p[5]))?,
+        version: p[4]
+            .parse()
+            .map_err(|_| format!("version {:?} is not a number", p[4]))?,
+        size_bytes: p[5]
+            .parse()
+            .map_err(|_| format!("size {:?} is not a number", p[5]))?,
     })
 }
 
@@ -38,26 +45,60 @@ fn exit_code(e: &AdapterError) -> i32 {
 async fn main() {
     let args: Vec<String> = std::env::args().collect();
     let fail = |code: i32, kind: &str, msg: String| -> ! {
-        println!("{}", serde_json_lite(&[("ok", "false".into()), ("code", format!("\"{kind}\"")), ("error", format!("{msg:?}"))]));
+        println!(
+            "{}",
+            serde_json_lite(&[
+                ("ok", "false".into()),
+                ("code", format!("\"{kind}\"")),
+                ("error", format!("{msg:?}"))
+            ])
+        );
         std::process::exit(code)
     };
-    if args.get(1).map(String::as_str) != Some("register") {
-        fail(2, "S160", "usage: osm-chain register --rpc <url> --program <id> --host <id> --entry '<region>|<cid>|<url>|<md5>|<YYMMDD>|<size>'...".into());
+    let cmd = args.get(1).map(String::as_str).unwrap_or("");
+    if cmd != "register" && cmd != "unhost" {
+        fail(2, "S160", "usage: osm-chain register --rpc <url> --program <id> --host <id> --entry '<region>|<cid>|<url>|<md5>|<YYMMDD>|<size>'... | osm-chain unhost --rpc <url> --program <id> --host <id> --region <r> --cid <cid>".into());
     }
-    let (Some(rpc), Some(program), Some(host)) = (arg(&args, "--rpc"), arg(&args, "--program"), arg(&args, "--host")) else {
+    let (Some(rpc), Some(program), Some(host)) = (
+        arg(&args, "--rpc"),
+        arg(&args, "--program"),
+        arg(&args, "--host"),
+    ) else {
         fail(2, "S160", "--rpc, --program and --host are required".into())
     };
-    let entries: Result<Vec<_>, _> = args.windows(2).filter(|w| w[0] == "--entry").map(|w| parse_entry(&w[1])).collect();
+    let entries: Result<Vec<_>, _> = args
+        .windows(2)
+        .filter(|w| w[0] == "--entry")
+        .map(|w| parse_entry(&w[1]))
+        .collect();
     let entries = entries.unwrap_or_else(|m| fail(2, "S160", m));
-    let adapter = Adapter::from_env(&rpc, &program).await.unwrap_or_else(|e| fail(exit_code(&e), e.code(), e.to_string()));
-    match adapter.register(host.trim_start_matches("Public/"), &entries).await {
+    let adapter = Adapter::from_env(&rpc, &program)
+        .await
+        .unwrap_or_else(|e| fail(exit_code(&e), e.code(), e.to_string()));
+    let host = host.trim_start_matches("Public/");
+    let result = if cmd == "unhost" {
+        let (Some(r), Some(c)) = (arg(&args, "--region"), arg(&args, "--cid")) else {
+            fail(2, "S160", "--region and --cid are required".into())
+        };
+        adapter.unhost(host, &r, &c).await
+    } else {
+        adapter.register(host, &entries).await
+    };
+    match result {
         Ok(Outcome::Confirmed { tx_hash }) => println!(
             "{}",
-            serde_json_lite(&[("ok", "true".into()), ("outcome", "\"confirmed\"".into()), ("tx_hash", format!("\"{tx_hash}\""))])
+            serde_json_lite(&[
+                ("ok", "true".into()),
+                ("outcome", "\"confirmed\"".into()),
+                ("tx_hash", format!("\"{tx_hash}\""))
+            ])
         ),
         Ok(Outcome::AlreadyRegistered) => println!(
             "{}",
-            serde_json_lite(&[("ok", "true".into()), ("outcome", "\"already_registered\"".into())])
+            serde_json_lite(&[
+                ("ok", "true".into()),
+                ("outcome", "\"already_registered\"".into())
+            ])
         ),
         Err(e) => fail(exit_code(&e), e.code(), e.to_string()),
     }
