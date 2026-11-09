@@ -3,6 +3,7 @@
 //! `no_std` so the registry guest program and the SDK use one validation path.
 #![no_std]
 
+pub mod entry;
 mod regions;
 
 pub use regions::PREDEFINED;
