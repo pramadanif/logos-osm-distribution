@@ -10,6 +10,7 @@ pub mod error;
 pub mod fetch;
 pub mod geofabrik;
 pub mod hash;
+pub mod instruction;
 pub mod registry;
 pub mod rest_storage;
 pub mod retry;
