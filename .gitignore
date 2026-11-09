@@ -1,0 +1,11 @@
+# evaluator corpus: read locally, never committed
+docs/evaluator/
+# pinned upstream checkouts (LEZ, SPEL, ...), fetched by scripts
+.deps/
+/target/
+**/target/
+# wallet material must never be committed (H25, H28)
+*.wallet
+wallet/
+.env
+.env.*
