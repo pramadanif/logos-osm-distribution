@@ -37,6 +37,9 @@ jobs:
             programs/osm_registry -> target
             ${{ runner.temp }}/e2e/lez-v0.3.1 -> target
           cache-all-crates: true
+          # Upstream build scripts download artifacts and GitHub has answered 504 at times; keep the
+          # compiled work even when a run fails so the next run does not start from zero.
+          cache-on-failure: true
       - uses: actions/cache@v4
         with:
           path: ~/.risc0

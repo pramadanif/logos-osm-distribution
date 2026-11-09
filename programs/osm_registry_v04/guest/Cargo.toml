@@ -1,0 +1,18 @@
+[package]
+name = "osm_registry_v04-guest"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[workspace]
+
+[[bin]]
+name = "osm_registry_v04"
+path = "src/bin/osm_registry_v04.rs"
+
+[dependencies]
+lee_core   = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.4.0-rc1" }
+clock_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.4.0-rc1" }
+risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std"] }
+borsh = { version = "1.5", features = ["derive"] }
+osm_core = { path = "../../../osm_core" }

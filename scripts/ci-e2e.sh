@@ -19,7 +19,12 @@ if [ ! -d "$lez/.git" ]; then git -c advice.detachedHead=false clone -q --depth 
 [ "$(git -C "$lez" rev-parse HEAD)" = "$LEZ_SHA" ] || { echo "LEZ $LEZ_TAG is not $LEZ_SHA" >&2; exit 1; }
 
 echo "::group::build LEZ sequencer + wallet"
-(cd "$lez" && cargo build --release --locked --features standalone -p sequencer_service && cargo build --release --locked -p wallet)
+# Upstream build scripts download prebuilt artifacts (rapidsnark, circuits); retry on network errors.
+for attempt in 1 2 3; do
+  if (cd "$lez" && cargo build --release --locked --features standalone -p sequencer_service && cargo build --release --locked -p wallet); then break; fi
+  [ "$attempt" -lt 3 ] || { echo "LEZ build failed 3 times" >&2; exit 1; }
+  echo "LEZ build attempt $attempt failed; retrying in 60 s"; sleep 60
+done
 echo "::endgroup::"
 echo "::group::build registry program (docker) and binaries"
 (cd "$root" && cargo risczero build --manifest-path programs/osm_registry/methods/guest/Cargo.toml)
