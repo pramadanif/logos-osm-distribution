@@ -95,6 +95,16 @@ enum Cmd {
         #[arg(long, env = "OSM_PROGRAM")]
         program: String,
     },
+    /// Compare each region's newest registered snapshot with Geofabrik's current one.
+    UpdateCheck {
+        /// Regions to check; default: every region that is hosted.
+        #[arg(long = "region")]
+        regions: Vec<String>,
+        #[arg(long, env = "OSM_RPC")]
+        rpc: String,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: String,
+    },
     /// Look up registry entries by region, parent or CID (sorted by timestamp).
     Lookup {
         #[arg(long, conflicts_with_all = ["parent", "cid"])]
@@ -412,6 +422,53 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                     f.path.display(),
                     to_hex(&f.md5)
                 );
+            }
+        }
+        Cmd::UpdateCheck {
+            regions,
+            rpc,
+            program,
+        } => {
+            let reg = Registry {
+                source: RpcRegistry::new(rpc, program)?,
+                program: program.clone(),
+            };
+            let g = geofabrik(cli)?;
+            let names: Vec<String> = if regions.is_empty() {
+                let (s, errors) = osm_sdk::status::hosted_status(&reg);
+                for e in &errors {
+                    eprintln!("warning: {e}");
+                }
+                s.into_iter()
+                    .filter(|x| x.version.is_some())
+                    .map(|x| x.region.to_string())
+                    .collect()
+            } else {
+                regions.clone()
+            };
+            let refs: Vec<&str> = names.iter().map(String::as_str).collect();
+            let u = osm_sdk::status::check_updates(&reg, &g, &refs)?;
+            if cli.json {
+                let rows: Vec<_> = u.iter().map(|x| json!({"region": x.region, "registered": x.registered, "available": x.available, "update_available": x.update_available()})).collect();
+                println!("{}", json!({"regions": rows}));
+            } else if u.is_empty() {
+                println!("no hosted regions to check");
+            } else {
+                for x in &u {
+                    let reg_s = x
+                        .registered
+                        .map(|v| format!("{v:06}"))
+                        .unwrap_or_else(|| "none".into());
+                    let note = if x.update_available() {
+                        "update available"
+                    } else {
+                        "up to date"
+                    };
+                    println!(
+                        "{:<34} registered {reg_s}  Geofabrik {:06}  {note}",
+                        x.region, x.available
+                    );
+                }
             }
         }
         Cmd::Lookup {

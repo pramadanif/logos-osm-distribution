@@ -13,6 +13,7 @@ pub mod registry;
 pub mod rest_storage;
 pub mod retry;
 pub mod snapshot;
+pub mod status;
 pub mod storage;
 
 pub use error::SdkError;

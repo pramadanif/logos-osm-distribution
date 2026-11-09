@@ -179,3 +179,20 @@ fn queries_by_region_parent_cid_sorted() {
     let (china, _) = reg.by_parent("china");
     assert!(china.is_empty(), "no china leaves in this fixture");
 }
+
+#[test]
+fn resolve_picks_newest_hosted_entry() {
+    let f = fixture();
+    let src = Map(f.values().map(|(a, b)| (a.clone(), b.clone())).collect());
+    let reg = Registry {
+        source: src,
+        program: PROGRAM.to_string(),
+    };
+    let r = reg.resolve("philippines").unwrap().unwrap();
+    let acc = reg.region("philippines").unwrap().unwrap();
+    let newest = acc.history.iter().max_by_key(|e| e.timestamp).unwrap();
+    assert_eq!(r.cid, newest.cid);
+    assert_eq!(r.version, 261101);
+    assert!(reg.resolve("germany").unwrap().is_none());
+    assert_eq!(reg.resolve("planet").unwrap_err().code(), "S160");
+}

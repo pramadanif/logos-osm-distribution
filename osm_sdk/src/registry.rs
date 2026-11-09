@@ -306,3 +306,49 @@ impl<S: RegistrySource> Registry<S> {
         (v, e)
     }
 }
+
+/// What a consumer needs to fetch and trust a region: the newest hosted entry.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Resolved {
+    pub region: &'static str,
+    pub cid: String,
+    /// Geofabrik's MD5 for the snapshot, as registered. Compare after download.
+    pub checksum: [u8; 16],
+    /// Snapshot date YYMMDD.
+    pub version: u32,
+    pub source_url: String,
+    pub size_bytes: u64,
+    /// Unix milliseconds of the registration.
+    pub timestamp_ms: u64,
+    pub hosts: usize,
+}
+
+impl<S: RegistrySource> Registry<S> {
+    /// Resolves a region to the CID and metadata of its newest hosted entry, or `None` when no
+    /// one hosts it. Download with `fetch::fetch_region`, which also checks the MD5 and falls
+    /// back to older entries if the newest one does not verify.
+    pub fn resolve(&self, region: &str) -> Result<Option<Resolved>, SdkError> {
+        let def = osm_core::lookup(region).ok_or_else(|| SdkError::InvalidInput {
+            field: "region",
+            why: format!("{region:?} is not in the predefined set"),
+        })?;
+        let Some(acc) = self.region(def.region)? else {
+            return Ok(None);
+        };
+        Ok(acc
+            .history
+            .into_iter()
+            .filter(|e| e.hosted)
+            .max_by_key(|e| e.timestamp)
+            .map(|e| Resolved {
+                region: def.region,
+                hosts: e.hosts.len(),
+                cid: e.cid,
+                checksum: e.checksum,
+                version: e.version,
+                source_url: e.source_url,
+                size_bytes: e.size_bytes,
+                timestamp_ms: e.timestamp,
+            }))
+    }
+}
