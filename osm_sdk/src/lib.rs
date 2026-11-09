@@ -3,6 +3,7 @@
 //! Network access sits behind traits so every rule here is testable offline. LEZ access will
 //! live in `lez-adapter`; this crate never talks to the chain directly.
 
+pub mod coverage;
 pub mod datadir;
 pub mod discovery;
 pub mod error;

@@ -136,6 +136,27 @@ enum Cmd {
         #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
         chain_bin: PathBuf,
     },
+    /// Verify coverage like the prize evaluator: fetch each hosted CID from Logos Storage, hash
+    /// it, compare with Geofabrik's published MD5 for its snapshot, count entries and countries.
+    /// Exit 0 only when at least 25 regions and 15 countries verify.
+    VerifyCoverage {
+        #[arg(
+            long,
+            env = "OSM_STORAGE",
+            default_value = "http://127.0.0.1:8080/api/storage/v1"
+        )]
+        storage: String,
+        #[arg(long, env = "OSM_RPC")]
+        rpc: String,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: String,
+        /// Scratch folder for downloads (each file is deleted after hashing).
+        #[arg(long)]
+        dir: PathBuf,
+        /// Only check the newest hosted entry of each region.
+        #[arg(long)]
+        newest_only: bool,
+    },
     /// Download a region: from Logos Storage by CID when hosted (newest entry whose bytes match
     /// the registered MD5), from Geofabrik only when nobody hosts it.
     Download {
@@ -652,6 +673,62 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
             }
             if !ok {
                 std::process::exit(4);
+            }
+        }
+        Cmd::VerifyCoverage {
+            storage,
+            rpc,
+            program,
+            dir,
+            newest_only,
+        } => {
+            osm_sdk::datadir::ensure_private_dir(dir)?;
+            let reg = Registry {
+                source: RpcRegistry::new(rpc, program)?,
+                program: program.clone(),
+            };
+            let mut store = RestStorage::new(storage, std::time::Duration::from_secs(600));
+            let g = geofabrik(cli)?;
+            let r = osm_sdk::coverage::verify_coverage(&reg, &mut store, &g, dir, *newest_only);
+            let status = |s: &osm_sdk::coverage::EntryStatus| -> String {
+                use osm_sdk::coverage::EntryStatus::*;
+                match s {
+                    Verified => "verified".into(),
+                    PublishedMd5Differs { published } => {
+                        format!("bytes match the registry but Geofabrik publishes {published}")
+                    }
+                    BytesMismatch { got } => {
+                        format!("bytes hash to {got}, not the registered checksum")
+                    }
+                    SnapshotGone => "Geofabrik no longer serves this snapshot's .md5".into(),
+                    NotRetrievable(why) => format!("not retrievable: {why}"),
+                }
+            };
+            if cli.json {
+                let rows: Vec<_> = r.entries.iter().map(|e| json!({"region": e.region, "cid": e.cid, "source_url": e.source_url, "status": status(&e.status), "verified": e.status == osm_sdk::coverage::EntryStatus::Verified})).collect();
+                println!(
+                    "{}",
+                    json!({"pass": r.passes(), "verified_regions": r.verified_regions.len(), "countries": r.countries.len(),
+                    "min_entries": osm_sdk::coverage::MIN_ENTRIES, "min_countries": osm_sdk::coverage::MIN_COUNTRIES, "entries": rows, "errors": r.errors})
+                );
+            } else {
+                for e in &r.entries {
+                    println!("{:<34} {} {}", e.region, e.cid, status(&e.status));
+                }
+                for e in &r.errors {
+                    println!("registry error: {e}");
+                }
+                println!(
+                    "verified regions: {} (need {}), countries: {} (need {}) -> {}",
+                    r.verified_regions.len(),
+                    osm_sdk::coverage::MIN_ENTRIES,
+                    r.countries.len(),
+                    osm_sdk::coverage::MIN_COUNTRIES,
+                    if r.passes() { "PASS" } else { "FAIL" }
+                );
+            }
+            if !r.passes() {
+                std::process::exit(10);
             }
         }
         Cmd::Download {

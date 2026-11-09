@@ -49,5 +49,6 @@ once released in the alpha (SC-A.4); new codes are added, existing ones never ch
 | S152 | `DataDirUnsafe` [9] | The data folder {path} has unsafe permissions. |
 | S160 | `InvalidInput` [2] | {field}: {why}. Nothing was changed. |
 
-Exit status 0 = success, 1 = internal bug, 2 = invalid input. Input is rejected, never trimmed or
+Exit status 0 = success, 1 = internal bug, 2 = invalid input, 10 = `osm verify-coverage` ran but
+coverage is below the prize floor (25 regions, 15 countries). Input is rejected, never trimmed or
 clamped (E64).

@@ -37,8 +37,16 @@ jobs:
             programs/osm_registry -> target
             ${{ runner.temp }}/e2e/lez-v0.3.1 -> target
           cache-all-crates: true
-      - name: cargo-risczero 3.0.5 (crates.io, no install script)
-        run: cargo risczero --version 2>/dev/null | grep -q 3.0.5 || cargo install --locked cargo-risczero --version 3.0.5
+      - uses: actions/cache@v4
+        with:
+          path: ~/.risc0
+          key: risc0-rust-1.97.0-rzup-0.5.0
+      - name: cargo-risczero 3.0.5 and the RISC Zero Rust toolchain (crates.io + rzup, no install script)
+        run: |
+          set -euo pipefail
+          cargo risczero --version 2>/dev/null | grep -q 3.0.5 || cargo install --locked cargo-risczero --version 3.0.5
+          command -v rzup >/dev/null || cargo install --locked rzup --version 0.5.0
+          rzup install rust 1.97.0
       - uses: actions/cache@v4
         with:
           path: storage.zip
