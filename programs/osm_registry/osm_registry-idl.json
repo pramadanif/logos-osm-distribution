@@ -1,0 +1,208 @@
+{
+  "accounts": [
+    {
+      "name": "RegionAccount",
+      "type": {
+        "fields": [
+          {
+            "name": "layout",
+            "type": "u8"
+          },
+          {
+            "name": "region",
+            "type": "string"
+          },
+          {
+            "name": "parent",
+            "type": "string"
+          },
+          {
+            "name": "level",
+            "type": "u8"
+          },
+          {
+            "name": "history",
+            "type": {
+              "vec": {
+                "defined": "Entry"
+              }
+            }
+          }
+        ],
+        "kind": "struct"
+      }
+    }
+  ],
+  "errors": [],
+  "instructions": [
+    {
+      "accounts": [
+        {
+          "init": false,
+          "name": "region_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": "osm-region"
+              },
+              {
+                "kind": "arg",
+                "path": "region"
+              }
+            ]
+          },
+          "signer": false,
+          "writable": true
+        },
+        {
+          "init": false,
+          "name": "host",
+          "signer": true,
+          "writable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "region",
+          "type": "string"
+        },
+        {
+          "name": "parent",
+          "type": "string"
+        },
+        {
+          "name": "level",
+          "type": "u8"
+        },
+        {
+          "name": "cid",
+          "type": "string"
+        },
+        {
+          "name": "source_url",
+          "type": "string"
+        },
+        {
+          "name": "checksum",
+          "type": "string"
+        },
+        {
+          "name": "version",
+          "type": "u32"
+        },
+        {
+          "name": "size_bytes",
+          "type": "u64"
+        },
+        {
+          "name": "timestamp",
+          "type": "u64"
+        }
+      ],
+      "name": "register"
+    },
+    {
+      "accounts": [
+        {
+          "init": false,
+          "name": "region_account",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": "osm-region"
+              },
+              {
+                "kind": "arg",
+                "path": "region"
+              }
+            ]
+          },
+          "signer": false,
+          "writable": true
+        },
+        {
+          "init": false,
+          "name": "host",
+          "signer": true,
+          "writable": false
+        }
+      ],
+      "args": [
+        {
+          "name": "region",
+          "type": "string"
+        },
+        {
+          "name": "cid",
+          "type": "string"
+        }
+      ],
+      "name": "unhost"
+    }
+  ],
+  "name": "osm_registry",
+  "types": [
+    {
+      "fields": [
+        {
+          "name": "cid",
+          "type": "string"
+        },
+        {
+          "name": "source_url",
+          "type": "string"
+        },
+        {
+          "name": "checksum",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "version",
+          "type": "u32"
+        },
+        {
+          "name": "size_bytes",
+          "type": "u64"
+        },
+        {
+          "name": "hosted",
+          "type": "bool"
+        },
+        {
+          "name": "timestamp",
+          "type": "u64"
+        },
+        {
+          "name": "registered_by",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "hosts",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        }
+      ],
+      "kind": "struct",
+      "name": "Entry"
+    }
+  ],
+  "version": "0.1.0"
+}

@@ -1,0 +1,20 @@
+[package]
+name = "osm_registry-examples"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "generate_idl"
+path = "src/bin/generate_idl.rs"
+
+[[bin]]
+name = "osm_registry_cli"
+path = "src/bin/osm_registry_cli.rs"
+
+[dependencies]
+spel-framework = { git = "https://github.com/vpavlin/spel.git", rev = "e43b59be3a80a63e3c0aa5e80a4c020dbf6d65a1" }
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.3.0", package = "lee_core" }
+spel = { git = "https://github.com/vpavlin/spel.git", rev = "e43b59be3a80a63e3c0aa5e80a4c020dbf6d65a1" }
+osm_registry_core = { path = "../osm_registry_core" }
+serde_json = "1.0"
+tokio = { version = "1.28.2", features = ["net", "rt-multi-thread", "sync", "macros"] }

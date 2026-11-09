@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "osm_registry_core",
+    "osm_registry_ffi",
+    "methods",
+    "examples",
+]
+exclude = [
+    "methods/guest",
+]
+resolver = "2"

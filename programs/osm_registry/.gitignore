@@ -1,0 +1,6 @@
+target/
+methods/guest/target/
+*.bin
+.osm_registry-state
+.osm_registry-state.tmp
+ui/

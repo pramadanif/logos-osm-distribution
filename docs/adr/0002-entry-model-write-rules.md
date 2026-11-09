@@ -18,7 +18,7 @@ Status: Accepted.
         version: u32,                // YYMMDD of the snapshot, parsed from source_url, must match
         size_bytes: u64,             // capped at 64 GiB
         hosted: bool,                // true while hosts is non-empty
-        timestamp: u64,              // unix seconds, see "Timestamp" below (§2 guard 4)
+        timestamp: u64,              // Unix milliseconds, see "Timestamp" below (§2 guard 4)
         registered_by: AccountId,    // = transaction signer, set by the program
         hosts: Vec<AccountId>,       // deduplicated, len <= 16, first = registered_by
     }
@@ -41,9 +41,10 @@ are all present. `size_bytes` and `hosts` / `registered_by` are additions.
 
 ## Timestamp (§2 guard 4, H37)
 
-The client supplies `timestamp`. The program rejects values below 2026-11-01T00:00:00Z
-(`1_761_955_200`) and declares the transaction valid only inside a window of plus or minus 600 s
-around that value, using the LEZ validity window (`timestamp_window`, v0.4.0-rc1
+The client supplies `timestamp` in Unix **milliseconds**, the unit of LEZ block timestamps (a
+v0.3.1 block header carried 1794197973876 on 2026-11-09). The program rejects values below
+2026-11-01T00:00:00Z (`MIN_TIMESTAMP_MS = 1_793_491_200_000`) and declares the transaction valid
+only inside a window of plus or minus 600,000 ms around that value, using the LEZ validity window (`timestamp_window`, v0.4.0-rc1
 `lee/state_machine/core/src/program/mod.rs:489`). The sequencer then refuses the transaction if
 block time is outside the window, so a stored timestamp is within 10 minutes of real block time.
 SPEL v0.3 exposes the same window as `SpelOutput::with_timestamp_validity_window`
