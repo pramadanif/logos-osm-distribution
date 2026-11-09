@@ -10,6 +10,5 @@
 - Open H gates: H1–H40 all open (H10 dual licence done locally, not yet public)
 - Self-review: docs/self-review.md last full pass @ 9bee462; refresh due after the alpha (A.4)
 - Blockers / HUMAN_BLOCKED:
-  - nix not installed (needs sudo): SC-−1.1, SC-−1.4, Phase D
   - testnet 0.4 funding route unknown: SC-−1.5c (H25)
   - SPEL route for LEZ 0.4 needs a human choice: SC-−1.5 (H1)

@@ -11,7 +11,7 @@ Recorded 2026-11-09. Every line below is an observed command result, not an expe
 | rzup | present; r0vm 3.0.6, cargo-risczero 3.0.6, risc0 rust 1.97.0 | guest build (LEZ pins risc0-zkvm 3.0.5) |
 | gh | logged in as pramadanif | API checks, releases |
 | docker | 29.1.2 (Docker Desktop started this session) | LEZ docker-all-in-one localnet |
-| nix | **missing** | logos-module-builder, Basecamp, `nix build .#lgx-portable` (SC-−1.1, −1.4, Phase D) |
+| nix | Determinate Nix 3.24.2 (nix 2.35.3), installed 2026-11-09 | logos-module-builder (rev 5f74cdb3), Basecamp, `nix build .#lgx-portable` |
 | just | missing (brew install possible) | LEZ Justfile recipes |
 | cmake, qmake6, go, python3 | present | misc |
 
