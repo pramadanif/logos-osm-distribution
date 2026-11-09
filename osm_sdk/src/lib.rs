@@ -8,6 +8,7 @@ pub mod discovery;
 pub mod error;
 pub mod geofabrik;
 pub mod hash;
+pub mod registry;
 pub mod rest_storage;
 pub mod retry;
 pub mod snapshot;

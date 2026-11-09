@@ -4,6 +4,10 @@ use std::path::PathBuf;
 
 #[derive(Debug, thiserror::Error)]
 pub enum SdkError {
+    #[error("S100 RpcUnreachable: cannot reach the sequencer at {url}: {cause}")]
+    RpcUnreachable { url: String, cause: String },
+    #[error("S170 RegistryDataInvalid: {account}: {why}")]
+    RegistryDataInvalid { account: String, why: String },
     #[error("S110 StorageUnreachable: cannot reach the Storage node at {url}")]
     StorageUnreachable { url: String },
     #[error("S111 StorageUploadExhausted: upload failed after {attempts} attempts: {last_cause}")]
@@ -42,6 +46,8 @@ impl SdkError {
     /// Stable code, for example `S130`.
     pub fn code(&self) -> &'static str {
         match self {
+            SdkError::RpcUnreachable { .. } => "S100",
+            SdkError::RegistryDataInvalid { .. } => "S170",
             SdkError::StorageUnreachable { .. } => "S110",
             SdkError::StorageUploadExhausted { .. } => "S111",
             SdkError::CidNotFound { .. } => "S112",
