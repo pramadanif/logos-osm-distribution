@@ -37,7 +37,7 @@ jobs:
       - name: Fetch pinned Logos Storage node
         run: |
           set -euo pipefail
-          curl -fsSL -o storage.zip "https://github.com/logos-storage/logos-storage-nim/releases/download/$STORAGE_VERSION/logos-storage-linux-amd64-$STORAGE_VERSION.zip"
+          curl -fsSL --retry 5 --retry-all-errors --retry-delay 5 -o storage.zip "https://github.com/logos-storage/logos-storage-nim/releases/download/$STORAGE_VERSION/logos-storage-linux-amd64-$STORAGE_VERSION.zip"
           echo "$STORAGE_SHA256  storage.zip" | sha256sum -c -
           unzip -q storage.zip -d storage-bin
           chmod +x storage-bin/*
