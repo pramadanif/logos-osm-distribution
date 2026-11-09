@@ -4,6 +4,7 @@ members = [
     "osm_registry_ffi",
     "methods",
     "examples",
+    "lez_adapter_v03",
 ]
 exclude = [
     "methods/guest",
