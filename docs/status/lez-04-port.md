@@ -23,6 +23,20 @@ Nothing below is built yet. It sizes the 0.4 work (ADR 0007, SPEL route b).
 | Batch | `Vec<AccountMeta>`, one effect per account | one message per region actor from the host actor (`send_sync` per region) |
 | Fees | reserve `(gas+100k)*64` | in-proof reserve with refund, dry-runs (#985): re-measure |
 
+## Authorization in 0.4 (read from `lee/state_machine/core/src/execution_state.rs`, `authorize`)
+
+An actor's `is_authorized` is true when its account signed the transaction, or when the sending
+program delivers the message with PDA seeds that derive the actor's account from the sender
+program (`AccountId::for_public_pda(&issuer, seed) == account_id`). Design for the registry:
+
+1. The transaction sends `Register` to the host's own actor under our program; the host signs, so
+   that actor is authorized and knows its account id.
+2. That handler `send_sync`s the entry to the region actor with the region's PDA seed, which
+   authorizes the region actor through our program.
+3. The region actor accepts only messages that are authorized and `from_own_program()`, and
+   records `from.account_id` as `registered_by`. A direct transaction to a region actor has no
+   `from` and is refused.
+
 ## SPEL
 
 `vpavlin/spel` @ e43b59be generates plan/apply code. For 0.4 its `#[lez_program]` expansion,
