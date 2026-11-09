@@ -1,6 +1,6 @@
 # ADR 0007: LEZ 0.4 port strategy
 
-Status: Proposed. The SPEL 0.4 route waits on a human decision (docs/status/spel.md).
+Status: Accepted for strategy; SPEL 0.4 route (b) chosen by the human 2026-11-09 (docs/status/spel.md).
 
 - All LEZ-specific code sits in crate `lez-adapter` with features `lez-v03` and `lez-v04`
   (plan §2). SDK, modules and UI depend on the adapter trait only.

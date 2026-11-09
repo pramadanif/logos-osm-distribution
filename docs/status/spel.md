@@ -15,7 +15,8 @@ Checked 2026-11-09.
    disclosed in README and solution. Reason: it is the only SPEL rev known to produce IDL and
    working programs on LEZ 0.3, and it is the evaluator's own port, so its output is the format
    he will inspect.
-2. v0.4 backend: **HUMAN DECISION NEEDED.** Options: (a) wait for an upstream SPEL release for
+2. v0.4 backend: **decided 2026-11-09 by the human: option (b)**, port `e43b59be` to LEZ 0.4
+   ourselves and offer it upstream. Previously listed options: Options: (a) wait for an upstream SPEL release for
    LEZ 0.4; (b) port `e43b59be` to LEZ `v0.4.0-rc1` ourselves and offer it upstream; (c) pinned
    third-party fork if one appears. Recommendation: (b), started after Phase B works on v0.3,
    because SPEL-for-0.4 is a shared blocker for every competitor (plan G5).

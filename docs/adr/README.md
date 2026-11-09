@@ -8,7 +8,7 @@
 | [0004](0004-storage-adapter.md) | Storage adapter | Accepted |
 | [0005](0005-retrieval-node.md) | Retrieval proof with an independent node | Accepted |
 | [0006](0006-external-services.md) | External services and network calls | Accepted |
-| [0007](0007-lez-04-port.md) | LEZ 0.4 port strategy | Proposed (SPEL 0.4 route is a human decision) |
+| [0007](0007-lez-04-port.md) | LEZ 0.4 port strategy | Accepted (SPEL route b: our port) |
 
 Status words: Proposed = written, not yet proven by a run; Accepted = binding; Superseded = replaced.
 A change to plan §2 needs an ADR here.
