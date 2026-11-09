@@ -1543,6 +1543,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "cycle_bench_osm"
+version = "0.0.1"
+dependencies = [
+ "anyhow",
+ "borsh",
+ "lee",
+ "lee_core",
+ "risc0-zkvm",
+ "serde_json",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"

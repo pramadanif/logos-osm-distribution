@@ -1,0 +1,14 @@
+[package]
+name = "cycle_bench_osm"
+description = "Executor cycle counts for the LP-0018 registry program (same method as LEZ tools/cycle_bench)"
+version = "0.0.1"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+nssa      = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.3.0", package = "lee" }
+nssa_core = { git = "https://github.com/logos-blockchain/logos-execution-zone.git", tag = "v0.3.0", package = "lee_core", features = ["host"] }
+risc0-zkvm = { version = "=3.0.5", default-features = false, features = ["std", "client"] }
+borsh = "1.5"
+anyhow = "1"
+serde_json = "1"

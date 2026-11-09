@@ -1,0 +1,80 @@
+{
+  "program": "methods/guest/target/riscv32im-risc0-zkvm-elf/docker/osm_registry.bin",
+  "rows": [
+    {
+      "exec_ms": 36.589333,
+      "instruction": "register",
+      "padded_cycles": 131072,
+      "phase": "plan",
+      "segments": 1,
+      "user_cycles": 35563
+    },
+    {
+      "effects": 1,
+      "instruction": "register",
+      "padded_cycles": 65536,
+      "phase": "apply",
+      "user_cycles": 14407
+    },
+    {
+      "exec_ms": 28.946958,
+      "instruction": "register_batch n=1",
+      "padded_cycles": 131072,
+      "phase": "plan",
+      "segments": 1,
+      "user_cycles": 38300
+    },
+    {
+      "effects": 1,
+      "instruction": "register_batch n=1",
+      "padded_cycles": 65536,
+      "phase": "apply",
+      "user_cycles": 14407
+    },
+    {
+      "exec_ms": 30.481624999999998,
+      "instruction": "register_batch n=5",
+      "padded_cycles": 262144,
+      "phase": "plan",
+      "segments": 1,
+      "user_cycles": 146927
+    },
+    {
+      "effects": 5,
+      "instruction": "register_batch n=5",
+      "padded_cycles": 327680,
+      "phase": "apply",
+      "user_cycles": 72403
+    },
+    {
+      "exec_ms": 33.3525,
+      "instruction": "register_batch n=10",
+      "padded_cycles": 524288,
+      "phase": "plan",
+      "segments": 1,
+      "user_cycles": 281020
+    },
+    {
+      "effects": 10,
+      "instruction": "register_batch n=10",
+      "padded_cycles": 655360,
+      "phase": "apply",
+      "user_cycles": 144009
+    },
+    {
+      "exec_ms": 35.581666,
+      "instruction": "register_batch n=16",
+      "padded_cycles": 1048576,
+      "phase": "plan",
+      "segments": 1,
+      "user_cycles": 442383
+    },
+    {
+      "effects": 16,
+      "instruction": "register_batch n=16",
+      "padded_cycles": 1048576,
+      "phase": "apply",
+      "user_cycles": 230823
+    }
+  ]
+}

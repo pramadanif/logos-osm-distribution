@@ -5,6 +5,7 @@ members = [
     "methods",
     "examples",
     "lez_adapter_v03",
+    "cycle_bench_osm",
 ]
 exclude = [
     "methods/guest",
