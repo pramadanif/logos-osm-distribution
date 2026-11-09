@@ -301,11 +301,15 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                 };
                 let url = snapshot_url(def, snap)?;
                 eprintln!("{}: downloading {url}", def.region);
+                // One progress line per 64 MiB step and one at the end.
+                let mut next_report = 0u64;
                 let (path, md5) = g.download_snapshot(def, snap, cache_dir, |done, total| {
-                    if let Some(t) = total {
-                        if done == t || done % (64 << 20) < (1 << 20) {
-                            eprintln!("  {} / {} MB", done >> 20, t >> 20);
-                        }
+                    if done >= next_report || Some(done) == total {
+                        let of = total
+                            .map(|t| format!(" of {} MiB", t >> 20))
+                            .unwrap_or_default();
+                        eprintln!("  {} MiB{of}", done >> 20);
+                        next_report = (done / (64 << 20) + 1) * (64 << 20);
                     }
                 })?;
                 let size = std::fs::metadata(&path)
