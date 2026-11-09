@@ -32,8 +32,11 @@ python3 -I -c 'import json,sys; d=json.load(open(sys.argv[1])); assert d["source
 
 echo "4. verify against Geofabrik's published MD5 for the snapshot"
 path="$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["path"])' "$work/dl.json")"
-want="$(curl -fsS "$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["hosted"][0]["source_url"])' "$work/host.json").md5" | cut -d' ' -f1)"
+# With OSM_GEOFABRIK_BASE (CI fixture server) the .md5 comes from there, as the host did.
+src="$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["hosted"][0]["source_url"])' "$work/host.json")"
+md5_url="${OSM_GEOFABRIK_BASE:+${OSM_GEOFABRIK_BASE}${src#https://download.geofabrik.de/}}"; md5_url="${md5_url:-$src}.md5"
+want="$(curl -fsS "$md5_url" | cut -d' ' -f1)"
 got="$(python3 -I -c 'import hashlib,sys; h=hashlib.md5(); f=open(sys.argv[1],"rb"); [h.update(b) for b in iter(lambda: f.read(1<<20), b"")]; print(h.hexdigest())' "$path")"
 [ "$got" = "$want" ] || { echo "MD5 mismatch: got $got want $want" >&2; exit 1; }
-echo "   MD5 $got equals Geofabrik's published MD5"
+echo "   MD5 $got equals the published MD5 for the snapshot"
 echo "E2E OK"

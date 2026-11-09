@@ -30,6 +30,10 @@ struct Cli {
     /// Never contact Geofabrik.
     #[arg(long, global = true)]
     no_geofabrik: bool,
+    /// Server with Geofabrik's file layout to fetch from (tests and mirrors). Registered source
+    /// URLs always name download.geofabrik.de.
+    #[arg(long, global = true, env = "OSM_GEOFABRIK_BASE", hide = true)]
+    geofabrik_base: Option<String>,
     #[command(subcommand)]
     cmd: Cmd,
 }
@@ -131,6 +135,13 @@ fn exit_for(e: &SdkError) -> u8 {
     }
 }
 
+fn make_geofabrik(cli: &Cli) -> Geofabrik {
+    match &cli.geofabrik_base {
+        Some(base) => Geofabrik::with_base(base),
+        None => Geofabrik::new(),
+    }
+}
+
 fn region(id: &str) -> Result<&'static RegionDef, SdkError> {
     lookup(id).ok_or_else(|| SdkError::InvalidInput {
         field: "region",
@@ -145,7 +156,7 @@ fn geofabrik(cli: &Cli) -> Result<Geofabrik, SdkError> {
             why: "this command needs Geofabrik".into(),
         });
     }
-    Ok(Geofabrik::new())
+    Ok(make_geofabrik(cli))
 }
 
 /// Runs `osm-chain register` with an argument array (no shell) and returns its JSON answer.
@@ -221,7 +232,7 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
             }
         }
         Cmd::Discover => {
-            let g = (!cli.no_geofabrik).then(Geofabrik::new);
+            let g = (!cli.no_geofabrik).then(|| make_geofabrik(cli));
             let (d, src) = discover(g.as_ref());
             let source = match &src {
                 Source::Index => "geofabrik-index".to_string(),
@@ -375,7 +386,7 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                 program: program.clone(),
             };
             let mut store = RestStorage::new(storage, std::time::Duration::from_secs(120));
-            let g = (!cli.no_geofabrik).then(Geofabrik::new);
+            let g = (!cli.no_geofabrik).then(|| make_geofabrik(cli));
             let f = osm_sdk::fetch::fetch_region(&reg, &mut store, g.as_ref(), def.region, dir)?;
             let (kind, from) = match &f.source {
                 osm_sdk::fetch::Source::Storage { cid } => ("storage", cid.clone()),
