@@ -1,6 +1,6 @@
 //! H38: modes and atomic writes.
 
-use osm_sdk::datadir::{atomic_write, ensure_private_dir};
+use osm_sdk::datadir::{atomic_write, enforce_cache_cap, ensure_private_dir};
 
 #[cfg(unix)]
 #[test]
@@ -42,4 +42,32 @@ fn invalid_content_never_replaces_good_file() {
     assert_eq!(std::fs::read(&f).unwrap(), br#"{"ok":true}"#);
     let leftovers: Vec<_> = std::fs::read_dir(root.path()).unwrap().collect();
     assert_eq!(leftovers.len(), 1, "no temp files left behind");
+}
+
+#[test]
+fn cache_cap_evicts_oldest_but_never_the_kept_file() {
+    let d = tempfile::tempdir().unwrap();
+    let mk = |name: &str, n: usize, age_s: u64| {
+        let p = d.path().join(name);
+        std::fs::write(&p, vec![0u8; n]).unwrap();
+        let t = std::time::SystemTime::now() - std::time::Duration::from_secs(age_s);
+        std::fs::File::options()
+            .write(true)
+            .open(&p)
+            .unwrap()
+            .set_modified(t)
+            .unwrap();
+        p
+    };
+    let old = mk("a-261001.osm.pbf", 400, 300);
+    let mid = mk("b-261001.osm.pbf", 400, 200);
+    let new = mk("c-261101.osm.pbf", 400, 100);
+    let part = mk("d-261101.osm.pbf.part", 400, 400);
+    // Cap 500: the two oldest PBFs go, the newest stays, .part is untouched.
+    let gone = enforce_cache_cap(d.path(), 500, &new).unwrap();
+    assert_eq!(gone, vec![old.clone(), mid.clone()]);
+    assert!(new.exists() && part.exists());
+    // The kept file survives even when it alone exceeds the cap.
+    assert!(enforce_cache_cap(d.path(), 10, &new).unwrap().is_empty());
+    assert!(new.exists());
 }

@@ -65,6 +65,9 @@ enum Cmd {
         /// Folder for downloaded PBFs (created owner-only).
         #[arg(long, env = "OSM_CACHE_DIR")]
         cache_dir: PathBuf,
+        /// Cache size limit in GiB; oldest PBFs are deleted first (H39).
+        #[arg(long, env = "OSM_CACHE_CAP_GIB", default_value_t = 20)]
+        cache_cap_gib: u64,
         #[arg(long, env = "OSM_RPC")]
         rpc: String,
         #[arg(long, env = "OSM_PROGRAM")]
@@ -337,6 +340,7 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
             snapshot,
             storage,
             cache_dir,
+            cache_cap_gib,
             rpc,
             program,
             host,
@@ -394,6 +398,13 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                     std::thread::sleep,
                 )?;
                 eprintln!("{}: stored as {cid}", def.region);
+                for p in osm_sdk::datadir::enforce_cache_cap(
+                    cache_dir,
+                    cache_cap_gib.saturating_mul(1 << 30),
+                    &path,
+                )? {
+                    eprintln!("cache limit: removed {}", p.display());
+                }
                 entries.push(format!(
                     "{}|{}|{}|{}|{:06}|{}",
                     def.region,
