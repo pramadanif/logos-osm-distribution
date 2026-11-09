@@ -1,0 +1,57 @@
+name: e2e
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-sequencer:
+    # SC-E.1 / H6: host -> query -> download against a real standalone sequencer and real
+    # Storage nodes, built from this commit. A missing tool fails the job.
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      STORAGE_VERSION: v0.5.3
+      STORAGE_SHA256: 1086fae4f283cab882f133abe4d5a88cfae8d61edba9f0094c7f75b368ec9d56
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq libpcsclite-dev pkg-config clang libclang-dev libssl-dev
+      - run: rustup show active-toolchain || rustup toolchain install
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            . -> target
+            programs/osm_registry -> target
+            ${{ runner.temp }}/e2e/lez-v0.3.1 -> target
+          cache-all-crates: true
+      - name: cargo-risczero 3.0.5 (crates.io, no install script)
+        run: cargo risczero --version 2>/dev/null | grep -q 3.0.5 || cargo install --locked cargo-risczero --version 3.0.5
+      - uses: actions/cache@v4
+        with:
+          path: storage.zip
+          key: logos-storage-${{ env.STORAGE_VERSION }}-${{ env.STORAGE_SHA256 }}
+      - name: Fetch pinned Logos Storage node
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5 6; do
+            [ -f storage.zip ] && break
+            gh release download "$STORAGE_VERSION" -R logos-storage/logos-storage-nim \
+              -p "logos-storage-linux-amd64-$STORAGE_VERSION.zip" -O storage.zip && break
+            echo "download attempt $i failed"; sleep $((i * 20))
+          done
+          echo "$STORAGE_SHA256  storage.zip" | sha256sum -c -
+          unzip -q storage.zip -d storage-bin && chmod +x storage-bin/*
+      - name: End to end
+        run: WORK="$RUNNER_TEMP/e2e" STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" scripts/ci-e2e.sh
+      - name: Logs on failure
+        if: failure()
+        run: tail -50 "$RUNNER_TEMP/e2e/sequencer.log" || true
