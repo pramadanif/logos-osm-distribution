@@ -128,3 +128,12 @@ fn position_check_rejects_outside_set() {
     ));
     assert!(!is_valid_position("Germany", None, Level::Country));
 }
+
+#[test]
+fn every_region_id_fits_a_spel_string_seed() {
+    // SPEL `seed_from_str` panics above 32 bytes; the registry PDA seeds on the region id.
+    for r in &PREDEFINED {
+        assert!(r.region.len() <= 32, "{} is {} bytes", r.region, r.region.len());
+    }
+    assert_eq!(PREDEFINED.iter().map(|r| r.region.len()).max(), Some(32));
+}

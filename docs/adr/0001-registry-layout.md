@@ -17,7 +17,10 @@ Changes plan §2 row "Registry layout" (one account per program instance).
 
 ## Decision
 
-- One program-derived account per region: seed = `[literal("osm-region"), arg("region")]`. The
+- One program-derived account per region: seed = `[literal("osm-region"), arg("region")]`, with
+  `region: String`. SPEL zero-pads a string seed and panics above 32 bytes
+  (`spel-framework-core/src/pda.rs`, `seed_from_str`); the longest id,
+  `russia/northwestern-fed-district`, is exactly 32 bytes, and a test in osm_core keeps it so. The
   program checks `region` against the compiled 72-leaf table (osm_core) before touching the
   account, so at most 72 region accounts can ever exist.
 - No global registry account holds entries. Discovery reads the 72 addresses, which any client
@@ -33,6 +36,9 @@ Changes plan §2 row "Registry layout" (one account per program instance).
 - Query by region = one account read. Query by parent or by CID = read up to 72 accounts. The
   SDK batches these reads; it never needs an off-chain index.
 - W3 (more than 5 hosts on one CID) fits on-chain.
-- Assumption to prove in SC-B.5: a `mut` PDA account that is still default can be written by the
-  program on first use (SPEL v0.3: "writing data to a default-owned account *was* the claim",
-  `spel-framework-core/src/spel_output.rs:23`). If SPEL insists on `init`, see ADR 0003 fallback.
+- LEZ v0.3 model (`spel-framework-core/src/spel_output.rs` header): a handler is a `#[plan]` that
+  names effects per shard and sees no account data, plus `#[apply]` functions that get one
+  shard's current bytes and return the replacement. "A program may write `shards[self]` at any
+  address, whenever it likes, and doing so denies that address to nobody"; `#[account(init)]`
+  emits nothing. So the first `register` for a region creates its shard in the apply half
+  (`pre_data.is_empty()`), with no separate init. To be proven on a real sequencer (SC-B.4/B.5).

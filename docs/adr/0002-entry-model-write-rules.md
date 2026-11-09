@@ -46,8 +46,8 @@ The client supplies `timestamp`. The program rejects values below 2026-11-01T00:
 around that value, using the LEZ validity window (`timestamp_window`, v0.4.0-rc1
 `lee/state_machine/core/src/program/mod.rs:489`). The sequencer then refuses the transaction if
 block time is outside the window, so a stored timestamp is within 10 minutes of real block time.
-If v0.3 has no such window, the v0.3 backend stores the client value bounded only by the floor
-and documents it as client-supplied. Both are verified in SC-B.5; until then this is a design,
+SPEL v0.3 exposes the same window as `SpelOutput::with_timestamp_validity_window`
+(`spel-framework-core/src/types.rs:87`), so both backends use it. Both are verified in SC-B.5; until then this is a design,
 not a fact. Ordering for P-R3: by `timestamp`, then ring position.
 
 ## Griefing and the SDK rule
