@@ -9,3 +9,6 @@ docs/evaluator/
 wallet/
 .env
 .env.*
+# private plan copies: kept local, never published
+docs/plan/planlp0018.md
+docs/plan/PROMPT_*.md

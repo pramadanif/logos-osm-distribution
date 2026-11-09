@@ -6,7 +6,7 @@ members = ["osm_core", "osm_sdk"]
 version = "0.0.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/pramadanif/lp-0018-osm-distribution"
+repository = "https://github.com/pramadanif/logos-osm-distribution"
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
