@@ -2,7 +2,7 @@
 
 Status: Accepted. VPS is a human gate (Phase F).
 
-- A public Storage node on a VPS (spec: 2 vCPU, 4 GB RAM, at least 200 GB disk, public IP,
+- A public Storage node on a VPS (spec: 2 vCPU, 2–4 GB RAM, 40 GB disk for the planned set or 80–100 GB for all 72 regions, docs/status/coverage-plan.md; public IP,
   the node's listen and discovery ports open) seeds every covered CID with `advertise=true`.
   `deploy/storage-node/setup.sh` installs a pinned `logos-storage-nim` release with a checksum and
   a systemd unit that restarts on boot; uptime is checked daily.
