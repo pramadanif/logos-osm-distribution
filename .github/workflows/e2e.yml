@@ -9,6 +9,12 @@ on:
 permissions:
   contents: read
 
+# One heavy run at a time per branch; a newer push waits (only the latest stays queued) and the
+# running build finishes so its cache is saved.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   e2e-sequencer:
     # SC-E.1 / H6: host -> query -> download against a real standalone sequencer and real
