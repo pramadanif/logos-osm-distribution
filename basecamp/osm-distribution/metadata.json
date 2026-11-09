@@ -1,0 +1,22 @@
+{
+  "name": "pramadani_osm_distribution",
+  "display_name": "OSM Distribution (LP-0018)",
+  "version": "0.1.0",
+  "type": "core",
+  "interface": "cdylib",
+  "category": "maps",
+  "description": "Find, download and verify OpenStreetMap snapshots registered on the Logos Execution Zone and stored in Logos Storage (LP-0018).",
+  "author": "pramadanif",
+  "main": "pramadani_osm_distribution_plugin",
+  "dependencies": [],
+
+  "codegen": {
+    "rust": { "crate": "rust-lib", "trait": "PramadaniOsmDistributionModule" }
+  },
+
+  "nix": {
+    "packages": { "build": [], "runtime": [] },
+    "external_libraries": [],
+    "cmake": { "find_packages": [], "extra_sources": [], "extra_include_dirs": [], "extra_link_libraries": [] }
+  }
+}

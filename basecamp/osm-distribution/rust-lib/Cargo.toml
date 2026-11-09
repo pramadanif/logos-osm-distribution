@@ -1,0 +1,22 @@
+[package]
+name = "pramadani_osm_distribution"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+# The module builder compiles with nixpkgs' rustc (1.89 at builder rev 5f74cdb3).
+rust-version = "1.89"
+
+# Standalone crate: the builder copies only this directory.
+[workspace]
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+serde_json = "1"
+# The SDK and its JSON API, pinned to a commit of this repository (ADR 0008). Bump the rev before
+# a release so the package matches a commit on main (H18, H29).
+osm_ffi = { git = "https://github.com/pramadanif/logos-osm-distribution", rev = "a65b66c5810c1164856dbf04a57a86d42ec4b66c" }
+osm_sdk = { git = "https://github.com/pramadanif/logos-osm-distribution", rev = "a65b66c5810c1164856dbf04a57a86d42ec4b66c" }
+# Staged by the builder from the same logos-rust-sdk revision its code generator comes from.
+logos-rust-sdk = { path = "../logos-rust-sdk-src" }
