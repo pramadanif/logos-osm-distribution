@@ -8,11 +8,11 @@ e43b59be… --lez-tag v0.3.0 osm_registry`; program logic in
 
 | SC | Status | Evidence |
 |----|--------|----------|
-| SC-B.1 program: init, register, batch, mirror add | NOT LOCKED | `register` (create, append, mirror add folded in) and `unhost` exist. No init by design (ADR 0003). `register_batch` missing |
+| SC-B.1 program: init, register, batch, mirror add | LOCKED | `register` (create, append, mirror add folded in), `register_batch` (up to 16 regions, PDA of each account checked in the plan), `unhost`. No init by design (ADR 0003). All three ran on the v0.3.1 localnet (probes/results.txt) |
 | SC-B.2 tests (create, batch, mirror idempotent, new CID, reject not-in-set, bad checksum, size bound) | NOT LOCKED | off-chain rules covered by osm_core tests; on-chain negative tests missing |
 | SC-B.3 IDL by SPEL into idl/, CI regen diff | NOT LOCKED | `make idl` (`spel_framework::generate_idl!`) wrote `idl/osm_registry.json`: instructions `register`, `unhost`, account type `RegionAccount`, PDA seeds `["osm-region", arg region]`. CI regen diff not yet added |
 | SC-B.4 deploy + register + read back on a standalone sequencer | LOCKED | see below |
-| SC-B.5 negative tests on a real sequencer | NOT LOCKED | not run yet |
+| SC-B.5 negative tests on a real sequencer | LOCKED | `probes/b5_negative_v03.sh` against program G4s9EP4n… (ImageID f329edb2…): 18/18 PASS, each case read back with `spel inspect`. Front-run copy (H30), same signer 3+ calls incl. batch (H31), timestamps and sizes (H37), out-of-set and wrong-parent regions, batch account and duplicate checks. Fixture regeneration (H32) still open |
 
 ## SC-B.4 evidence (2026-11-09, localnet, not a public network)
 
@@ -39,3 +39,13 @@ printed "Transaction confirmed — included in a block" and the sequencer log sa
 transaction … including it in block", but `getAccount 6bd3umEs…` returned `"shards": {}`. Cause:
 validity window in seconds while block timestamps are milliseconds. "Included" is not "applied";
 the SDK must read the account back before reporting success (H33).
+
+## Second "included but not applied" case (register_batch)
+
+With `region_accounts: Vec<AccountMeta>` declared before `host`, tx
+`fd58463b73aad4c04942cdf95852a3da81afa712436c40f35c9c0375109404d1` was "confirmed" and no shard
+changed. SPEL treats a `Vec<AccountMeta>` as the remaining accounts (`[writable, rest]` in the dry
+run), so it must be the last account parameter. After the reorder, tx
+`f753f4787ca653e0b13f825fe3068e6e39e9d1929fa5af74d04763817d8932c3` wrote `china/henan`,
+`china/shandong` and `kenya` with Geofabrik's 261101 MD5s
+(`5f3c0413…`, `65f1b624…`, `468e8225…`).

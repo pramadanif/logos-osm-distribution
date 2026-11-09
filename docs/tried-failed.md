@@ -13,3 +13,5 @@ what, result, evidence, upstream issue if any.
 | 2026-11-09 | Timestamp validity window in seconds | The sequencer included the `register` tx (fee charged, nonce up) but the shard stayed empty: LEZ block timestamps are milliseconds, so the tx fell outside its own window. Switched to ms; test rejects a seconds value. Also fixed `MIN_TIMESTAMP` that said 2026 but was 2025-11-01 | docs/status/phase-B.md |
 | 2026-11-09 | `spel` CLI (LEZ v0.3.0 libs) with a v0.3.1 wallet config | v0.3.0 wants `sequencers: [...]`, v0.3.1 writes `sequencer: {...}`; one config with both fields works for both | same |
 | 2026-11-09 | Guest build with a path dependency on `osm_core` from the program folder | Docker context is the current folder, so `../../osm_core` is missing; build from the repo root | same |
+| 2026-11-09 | `Vec<AccountMeta>` before the signer in `register_batch` | Tx included, nothing applied: SPEL maps a `Vec<AccountMeta>` to the remaining accounts; it must be last | docs/status/phase-B.md |
+| 2026-11-09 | CI IDL regeneration on ubuntu-latest | `pcsc-sys` build script needs `libpcsclite-dev` (keycard support in the LEZ wallet crate) | CI run 42563154037 |

@@ -143,10 +143,11 @@ mod osm_registry {
     #[plan]
     pub fn register_batch(
         ctx: ProgramContext,
-        #[account(mut)]
-        region_accounts: Vec<AccountMeta>,
         #[account(signer)]
         host: AccountMeta,
+        // A `Vec<AccountMeta>` takes the remaining accounts, so it must be the last account param.
+        #[account(mut)]
+        region_accounts: Vec<AccountMeta>,
         regions: Vec<String>,
         parents: Vec<String>,
         levels: Vec<u8>,

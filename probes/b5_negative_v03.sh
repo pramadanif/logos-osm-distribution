@@ -70,5 +70,28 @@ check p04d_undated_source "json.dumps(s,sort_keys=True)==json.dumps(json.loads('
 reg "$HOST_A" $R "" 0 $CID1 $URL $MD5 261101 18446744073709551615 "$(now_ms)" >/dev/null
 check p06c_size_u64_max "json.dumps(s,sort_keys=True)==json.dumps(json.loads('''$before'''),sort_keys=True)" "size u64::MAX rejected" $R
 
+# --- register_batch (P-F7) -------------------------------------------------------------------
+# BATCH_REGIONS: three empty country regions under africa/ (default: egypt, nigeria, morocco).
+read -r B1 B2 B3 <<<"${BATCH_REGIONS:-egypt nigeria morocco}"
+burl() { echo "https://download.geofabrik.de/africa/$1-261101.osm.pbf"; }
+batch() { # host accounts-csv r1 r2 r3
+  spel register_batch --host "$1" --region-accounts "$2" --regions "$3" --regions "$4" --regions "$5" \
+    --parents "" --parents "" --parents "" --levels 0,0,0 --cids $CID1 --cids $CID1 --cids $CID2 \
+    --source-urls "$(burl "$3")" --source-urls "$(burl "$4")" --source-urls "$(burl "$5")" \
+    --checksums $MD5 --checksums $MD5 --checksums $MD5 --versions 261101,261101,261101 \
+    --sizes 1000,2000,3000 --timestamp "$(now_ms)" | grep -E "tx_hash|confirmed|❌" || true
+}
+P1="$(pda "$B1")"; P2="$(pda "$B2")"; P3="$(pda "$B3")"
+batch "$HOST_A" "$P2,$P1,$P3" "$B1" "$B2" "$B3" >/dev/null
+check p07a_batch_swapped_accounts "s=={}" "accounts not matching their regions: whole batch rejected" "$B1"
+batch "$HOST_A" "$P1,$P1,$P3" "$B1" "$B1" "$B3" >/dev/null
+check p07b_batch_duplicate_region "s=={}" "same region twice: whole batch rejected" "$B3"
+batch "$HOST_A" "$P1,$P2,$P3" "$B1" "$B2" "$B3" >/dev/null
+check p07c_batch_ok_1 "len(s['history'])==1 and s['history'][0]['size_bytes'] in (1000,'1000')" "batch writes region 1" "$B1"
+check p07c_batch_ok_2 "len(s['history'])==1 and s['history'][0]['size_bytes'] in (2000,'2000')" "batch writes region 2" "$B2"
+check p07c_batch_ok_3 "len(s['history'])==1 and s['history'][0]['cid']=='$CID2'" "batch writes region 3" "$B3"
+reg "$HOST_B" "$B1" "" 0 $CID2 "$(burl "$B1")" $MD5 261101 1000 "$(now_ms)" >/dev/null
+check p07d_single_after_batch "len(s['history'])==2 and s['history'][1]['registered_by']=='$B_ID'" "single register reaches the same account as batch" "$B1"
+
 echo "SUMMARY fails=$fails"
 [ "$fails" -eq 0 ]

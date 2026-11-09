@@ -53,6 +53,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup show active-toolchain || rustup toolchain install
+      # pcsc-sys (keycard support in the LEZ wallet crate) links libpcsclite.
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq libpcsclite-dev pkg-config
       - name: Regenerate IDL with SPEL
         working-directory: programs/osm_registry
         run: cargo run --locked --bin generate_idl > "$RUNNER_TEMP/osm_registry.json"

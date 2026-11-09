@@ -106,16 +106,16 @@
       "accounts": [
         {
           "init": false,
+          "name": "host",
+          "signer": true,
+          "writable": false
+        },
+        {
+          "init": false,
           "name": "region_accounts",
           "rest": true,
           "signer": false,
           "writable": true
-        },
-        {
-          "init": false,
-          "name": "host",
-          "signer": true,
-          "writable": false
         }
       ],
       "args": [
