@@ -5,12 +5,11 @@
 - Public repo: https://github.com/pramadanif/logos-osm-distribution (created by the human 2026-11-09). docs/plan/planlp0018.md and the prompt stay local, never published
 - Sibling layout: intentional, plan left (../lambda-prize) / solution right (this repo)
 - Build start day S: 2026-11-09   (plan §5 dates are relative to S; A.4 alpha due S+4 = 2026-11-13)
-- Current phase: A (design) with offline Phase C work; −1 open on human gates; 0 LOCKED
-- Last LOCKED SC: SC-0.3 (all LOCKED: SC-−1.5b, SC-−1.6, SC-0.1, SC-0.2, SC-0.3, SC-A.2, SC-A.3)
+- Current phase: B (program, v0.3 backend) and C (SDK/CLI) in parallel; −1 open on nix and 0.4 funding; 0 LOCKED
+- Last LOCKED SC: SC-B.5 (all LOCKED: SC-−1.2, −1.3, −1.5b, −1.6, 0.1, 0.2, 0.3, A.2, A.3, B.1, B.4, B.5)
 - Open H gates: H1–H40 all open (H10 dual licence done locally, not yet public)
-- Self-review: docs/self-review.md @ 9bee462, 0 high, 0 medium open
+- Self-review: docs/self-review.md last full pass @ 9bee462; refresh due after the alpha (A.4)
 - Blockers / HUMAN_BLOCKED:
   - nix not installed (needs sudo): SC-−1.1, SC-−1.4, Phase D
   - testnet 0.4 funding route unknown: SC-−1.5c (H25)
   - SPEL route for LEZ 0.4 needs a human choice: SC-−1.5 (H1)
-  - Upstream builds (LEZ, SPEL, Storage) refused by the session permission classifier; need a permission rule

@@ -9,8 +9,8 @@ e43b59be… --lez-tag v0.3.0 osm_registry`; program logic in
 | SC | Status | Evidence |
 |----|--------|----------|
 | SC-B.1 program: init, register, batch, mirror add | LOCKED | `register` (create, append, mirror add folded in), `register_batch` (up to 16 regions, PDA of each account checked in the plan), `unhost`. No init by design (ADR 0003). All three ran on the v0.3.1 localnet (probes/results.txt) |
-| SC-B.2 tests (create, batch, mirror idempotent, new CID, reject not-in-set, bad checksum, size bound) | NOT LOCKED | off-chain rules covered by osm_core tests; on-chain negative tests missing |
-| SC-B.3 IDL by SPEL into idl/, CI regen diff | NOT LOCKED | `make idl` (`spel_framework::generate_idl!`) wrote `idl/osm_registry.json`: instructions `register`, `unhost`, account type `RegionAccount`, PDA seeds `["osm-region", arg region]`. CI regen diff not yet added |
+| SC-B.2 tests (create, batch, mirror idempotent, new CID, reject not-in-set, bad checksum, size bound) | NOT LOCKED | all behaviours covered on a real sequencer by probes/b5_negative_v03.sh (18/18) and by osm_core unit tests; missing: a max-fill size test (8 entries x 16 hosts) |
+| SC-B.3 IDL by SPEL into idl/, CI regen diff | LOCKED | `idl/osm_registry.json` from `spel_framework::generate_idl!`; CI job `idl` regenerates and diffs, green on 4a98f2a (run 42567366226). Later runs hit an upstream 504 during build; cache + retry added in ab07855 |
 | SC-B.4 deploy + register + read back on a standalone sequencer | LOCKED | see below |
 | SC-B.5 negative tests on a real sequencer | LOCKED | `probes/b5_negative_v03.sh` against program G4s9EP4n… (ImageID f329edb2…): 18/18 PASS, each case read back with `spel inspect`. Front-run copy (H30), same signer 3+ calls incl. batch (H31), timestamps and sizes (H37), out-of-set and wrong-parent regions, batch account and duplicate checks. Fixture regeneration (H32) still open |
 
