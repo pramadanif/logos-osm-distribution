@@ -21,7 +21,7 @@ check-runs for HEAD through the API, and compared README statements with the cod
 
 | README says | Observed |
 |-------------|----------|
-| \"Nothing is deployed and there is no release yet\" | true: no program, no catalog |
+| "Nothing is deployed and there is no release yet" | true: no program, no catalog |
 | `cargo test --locked` builds and tests | 47 passed, 0 failed |
 | CI (not claimed in README) | 3/3 jobs success on 9bee462 |
 
