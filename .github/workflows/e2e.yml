@@ -65,7 +65,7 @@ jobs:
           echo "$STORAGE_SHA256  storage.zip" | sha256sum -c -
           unzip -q storage.zip -d storage-bin && chmod +x storage-bin/*
       - name: End to end
-        run: WORK="$RUNNER_TEMP/e2e" STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" scripts/ci-e2e.sh
+        run: BLOCK_GEOFABRIK=1 WORK="$RUNNER_TEMP/e2e" STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" scripts/ci-e2e.sh
       - name: Logs on failure
         if: failure()
         run: tail -50 "$RUNNER_TEMP/e2e/sequencer.log" || true

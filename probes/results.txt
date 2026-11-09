@@ -36,3 +36,6 @@
 2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p07c_batch_ok_3 batch writes region 3
 2026-11-09 b5_negative_v03 localnet-v0.3.1 PASS p07d_single_after_batch single register reaches the same account as batch
 2026-11-09 b5_negative_v03 localnet-v0.3.1 SUMMARY fails=0
+
+# examples/transfer (H27), 2026-11-09, macOS arm64, two local logos-storage v0.5.3 nodes
+2026-11-09 transfer_2GiB local-storage PASS size=2147483648 upload_s=12.9 download_s=192.2 md5_equal=true peak_rss_bytes=2785280 (/usr/bin/time -l)

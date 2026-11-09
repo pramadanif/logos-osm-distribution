@@ -69,3 +69,19 @@ echo "::endgroup::"
 OSM_RPC=http://127.0.0.1:3040 OSM_PROGRAM="$program" OSM_HOST_ACCOUNT="${payer#Public/}" \
 OSM_CHAIN="$root/programs/osm_registry/target/debug/osm-chain" OSM_BIN="$root/target/debug/osm" \
 REGION=china/henan SNAPSHOT=261101 "$root/scripts/e2e-local.sh"
+
+# P-R4 / H9: with download.geofabrik.de unreachable at the network level, discovery falls back to
+# the bundled set and a hosted region still downloads. CI only (needs to edit /etc/hosts).
+if [ "${BLOCK_GEOFABRIK:-0}" = "1" ]; then
+  echo "::group::Geofabrik blocked"
+  echo "0.0.0.0 download.geofabrik.de" | sudo tee -a /etc/hosts >/dev/null
+  if curl -fsS --max-time 10 https://download.geofabrik.de/ >/dev/null 2>&1; then echo "Geofabrik still reachable; block failed" >&2; exit 1; fi
+  unset OSM_GEOFABRIK_BASE
+  osm="$root/target/debug/osm"
+  "$osm" discover --json | python3 -I -c 'import json,sys; d=json.load(sys.stdin); assert len(d["regions"])==72 and d["source"].startswith("offline"), d["source"]; print("   discover:", d["source"][:60])'
+  d2="$WORK/offline-dl"
+  OSM_RPC=http://127.0.0.1:3040 OSM_PROGRAM="$program" "$osm" download --region china/henan --dir "$d2" --storage "$OSM_STORAGE_B" --json \
+    | python3 -I -c 'import json,sys; d=json.load(sys.stdin); assert d["source"]=="storage", d; print("   download from storage with Geofabrik blocked:", d["from"])'
+  echo "OFFLINE OK"
+  echo "::endgroup::"
+fi
