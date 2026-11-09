@@ -76,6 +76,48 @@ enum Cmd {
         #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
         chain_bin: PathBuf,
     },
+    /// Import a local PBF: check it against Geofabrik's published MD5 for its snapshot (import
+    /// time only), store it in Logos Storage, and register it.
+    Import {
+        file: PathBuf,
+        #[arg(long)]
+        region: String,
+        /// Snapshot date YYMMDD the file was downloaded as.
+        #[arg(long)]
+        snapshot: u32,
+        #[arg(
+            long,
+            env = "OSM_STORAGE",
+            default_value = "http://127.0.0.1:8080/api/storage/v1"
+        )]
+        storage: String,
+        #[arg(long, env = "OSM_RPC")]
+        rpc: String,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: String,
+        #[arg(long, env = "OSM_HOST_ACCOUNT")]
+        host: String,
+        #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
+        chain_bin: PathBuf,
+    },
+    /// Register entries whose files are already in Logos Storage, from a coverage manifest, in
+    /// batches of up to 16 (used to replay coverage onto a new network after a reset).
+    BulkRegister {
+        /// JSON: {"entries": [{"region", "cid", "source_url", "md5", "snapshot", "size_bytes"}, ...]}
+        #[arg(long)]
+        manifest: PathBuf,
+        /// Skip these regions (per-region opt-out).
+        #[arg(long = "skip")]
+        skip: Vec<String>,
+        #[arg(long, env = "OSM_RPC")]
+        rpc: String,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: String,
+        #[arg(long, env = "OSM_HOST_ACCOUNT")]
+        host: String,
+        #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
+        chain_bin: PathBuf,
+    },
     /// Download a region: from Logos Storage by CID when hosted (newest entry whose bytes match
     /// the registered MD5), from Geofabrik only when nobody hosts it.
     Download {
@@ -379,6 +421,154 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
             }
             if !ok {
                 // Upload succeeded but registration did not: never report success (H33).
+                std::process::exit(4);
+            }
+        }
+        Cmd::Import {
+            file,
+            region: id,
+            snapshot,
+            storage,
+            rpc,
+            program,
+            host,
+            chain_bin,
+        } => {
+            let def = region(id)?;
+            let url = snapshot_url(def, *snapshot)?;
+            let want = geofabrik(cli)?.snapshot_md5(def, *snapshot)?;
+            // Fails gracefully with S130 (both MD5s and the snapshot named) or S132 (not a PBF).
+            verify_import(file, &want, &format!("{}-{snapshot:06}", def.region))?;
+            let size = std::fs::metadata(file)
+                .map_err(|e| SdkError::Io {
+                    path: file.clone(),
+                    source: e,
+                })?
+                .len();
+            let mut store = RestStorage::new(storage, std::time::Duration::from_secs(120));
+            let cid = upload_with_retry(
+                &mut store,
+                file,
+                &RetryPolicy::default(),
+                &mut XorShift::seeded(),
+                std::thread::sleep,
+            )?;
+            let entry = format!(
+                "{}|{}|{}|{}|{:06}|{}",
+                def.region,
+                cid,
+                url,
+                to_hex(&want),
+                snapshot,
+                size
+            );
+            let res = chain_register(chain_bin, rpc, program, host, &[entry])?;
+            let ok = res["ok"].as_bool() == Some(true);
+            if cli.json {
+                println!(
+                    "{}",
+                    json!({"ok": ok, "region": def.region, "cid": cid, "md5": to_hex(&want), "chain": res})
+                );
+            } else {
+                println!(
+                    "{}: MD5 matches Geofabrik for {url}; stored as {cid}; {}",
+                    def.region,
+                    if ok {
+                        format!("registered ({})", res["outcome"])
+                    } else {
+                        format!("NOT registered: {}", res["error"])
+                    }
+                );
+            }
+            if !ok {
+                std::process::exit(4);
+            }
+        }
+        Cmd::BulkRegister {
+            manifest,
+            skip,
+            rpc,
+            program,
+            host,
+            chain_bin,
+        } => {
+            let raw = std::fs::read(manifest).map_err(|e| SdkError::Io {
+                path: manifest.clone(),
+                source: e,
+            })?;
+            if raw.len() > 1 << 20 {
+                return Err(SdkError::InvalidInput {
+                    field: "manifest",
+                    why: "larger than 1 MiB".into(),
+                });
+            }
+            let v: serde_json::Value =
+                serde_json::from_slice(&raw).map_err(|e| SdkError::InvalidInput {
+                    field: "manifest",
+                    why: e.to_string(),
+                })?;
+            let items = v["entries"]
+                .as_array()
+                .ok_or_else(|| SdkError::InvalidInput {
+                    field: "manifest",
+                    why: "missing \"entries\" array".into(),
+                })?;
+            let mut lines = Vec::new();
+            for (i, e) in items.iter().enumerate() {
+                let s = |k: &str| {
+                    e[k].as_str()
+                        .map(str::to_string)
+                        .ok_or_else(|| SdkError::InvalidInput {
+                            field: "manifest",
+                            why: format!("entry {i}: {k} missing"),
+                        })
+                };
+                let n = |k: &str| {
+                    e[k].as_u64().ok_or_else(|| SdkError::InvalidInput {
+                        field: "manifest",
+                        why: format!("entry {i}: {k} missing"),
+                    })
+                };
+                let r = s("region")?;
+                if skip.contains(&r) {
+                    continue;
+                }
+                region(&r)?;
+                lines.push(format!(
+                    "{}|{}|{}|{}|{:06}|{}",
+                    r,
+                    s("cid")?,
+                    s("source_url")?,
+                    s("md5")?,
+                    n("snapshot")?,
+                    n("size_bytes")?
+                ));
+            }
+            let mut results = Vec::new();
+            let mut failed = false;
+            for chunk in lines.chunks(osm_core::entry::MAX_BATCH) {
+                let res = chain_register(chain_bin, rpc, program, host, chunk)?;
+                failed |= res["ok"].as_bool() != Some(true);
+                if !cli.json {
+                    println!(
+                        "{} entries: {}",
+                        chunk.len(),
+                        if res["ok"].as_bool() == Some(true) {
+                            res["outcome"].to_string()
+                        } else {
+                            res["error"].to_string()
+                        }
+                    );
+                }
+                results.push(res);
+            }
+            if cli.json {
+                println!(
+                    "{}",
+                    json!({"ok": !failed, "entries": lines.len(), "batches": results})
+                );
+            }
+            if failed {
                 std::process::exit(4);
             }
         }
