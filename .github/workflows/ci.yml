@@ -34,10 +34,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: rustup show active-toolchain || rustup toolchain install
+      # The zip is cached by its sha256, so a GitHub release outage does not block later runs.
+      - uses: actions/cache@v4
+        with:
+          path: storage.zip
+          key: logos-storage-${{ env.STORAGE_VERSION }}-${{ env.STORAGE_SHA256 }}
       - name: Fetch pinned Logos Storage node
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          curl -fsSL --retry 5 --retry-all-errors --retry-delay 5 -o storage.zip "https://github.com/logos-storage/logos-storage-nim/releases/download/$STORAGE_VERSION/logos-storage-linux-amd64-$STORAGE_VERSION.zip"
+          for i in 1 2 3 4 5 6; do
+            [ -f storage.zip ] && break
+            gh release download "$STORAGE_VERSION" -R logos-storage/logos-storage-nim \
+              -p "logos-storage-linux-amd64-$STORAGE_VERSION.zip" -O storage.zip && break
+            echo "download attempt $i failed"; sleep $((i * 20))
+          done
           echo "$STORAGE_SHA256  storage.zip" | sha256sum -c -
           unzip -q storage.zip -d storage-bin
           chmod +x storage-bin/*
