@@ -4,7 +4,7 @@
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 fails=0
-for s in "$root"/scripts/*.sh "$root"/tools/*.sh "$root"/probes/*.sh; do
+for s in "$root"/scripts/*.sh "$root"/tools/*.sh "$root"/probes/*.sh "$root"/deploy/*/*.sh; do
   name="${s#$root/}"
   if ! grep -q '^set -euo pipefail' "$s"; then echo "FAIL $name: no 'set -euo pipefail'"; fails=$((fails+1)); continue; fi
   # Scripts that legitimately run without input carry a `# no-required-input` line.
