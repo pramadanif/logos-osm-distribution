@@ -1,42 +1,46 @@
 # Self-review (evaluator method on our own repo)
 
-Pinned commit: `37e855da66735d24f74837bf754b37d137ce0eb2` (local `main`; no public remote yet).
+Pinned commit: `9bee4623b2a4ed046066e85a199576d8a3757a26` (https://github.com/pramadanif/logos-osm-distribution, `main`).
 Date: 2026-11-09. Reviewer: the build agent, following plan Appendix E and docs/status/e1-extra.md.
 
 ## Verdict
 
-Early-stage repository: licences, the frozen region set, shared validation and design records.
-Nothing on-chain, no SDK, no Basecamp module. What exists is correct and tested: 13 tests pass on
-a fresh clone and every rule in ADR 0002 that can be checked off-chain has an accept and a reject
-test. It is not usable by anyone yet, and the README is empty. 0 high, 2 medium findings.
+Early-stage repository: the frozen region set, shared validation, design records, and the
+offline half of the SDK and CLI (discovery, dated snapshots, MD5 import check, Storage REST
+client with retry, private data folder). Nothing on-chain, no Basecamp module. What exists is
+tested: 47 tests pass on a fresh clone and CI is green on Linux, macOS and Windows. It is not yet
+usable for hosting or downloading through Logos. 0 high, 0 medium findings open.
 
 ## How I reviewed
 
-Cloned the local repository into a temporary directory (`git clone . <tmp>/lp18-review`),
-ran `cargo test --locked` and `cargo fmt --check` there, listed tracked files for secrets and the
-evaluator corpus, and compared every number in docs with command output.
+Cloned https://github.com/pramadanif/logos-osm-distribution into a temporary directory,
+ran `cargo test --locked`, listed tracked files for secrets and private files, read CI
+check-runs for HEAD through the API, and compared README statements with the code.
 
 ## README says / Observed
 
 | README says | Observed |
 |-------------|----------|
-| (README is empty) | `cargo test --locked`: 13 passed, 0 failed |
+| \"Nothing is deployed and there is no release yet\" | true: no program, no catalog |
+| `cargo test --locked` builds and tests | 47 passed, 0 failed |
+| CI (not claimed in README) | 3/3 jobs success on 9bee462 |
 
 ## Findings
 
-**M1. README is empty (H23).** A cold reader cannot learn what the repo is or how to build it.
-Reproduce: `cat README.md` prints nothing. Phase: H owns the full README; a minimal build section
-is added before the repo goes public.
+**M1 (fixed). README was empty.** Now states status and what works. Fixed in b71cce0.
 
-**M2. CI never ran (H6, SC-0.3).** `.github/workflows/ci.yml` exists, but there is no remote.
-Reproduce: `gh repo view pramadanif/lp-0018-osm-distribution` → not found. Blocked on human
-approval to create the repo.
+**M2 (fixed). CI never ran.** Green on 3 OSes at 9bee462 (run 42555186573).
 
 **L1. CID validation is structural.** `validate_cid` accepts any base58btc string starting with
 `z` of 46–96 characters; the test CID is synthetic. Pinned to the real Storage format after the
 first real upload (SC-−1.3).
 
 ## What works
+
+- `osm regions`, `osm discover --no-geofabrik`: 72 regions offline; `osm snapshot <region>`
+  reads the dated snapshot from Geofabrik's redirect and its MD5 (checked live once).
+- Storage REST client: request shape, Content-Length upload, atomic download, error classes,
+  CID check before any request (local scripted server).
 
 - `regions/predefined.json` and `osm_core::PREDEFINED` agree, 72 leaves, no overlap (5 tests).
 - Entry validation rejects out-of-set regions, wrong parent/level, undated or foreign source
@@ -45,8 +49,8 @@ first real upload (SC-−1.3).
 
 ## Not tested
 
-Everything on-chain, Storage, Basecamp, macOS/Windows CI, ASan/UBSan, fuzzing, two profiles,
-catalogs: none of these exist yet.
+Everything on-chain, a real Storage node, Basecamp, ASan/UBSan, fuzzing, two profiles,
+catalogs. The REST client has only met a scripted server, not a real node.
 
 ## E.1 rows
 
@@ -62,4 +66,5 @@ macOS 26.0.1 arm64, rustc 1.95.0. No network writes.
 
 ## Test traffic
 
-None. No transaction or upload to any public network has been made.
+No transaction or upload to any public network. Read-only requests to download.geofabrik.de:
+the index (twice), a few HEAD requests and `.md5` files, on 2026-11-09.
