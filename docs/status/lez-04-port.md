@@ -7,8 +7,8 @@ Nothing below is built yet. It sizes the 0.4 work (ADR 0007, SPEL route b).
 - v0.3: a handler is a `#[plan]` (effects per shard, sees no data) plus `#[apply]` functions
   (old bytes in, new bytes out). Types: `PlanInput`, `ApplyInput`, `PlanOutput`, `GuestOutput`.
 - v0.4.0-rc1: those types are gone. Every account under a program is an **actor**; a program is an
-  entry point `lee_core::actor_entrypoint!(handler)` with
-  `fn handler(input: &ReceiveInput, proposed: Timestamp) -> Response`.
+  entry point `lee_core::actor_entrypoint!(handler)` with `fn handler(input: &ReceiveInput, msg: M)
+  -> Response`, where `M` is the borsh-decoded message (`run_actor`, program/mod.rs:736).
   `ReceiveInput { receiver: Actor, from: Option<Actor>, is_authorized, pre_state, message }`;
   `Response::set_state(bytes)` / `keep_state()`, plus `.send_sync(actor, &msg)` / `send_async`.
   Example: `test_programs/guest/src/bin/cooldown.rs`.
@@ -18,7 +18,7 @@ Nothing below is built yet. It sizes the 0.4 work (ADR 0007, SPEL route b).
 | Topic | v0.3 (built) | v0.4 |
 |-------|--------------|------|
 | One account per region (ADR 0001) | PDA shard written in apply | one actor per region; same idea, `pre_state` in, `set_state` out |
-| Timestamp (guard 4) | client value bound by a validity window | the handler receives the block's `proposed` timestamp; store it directly, no client value |
+| Timestamp (guard 4) | client value bound by a validity window | still client-supplied; bound to chain time by a `send_sync` to the built-in clock program, `clock_core::Message::AssertTimestamp { at_least, at_most }` (as `test_programs/.../cooldown.rs` does). An earlier note here said the handler receives the block time; that was wrong: `proposed` in that example is the message |
 | `registered_by` = signer (guard 1) | SPEL signer account in the plan | the receiving actor only sees `is_authorized` (signed by itself or by its owning program) and `from`. Likely pattern: the tx is authorized at the host's actor, which `send_sync`s to the region actor; the region actor records `from.account_id` after checking `from_own_program()`. To prove on an rc sequencer |
 | Batch | `Vec<AccountMeta>`, one effect per account | one message per region actor from the host actor (`send_sync` per region) |
 | Fees | reserve `(gas+100k)*64` | in-proof reserve with refund, dry-runs (#985): re-measure |
