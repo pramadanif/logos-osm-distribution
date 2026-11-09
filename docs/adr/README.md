@@ -9,7 +9,7 @@
 | [0005](0005-retrieval-node.md) | Retrieval proof with an independent node | Accepted |
 | [0006](0006-external-services.md) | External services and network calls | Accepted |
 | [0007](0007-lez-04-port.md) | LEZ 0.4 port strategy | Accepted (SPEL route b: our port) |
+| [0008](0008-basecamp-modules.md) | Basecamp modules, names and wiring | Accepted (names, structure); modules not built yet |
 
 Status words: Proposed = written, not yet proven by a run; Accepted = binding; Superseded = replaced.
 A change to plan §2 needs an ADR here.
-| [0008](0008-basecamp-modules.md) | Basecamp modules, names and wiring | Accepted (names, structure); modules not built yet |
