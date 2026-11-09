@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "default": "v03-public",
+  "profiles": {
+    "v03-public": {
+      "lez": "v0.3.1",
+      "rpc": "https://testnet.lez.logos.co",
+      "program": "5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS",
+      "program_image_id": "f329edb220bdaade9d69250bb36969b95b672b4ea9d44c7a0092557762305e85",
+      "explorer": "https://explorer.testnet.lez.logos.co",
+      "faucet": "https://rog-devbox.tail957e2.ts.net:8443",
+      "counts_for_prize": false,
+      "note": "Rehearsal network for module authors. Testnet 0.4 is the only network that counts (plan rule 5)."
+    },
+    "v04-local": { "lez": "v0.4.0-rc1", "rpc": "http://127.0.0.1:3040", "program": null, "counts_for_prize": false },
+    "v04-public": { "lez": "v0.4", "rpc": null, "program": null, "counts_for_prize": true, "note": "Not launched yet." }
+  }
+}
