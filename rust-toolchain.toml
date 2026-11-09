@@ -1,0 +1,4 @@
+# Pinned so local builds and CI lint with the same clippy (VERSIONS.md: RUST).
+[toolchain]
+channel = "1.95.0"
+components = ["rustfmt", "clippy"]

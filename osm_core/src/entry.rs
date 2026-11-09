@@ -127,8 +127,8 @@ pub fn parse_md5_hex(s: &str) -> Result<[u8; 16], EntryError> {
         return Err(EntryError::BadChecksum);
     }
     let mut out = [0u8; 16];
-    for (i, pair) in b.chunks_exact(2).enumerate() {
-        out[i] = (hex_nibble(pair[0])? << 4) | hex_nibble(pair[1])?;
+    for (i, byte) in out.iter_mut().enumerate() {
+        *byte = (hex_nibble(b[2 * i])? << 4) | hex_nibble(b[2 * i + 1])?;
     }
     Ok(out)
 }
