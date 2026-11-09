@@ -42,8 +42,14 @@ struct Cli {
 enum Cmd {
     /// List the 72 predefined regions (no network).
     Regions,
-    /// Discover regions from the Geofabrik index, restricted to the predefined set.
-    Discover,
+    /// Discover regions from the Geofabrik index, restricted to the predefined set; with --rpc and
+    /// --program also show each region's hosted snapshot and host count from the registry.
+    Discover {
+        #[arg(long, env = "OSM_RPC")]
+        rpc: Option<String>,
+        #[arg(long, env = "OSM_PROGRAM")]
+        program: Option<String>,
+    },
     /// Show today's dated snapshot of a region and Geofabrik's MD5 for it.
     Snapshot { region: String },
     /// Host regions: download the dated Geofabrik snapshot, check its MD5, upload it to Logos
@@ -322,9 +328,28 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                 }
             }
         }
-        Cmd::Discover => {
+        Cmd::Discover { rpc, program } => {
             let g = (!cli.no_geofabrik).then(|| make_geofabrik(cli));
             let (d, src) = discover(g.as_ref());
+            // Registry status is optional; an unreachable registry is reported, never hidden.
+            let mut hosted: std::collections::HashMap<&str, (Option<u32>, usize)> =
+                Default::default();
+            let mut registry_note = None;
+            if let (Some(rpc), Some(program)) = (rpc, program) {
+                let reg = Registry {
+                    source: RpcRegistry::new(rpc, program)?,
+                    program: program.clone(),
+                };
+                let (s, errors) = osm_sdk::status::hosted_status(&reg);
+                for x in s {
+                    hosted.insert(x.region, (x.version, x.hosts));
+                }
+                if let Some(e) = errors.first() {
+                    registry_note =
+                        Some(format!("{} region(s) could not be read: {e}", errors.len()));
+                }
+            }
+            let status_of = |r: &str| hosted.get(r).copied();
             let source = match &src {
                 Source::Index => "geofabrik-index".to_string(),
                 Source::OfflineDisabled => "offline (Geofabrik disabled)".to_string(),
@@ -334,20 +359,35 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                 let rows: Vec<_> = d
                     .regions
                     .iter()
-                    .map(|r| json!({"region": r.def.region, "name": r.name, "parent": r.def.parent, "level": r.def.level.as_str()}))
+                    .map(|r| {
+                        let (version, hosts) = status_of(r.def.region).unwrap_or((None, 0));
+                        json!({"region": r.def.region, "name": r.name, "parent": r.def.parent, "level": r.def.level.as_str(),
+                            "hosted": version.is_some(), "hosted_version": version, "hosts": hosts})
+                    })
                     .collect();
                 let missing: Vec<_> = d.missing.iter().map(|r| r.region).collect();
                 println!(
                     "{}",
-                    json!({"source": source, "regions": rows, "missing": missing})
+                    json!({"source": source, "regions": rows, "missing": missing, "registry_note": registry_note})
                 );
             } else {
                 eprintln!("source: {source}");
+                if let Some(n) = &registry_note {
+                    eprintln!("warning: {n}");
+                }
                 for r in &d.regions {
+                    let st = match status_of(r.def.region) {
+                        Some((Some(v), h)) => {
+                            format!("hosted {v:06} ({h} host{})", if h == 1 { "" } else { "s" })
+                        }
+                        Some((None, _)) => "not hosted".to_string(),
+                        None => String::new(),
+                    };
                     println!(
-                        "{:<34} {:<9} {}",
+                        "{:<34} {:<9} {:<28} {}",
                         r.def.region,
                         r.def.level.as_str(),
+                        st,
                         r.name
                     );
                 }

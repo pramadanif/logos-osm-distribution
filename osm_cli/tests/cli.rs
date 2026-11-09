@@ -22,6 +22,7 @@ fn regions_lists_72_in_text_and_json() {
 #[test]
 fn discover_offline_works_without_geofabrik() {
     let out = osm(&["discover", "--no-geofabrik", "--json"]);
+    // (no --rpc: hosted fields are false/null, never guessed)
     assert!(out.status.success());
     let v: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
     assert_eq!(v["regions"].as_array().unwrap().len(), 72);
