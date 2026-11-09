@@ -1,0 +1,3 @@
+# LEZ v0.4.0-rc1 pins this toolchain; its crates need it.
+[toolchain]
+channel = "1.98.1"

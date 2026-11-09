@@ -226,7 +226,13 @@ impl RegistrySource for RpcRegistry {
                 why: format!("RPC error: {err}"),
             });
         }
-        let shard = &v["result"]["data"]["shards"][&self.program];
+        // LEZ v0.3 names the per-program data "shards", LEZ 0.4 "actor_states"; same bytes.
+        let data = &v["result"]["data"];
+        let shard = if data["actor_states"].is_object() {
+            &data["actor_states"][&self.program]
+        } else {
+            &data["shards"][&self.program]
+        };
         if shard.is_null() {
             return Ok(None);
         }

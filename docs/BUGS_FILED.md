@@ -13,3 +13,5 @@ not yet reported; the human files or approves filing (outward-facing).
 | 6 | logos-storage-nim v0.5.3 | `GET /data/{cid}/exists` returns `{"<cid>": bool}`, openapi.yaml documents `{"has": bool}`; `--api-port` missing from `--help` | client accepts both shapes | to file |
 | 7 | LEZ v0.3.1 debug config | Sequencer RPC binds `0.0.0.0:3040` by default with no auth | we pass `--listen-address 127.0.0.1` | to file |
 | 8 | LEZ v0.3.1 `wallet` | Creates `storage.json` (account keys) with mode 0644, readable by other local users | we `chmod 600` the file after setup; documented for users in README (to do) | to file |
+| 9 | LEZ v0.4.0-rc1 `wallet` | Prompts for the storage password on /dev/tty; scripts fail with "Device not configured" unless `LEE_WALLET_PASSWORD` is set (the variable is not mentioned in `--help`) | our scripts set `LEE_WALLET_PASSWORD` from a 0600 file | to file |
+| 10 | LEZ v0.4.0-rc1 `wallet program-loader deploy` | `--fee-payer` is not used for segment uploads: "payer <segment account> holds 0 but the fee reserve is 16693696" | fund header and segment accounts first | to file |

@@ -51,3 +51,23 @@ the reason H1 (SPEL IDL) for 0.4 is still open. No upstream SPEL 0.4 work was vi
    (SC-−1.2 runs it), to prove the signer pattern and the timestamp source.
 2. Port SPEL's macro expansion and IDL generator for that shape; regenerate the IDL.
 3. `lez_adapter` `lez-v04` feature over the regenerated client; rerun probes, e2e, cycles on 0.4.
+
+## Step 1 result (2026-11-09, local LEZ v0.4.0-rc1 standalone sequencer on 127.0.0.1:3041)
+
+- `programs/osm_registry_v04/guest` (actor program, no SPEL) built with `cargo risczero build`,
+  ImageID `d1213b2811def8ad89db14db2d34c6523ffc6b0b2723f0eca95897e720881c1a`; deployed with the 0.4
+  wallet's program-loader: header `5UFsUGATkMAduN5xYG8Rpw7wKYQeE4BTzceLNkfrkEi4` (4 segments).
+- `programs/osm_registry_v04/client` (`osm-chain-v04 register …`) sent tx
+  `ab1e7ae3d286eb6425dd3ccfdfa904440f0c7809ae93213015f94997406e8c9f`: host actor (signed) →
+  clock `AssertTimestamp` → region actor via PDA seed.
+- `getAccount CMvUj7VH…` shows `actor_states[program]` holding the same `RegionAccount` layout as
+  v0.3; `osm lookup --region china/henan` against 3041 decodes it, `registered_by` = the signer
+  `2RHZhw9h…`; `osm download --no-geofabrik` fetched the file via Storage node B and verified it.
+- So the signer design, the clock-bound timestamp and the shared data layout work on 0.4-rc.
+
+Problems met (docs/BUGS_FILED.md #9–#10): the 0.4 wallet reads its password from the terminal
+unless `LEE_WALLET_PASSWORD` is set; `program-loader deploy --fee-payer` was not used for segment
+uploads (each segment account had to be funded first).
+
+Still open for 0.4: negative probes, batch, unhost on 0.4; SPEL port and SPEL IDL (H1); the
+`lez-v04` adapter with read-back confirmation; cycle counts on 0.4.
