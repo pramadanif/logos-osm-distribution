@@ -12,3 +12,4 @@ not yet reported; the human files or approves filing (outward-facing).
 | 5 | SPEL `spel` CLI | Reports "Transaction confirmed — included in a block" for a transaction whose execution failed (state unchanged) | our adapter confirms by reading the account back (H33) | to file |
 | 6 | logos-storage-nim v0.5.3 | `GET /data/{cid}/exists` returns `{"<cid>": bool}`, openapi.yaml documents `{"has": bool}`; `--api-port` missing from `--help` | client accepts both shapes | to file |
 | 7 | LEZ v0.3.1 debug config | Sequencer RPC binds `0.0.0.0:3040` by default with no auth | we pass `--listen-address 127.0.0.1` | to file |
+| 8 | LEZ v0.3.1 `wallet` | Creates `storage.json` (account keys) with mode 0644, readable by other local users | we `chmod 600` the file after setup; documented for users in README (to do) | to file |
