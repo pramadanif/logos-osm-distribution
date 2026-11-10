@@ -96,16 +96,11 @@ fn write_and_confirm(
         return Err(invalid("host", format!("S105 InsufficientFunds: {have} lepta available, {FEE_RESERVE} needed for the fee reserve")));
     }
     let account = region_account_id(program, region)?;
+    let accounts = [account_hex(&account)?, account_hex(host_b58)?];
+    let program_hex = account_hex(program)?;
     let tx = modules()
         .lez_core
-        .send_generic_public_transaction(
-            vec![account_hex(&account)?, account_hex(host_b58)?],
-            vec![false, true],
-            instruction.to_bytes(),
-            account_hex(program)?,
-            String::new(),
-            Vec::new(),
-        )
+        .send_generic_public_transaction(&accounts, &[false, true], &instruction.to_bytes(), &program_hex, "", &[])
         .map_err(|e| invalid("transaction", format!("S104 the wallet module refused the transaction: {e:?}")))?;
     let reg = Registry { source: RpcRegistry::new(rpc, program)?, program: program.to_string() };
     let start = std::time::Instant::now();

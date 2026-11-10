@@ -1,6 +1,6 @@
 [package]
 name = "osm_registry_v04_client"
-description = "Step-1 client for the LEZ 0.4 actor registry (no SPEL yet): sends Register/Unhost"
+description = "osm-chain-v04: confirmed registry writes (register, batch, unhost) on the LEZ 0.4 actor registry"
 version = "0.0.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -19,4 +19,6 @@ borsh = { version = "1.5", features = ["derive"] }
 sha2 = "0.10"
 bs58 = "0.5"
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
-anyhow = "1"
+# Shared rules and the registry reader (actor_states), from this repository.
+osm_core = { path = "../../../osm_core" }
+osm_sdk = { path = "../../../osm_sdk" }

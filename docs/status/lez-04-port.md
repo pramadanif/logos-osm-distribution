@@ -65,6 +65,18 @@ the reason H1 (SPEL IDL) for 0.4 is still open. No upstream SPEL 0.4 work was vi
   `2RHZhw9h…`; `osm download --no-geofabrik` fetched the file via Storage node B and verified it.
 - So the signer design, the clock-bound timestamp and the shared data layout work on 0.4-rc.
 
+## Step 2 (2026-11-10, code only, not yet run on a sequencer)
+
+- The program gained `RegisterBatch { entries, timestamp }` (appended to `Msg`, so the earlier
+  variants keep their wire tags): one clock check, one `Apply` per region, the batch-shape rule
+  from `osm_core`. This changes the ImageID; the deployed `d1213b28…` build has no batch.
+- `osm-chain-v04` now has the same command line and JSON answers as the v0.3 `osm-chain`
+  (`register --entry …` one or many, `unhost`, exit codes 2/3/4) and confirms every write by
+  reading the region accounts back through `osm_sdk` (`actor_states`), so the `osm` CLI drives
+  0.4 with `--chain-bin osm-chain-v04`.
+- Checked: guest and client pass `cargo check`. Not yet: the risc0 guest build, a deploy, and
+  register/batch/unhost/negative probes on the 0.4-rc sequencer.
+
 Problems met (docs/BUGS_FILED.md #9–#10): the 0.4 wallet reads its password from the terminal
 unless `LEE_WALLET_PASSWORD` is set; `program-loader deploy --fee-payer` was not used for segment
 uploads (each segment account had to be funded first).

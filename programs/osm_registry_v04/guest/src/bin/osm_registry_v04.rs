@@ -12,7 +12,7 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use lee_core::account::{AccountId, Actor};
 use lee_core::program::{PdaSeed, ReceiveInput, Response, SyncMessage};
-use osm_core::entry::{validate_entry, EntryInput, MAX_HISTORY, MAX_HOSTS, TIMESTAMP_WINDOW_MS};
+use osm_core::entry::{validate_batch_shape, validate_entry, EntryInput, MAX_HISTORY, MAX_HOSTS, TIMESTAMP_WINDOW_MS};
 use osm_core::Level;
 
 lee_core::actor_entrypoint!(handle);
@@ -28,6 +28,21 @@ pub enum Msg {
     Apply { region: String, parent: String, level: u8, entry: Entry },
     /// From the host's actor, to the region actor.
     Remove { cid: String },
+    /// From a transaction, to the host's actor: up to `MAX_BATCH` registrations, one clock check.
+    RegisterBatch { entries: Vec<NewEntry>, timestamp: u64 },
+}
+
+/// One registration as a transaction carries it (the fields of `Msg::Register`).
+#[derive(BorshSerialize, BorshDeserialize)]
+pub struct NewEntry {
+    pub region: String,
+    pub parent: String,
+    pub level: u8,
+    pub cid: String,
+    pub source_url: String,
+    pub checksum: String,
+    pub version: u32,
+    pub size_bytes: u64,
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Clone, PartialEq, Eq)]
@@ -80,31 +95,21 @@ fn handle(input: &ReceiveInput, msg: Msg) -> Response {
         Msg::Register { region, parent, level, cid, source_url, checksum, version, size_bytes, timestamp } => {
             // Only a transaction signed by the host may start a registration for that host.
             assert!(input.from.is_none() && input.is_authorized, "S104 host actor needs the host's signature");
-            assert!(region.len() <= 32, "P001 RegionNotInSet");
-            let valid = validate_entry(&EntryInput {
-                region: &region,
-                parent: (!parent.is_empty()).then_some(parent.as_str()),
-                level: level_of(level),
-                cid: &cid,
-                source_url: &source_url,
-                checksum_hex: &checksum,
-                version,
-                size_bytes,
-                timestamp_ms: timestamp,
-            })
-            .unwrap_or_else(|e| panic!("{} {:?}", e.code(), e));
-            let host = *input.receiver.account_id.value();
-            let (to, seed) = region_actor(program, &region);
-            let entry = Entry { cid, source_url, checksum: valid.checksum, version: valid.version, size_bytes, hosted: true, timestamp, registered_by: host, hosts: vec![host] };
-            Response::keep_state()
-                .send_sync(
-                    Actor::new(clock_core::CLOCK_01_PROGRAM_ACCOUNT_ID, clock_core::clock_account_id()),
-                    &clock_core::Message::AssertTimestamp {
-                        at_least: timestamp.saturating_sub(TIMESTAMP_WINDOW_MS),
-                        at_most: timestamp.saturating_add(TIMESTAMP_WINDOW_MS),
-                    },
-                )
-                .send(SyncMessage::new(to, &Msg::Apply { region, parent, level, entry }).with_pda_seeds([seed]))
+            let e = NewEntry { region, parent, level, cid, source_url, checksum, version, size_bytes };
+            let apply = apply_message(input, program, e, timestamp);
+            assert_clock(Response::keep_state(), timestamp).send(apply)
+        }
+        Msg::RegisterBatch { entries, timestamp } => {
+            assert!(input.from.is_none() && input.is_authorized, "S104 host actor needs the host's signature");
+            let regions: Vec<&str> = entries.iter().map(|e| e.region.as_str()).collect();
+            validate_batch_shape(&regions, &[]).unwrap_or_else(|e| panic!("{} {:?}", e.code(), e));
+            // The batch shares one timestamp: the clock is asserted once for all entries.
+            let mut r = assert_clock(Response::keep_state(), timestamp);
+            for e in entries {
+                let apply = apply_message(input, program, e, timestamp);
+                r = r.send(apply);
+            }
+            r
         }
         Msg::Unhost { region, cid } => {
             assert!(input.from.is_none() && input.is_authorized, "S104 host actor needs the host's signature");
@@ -153,6 +158,49 @@ fn handle(input: &ReceiveInput, msg: Msg) -> Response {
             Response::set_state(borsh::to_vec(&acc).expect("serializes"))
         }
     }
+}
+
+/// Validates one registration (osm_core) and builds the `Apply` for its region actor. The host is
+/// the signer: the receiving host actor's account id.
+fn apply_message(input: &ReceiveInput, program: AccountId, e: NewEntry, timestamp: u64) -> SyncMessage {
+    assert!(e.region.len() <= 32, "P001 RegionNotInSet");
+    let valid = validate_entry(&EntryInput {
+        region: &e.region,
+        parent: (!e.parent.is_empty()).then_some(e.parent.as_str()),
+        level: level_of(e.level),
+        cid: &e.cid,
+        source_url: &e.source_url,
+        checksum_hex: &e.checksum,
+        version: e.version,
+        size_bytes: e.size_bytes,
+        timestamp_ms: timestamp,
+    })
+    .unwrap_or_else(|err| panic!("{} {:?}", err.code(), err));
+    let host = *input.receiver.account_id.value();
+    let (to, seed) = region_actor(program, &e.region);
+    let entry = Entry {
+        cid: e.cid,
+        source_url: e.source_url,
+        checksum: valid.checksum,
+        version: valid.version,
+        size_bytes: e.size_bytes,
+        hosted: true,
+        timestamp,
+        registered_by: host,
+        hosts: vec![host],
+    };
+    SyncMessage::new(to, &Msg::Apply { region: e.region, parent: e.parent, level: e.level, entry }).with_pda_seeds([seed])
+}
+
+/// Asks the clock program to check that `timestamp` is within the window around block time.
+fn assert_clock(r: Response, timestamp: u64) -> Response {
+    r.send_sync(
+        Actor::new(clock_core::CLOCK_01_PROGRAM_ACCOUNT_ID, clock_core::clock_account_id()),
+        &clock_core::Message::AssertTimestamp {
+            at_least: timestamp.saturating_sub(TIMESTAMP_WINDOW_MS),
+            at_most: timestamp.saturating_add(TIMESTAMP_WINDOW_MS),
+        },
+    )
 }
 
 /// The host account behind an internal message: authorized through this program and sent by one
