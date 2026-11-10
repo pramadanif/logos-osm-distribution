@@ -15,7 +15,15 @@ cargo risczero --version >/dev/null || { echo "missing tool: cargo-risczero" >&2
 
 LEZ_TAG=v0.3.1; LEZ_SHA=1a003bfbfb89fcf987f62975cd08a401169e1b8c   # VERSIONS.md LEZ_V03
 lez="$WORK/lez-$LEZ_TAG"
-if [ ! -d "$lez/.git" ]; then git -c advice.detachedHead=false clone -q --depth 1 --branch "$LEZ_TAG" https://github.com/logos-blockchain/logos-execution-zone.git "$lez"; fi
+# The Rust cache may already have restored "$lez/target", so fetch into the directory instead of
+# cloning (clone refuses a non-empty destination).
+if [ ! -d "$lez/.git" ]; then
+  mkdir -p "$lez"
+  git -C "$lez" init -q
+  git -C "$lez" remote add origin https://github.com/logos-blockchain/logos-execution-zone.git
+  git -C "$lez" fetch -q --depth 1 origin "refs/tags/$LEZ_TAG:refs/tags/$LEZ_TAG"
+  git -C "$lez" -c advice.detachedHead=false checkout -q "$LEZ_TAG"
+fi
 [ "$(git -C "$lez" rev-parse HEAD)" = "$LEZ_SHA" ] || { echo "LEZ $LEZ_TAG is not $LEZ_SHA" >&2; exit 1; }
 
 echo "::group::build LEZ sequencer + wallet"
