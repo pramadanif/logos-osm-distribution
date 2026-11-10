@@ -102,6 +102,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash tests/scripts.sh
+      - run: python3 tests/module_manifests.py
 
   readme-coldstart:
     # H23: follow the README's build steps literally in a fresh container.

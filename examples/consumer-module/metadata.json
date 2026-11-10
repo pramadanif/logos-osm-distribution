@@ -1,0 +1,30 @@
+{
+  "name": "pramadani_osm_consumer_module",
+  "display_name": "OSM consumer module (template)",
+  "version": "0.1.0",
+  "type": "core",
+  "interface": "universal",
+  "category": "example",
+  "description": "Template: resolve an OSM region to its CID and metadata and download the verified file through pramadani_osm_sdk. Copy it, rename it, build your own idea on top.",
+  "main": "pramadani_osm_consumer_module_plugin",
+  "dependencies": [
+    "pramadani_osm_sdk"
+  ],
+  "codegen": {
+    "impl_header": "src/consumer_impl.h",
+    "impl_class": "ConsumerImpl"
+  },
+  "nix": {
+    "packages": {
+      "build": [],
+      "runtime": []
+    },
+    "external_libraries": [],
+    "cmake": {
+      "find_packages": [],
+      "extra_sources": [],
+      "extra_include_dirs": [],
+      "extra_link_libraries": []
+    }
+  }
+}

@@ -1,0 +1,12 @@
+// View contract between the QML view and the backend (QtRO).
+class PramadaniOsmApp
+{
+    // JSON object: job id -> {"method", "arg", "state", "answer"}. state is "submitting"
+    // (sent to the distribution module), "confirmed" (answer ok; for writes this means the entry
+    // was read back on-chain) or "failed" (answer not ok, or no answer).
+    PROP(QString jobs="{}" READONLY)
+    // Start a call into pramadani_osm_distribution; returns the job id at once.
+    SLOT(QString call(QString method, QString arg))
+    // Forget finished jobs.
+    SLOT(void clearFinished())
+}

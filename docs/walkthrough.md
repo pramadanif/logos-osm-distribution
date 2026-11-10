@@ -21,7 +21,9 @@ node, and check the MD5 without trusting the node or us.
 | SDK | `osm_sdk` | discovery, Geofabrik client, MD5, Storage REST client with retries, registry reader, download with verification, coverage check, local data folder |
 | C ABI | `osm_ffi` | JSON-in/JSON-out C functions over the consumer part of the SDK, for Basecamp modules |
 | CLI | `osm_cli` (`osm`) | every user action from the terminal |
-| Write path | `programs/osm_registry/lez_adapter_v03` (`osm-chain`) | builds and signs transactions with the SPEL-generated client, then waits until the change is visible on-chain |
+| Basecamp modules | `basecamp/osm-distribution`, `basecamp/osm-sdk`, `basecamp/osm-app` | core module with the full API (writes signed by `lez_core`), read-only SDK module for other modules, and the app; index in `module.json` |
+| Templates | `examples/consumer-module`, `examples/distribution-consumer-app` | starting points for other people's modules |
+| Write path (CLI) | `programs/osm_registry/lez_adapter_v03` (`osm-chain`) | builds and signs transactions with the SPEL-generated client, then waits until the change is visible on-chain |
 
 ## Decisions worth being able to defend
 

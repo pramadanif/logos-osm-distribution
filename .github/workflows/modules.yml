@@ -1,0 +1,56 @@
+name: modules
+
+# SC-E.3 / P-S3: build every Basecamp module and template with logos-module-builder on Linux and
+# macOS, and package them as .lgx. Heavy (Qt, Rust, LEZ wallet): runs on push to main, on
+# pull requests touching module code, and by hand.
+on:
+  push:
+    branches: [main]
+    paths: ["basecamp/**", "examples/**", "osm_core/**", "osm_sdk/**", "osm_ffi/**", "module.json", ".github/workflows/modules.yml"]
+  pull_request:
+    paths: ["basecamp/**", "examples/**", "osm_core/**", "osm_sdk/**", "osm_ffi/**", "module.json", ".github/workflows/modules.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: modules-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Manifests consistent (H2, H19)
+        run: python3 tests/module_manifests.py
+      # Apps and templates depend on our modules through GitHub URLs; point those inputs at
+      # this checkout so a change is built together with the modules it needs.
+      - name: Build modules and templates
+        run: |
+          set -eu
+          D="--override-input pramadani_osm_distribution path:$PWD/basecamp/osm-distribution"
+          S="--override-input pramadani_osm_sdk path:$PWD/basecamp/osm-sdk"
+          mkdir -p out
+          build() { echo "::group::$1"; nix build -L "$@" --out-link "out/$(basename "$1")"; echo "::endgroup::"; }
+          build ./basecamp/osm-sdk#lgx-portable
+          build ./basecamp/osm-distribution#lgx-portable
+          build ./basecamp/osm-app#lgx-portable $D
+          build ./examples/consumer-module#lgx-portable $S
+          build ./examples/distribution-consumer-app#lgx-portable $D
+      - name: Package checksums
+        run: |
+          set -eu
+          find -L out -name '*.lgx' -exec sha256sum {} + 2>/dev/null || find -L out -name '*.lgx' -exec shasum -a 256 {} +
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lgx-${{ matrix.os }}
+          path: out/*/*.lgx
+          if-no-files-found: error

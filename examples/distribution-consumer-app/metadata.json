@@ -1,0 +1,23 @@
+{
+  "name": "pramadani_osm_consumer_app",
+  "display_name": "OSM consumer app (template)",
+  "version": "0.1.0",
+  "type": "ui_qml",
+  "interface": "universal",
+  "category": "example",
+  "description": "Template: pick a region, see its registered snapshot, download and verify it, through pramadani_osm_distribution. Copy it and build your own app.",
+  "main": "pramadani_osm_consumer_app_plugin",
+  "backend": "module",
+  "icon": "src/icons/pramadani_osm_consumer_app.png",
+  "view": "qml/Main.qml",
+  "dependencies": ["pramadani_osm_distribution"],
+  "provides": [],
+  "uses": [],
+  "codegen": { "rep": "src/pramadani_osm_consumer_app.rep" },
+
+  "nix": {
+    "packages": { "build": [], "runtime": [] },
+    "external_libraries": [],
+    "cmake": { "find_packages": [], "extra_sources": [], "extra_include_dirs": [], "extra_link_libraries": [] }
+  }
+}

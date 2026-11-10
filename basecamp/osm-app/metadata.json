@@ -1,0 +1,24 @@
+{
+  "name": "pramadani_osm_app",
+  "display_name": "OSM Maps (LP-0018)",
+  "version": "0.1.0",
+  "type": "ui_qml",
+  "interface": "universal",
+  "category": "maps",
+  "description": "Discover, host, import, download and verify OpenStreetMap snapshots registered on the Logos Execution Zone and stored in Logos Storage (LP-0018).",
+  "author": "pramadanif",
+  "main": "pramadani_osm_app_plugin",
+  "backend": "module",
+  "icon": "src/icons/pramadani_osm_app.png",
+  "view": "qml/Main.qml",
+  "dependencies": ["pramadani_osm_distribution"],
+  "provides": [],
+  "uses": [],
+  "codegen": { "rep": "src/pramadani_osm_app.rep" },
+
+  "nix": {
+    "packages": { "build": [], "runtime": [] },
+    "external_libraries": [],
+    "cmake": { "find_packages": [], "extra_sources": [], "extra_include_dirs": [], "extra_link_libraries": [] }
+  }
+}

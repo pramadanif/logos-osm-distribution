@@ -1,0 +1,9 @@
+class PramadaniOsmConsumerApp
+{
+    // Last answer of pramadani_osm_distribution (JSON envelope), shown as plain text.
+    PROP(QString answer="" READONLY)
+    PROP(bool busy=false READONLY)
+    SLOT(void regions())
+    SLOT(void resolve(QString region))
+    SLOT(void download(QString region))
+}

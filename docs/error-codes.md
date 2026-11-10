@@ -49,6 +49,15 @@ once released in the alpha (SC-A.4); new codes are added, existing ones never ch
 | S152 | `DataDirUnsafe` [9] | The data folder {path} has unsafe permissions. |
 | S160 | `InvalidInput` [2] | {field}: {why}. Nothing was changed. |
 
+Codes from the Basecamp app and the templates (the module's own answers keep their S codes):
+
+| Code | Name | Shown as |
+|------|------|----------|
+| A001 | `ModuleUnavailable` | pramadani_osm_distribution did not answer (not loaded, or timed out). |
+| A002 | `UnknownAction` | The app asked the backend for an action it does not have (a bug in the view). |
+| A003 | `UnreadableAnswer` | The answer was not JSON. |
+| T001 | `DependencyUnavailable` | The template's dependency module did not answer. |
+
 Exit status 0 = success, 1 = internal bug, 2 = invalid input, 10 = `osm verify-coverage` ran but
 coverage is below the prize floor (25 regions, 15 countries). Input is rejected, never trimmed or
 clamped (E64).

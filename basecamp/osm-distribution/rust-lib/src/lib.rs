@@ -18,7 +18,8 @@ pub trait PramadaniOsmDistributionModule: Send + 'static {
     fn version(&mut self) -> String;
     /// Current settings: `rpc`, `program`, `storage`, `geofabrik`, and where data is kept.
     fn settings(&mut self) -> String;
-    /// Merge and save settings (JSON object with any of `rpc`, `program`, `storage`, `geofabrik`).
+    /// Merge and save settings (JSON object with any of `rpc`, `program`, `storage`, `geofabrik`,
+    /// `host`: the default host account for writes).
     fn configure(&mut self, settings: String) -> String;
     /// The 72 regions with names, level and parent.
     fn discover(&mut self) -> String;
@@ -32,7 +33,7 @@ pub trait PramadaniOsmDistributionModule: Send + 'static {
     fn check_updates(&mut self, regions: String) -> String;
     /// Host a region end to end: `{"host", "region", "snapshot"?}`. Downloads the dated Geofabrik
     /// snapshot (first of the current month by default), checks its MD5, uploads it to the
-    /// configured Storage node with retries, then registers it like `register`.
+    /// configured Storage node with retries, then registers it like `register_entry`.
     fn host(&mut self, request: String) -> String;
     /// Import a local PBF: `{"host", "path", "region", "snapshot"}`. Checks the file against
     /// Geofabrik's published MD5 for that snapshot, uploads it, registers it.
@@ -40,8 +41,8 @@ pub trait PramadaniOsmDistributionModule: Send + 'static {
     /// Register a file already stored in Logos Storage, signed by the user's wallet in `lez_core`:
     /// `{"host", "region", "cid", "source_url", "md5", "snapshot", "size_bytes"}`.
     /// Answers only after the entry is visible on-chain (H33), else `S103`.
-    fn register(&mut self, entry: String) -> String;
-    /// Stop hosting: `{"host", "region", "cid"}`; confirmed by read-back like `register`.
+    fn register_entry(&mut self, entry: String) -> String;
+    /// Stop hosting: `{"host", "region", "cid"}`; confirmed by read-back like `register_entry`.
     fn unhost(&mut self, request: String) -> String;
 
     fn on_context_ready(&mut self, _ctx: &RustModuleContext) {}
@@ -223,7 +224,7 @@ impl PramadaniOsmDistributionModule for Distribution {
     fn configure(&mut self, settings: String) -> String {
         let r = (|| {
             let new = api::parse(&settings)?;
-            let allowed = ["rpc", "program", "storage", "geofabrik"];
+            let allowed = ["rpc", "program", "storage", "geofabrik", "host"];
             for k in new.as_object().into_iter().flat_map(|o| o.keys()) {
                 if !allowed.contains(&k.as_str()) {
                     return Err(invalid("settings", format!("unknown key {k:?}")));
@@ -305,7 +306,7 @@ impl PramadaniOsmDistributionModule for Distribution {
         api::envelope(r)
     }
 
-    fn register(&mut self, entry: String) -> String {
+    fn register_entry(&mut self, entry: String) -> String {
         api::envelope(api::parse(&entry).and_then(|e| self.register_value(&e)))
     }
 

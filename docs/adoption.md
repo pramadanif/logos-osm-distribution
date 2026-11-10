@@ -1,8 +1,8 @@
 # Building on the OSM registry and hosting maps
 
 For two groups: developers who want map data in their own Logos module, and people who want to
-help by hosting (mirroring) regions. Status: alpha on LEZ v0.3; the Basecamp distribution module
-and the templates are in progress, so the paths below use the SDK, the C ABI and the CLI.
+help by hosting (mirroring) regions. Status: alpha on LEZ v0.3. The Basecamp modules and two templates are written but not yet
+proven in Basecamp; the paths below that are proven use the SDK, the C ABI and the CLI.
 
 ## Use map data in your module
 
@@ -12,6 +12,10 @@ Storage node. `networks.json` lists the current deployments.
 **Rust:** depend on `osm_sdk` (pinned git commit, see [sdk.md](sdk.md)) and follow the worked
 example there: `Registry::resolve(region)` gives the CID and Geofabrik MD5 of the newest hosted
 snapshot; `fetch::fetch_region` downloads it by CID and checks the MD5.
+
+**Basecamp module:** start from `examples/consumer-module` (a C++ core module calling the
+read-only `pramadani_osm_sdk` module) or `examples/distribution-consumer-app` (a QML app calling
+`pramadani_osm_distribution`). Copy the folder, rename the module, build your idea.
 
 **C / C++ / Qt:** link `osm_ffi` and include `osm_ffi/include/osm_ffi.h`. Every call takes and
 returns JSON, e.g.

@@ -1,0 +1,13 @@
+{
+  "name": "logos-osm-distribution",
+  "description": "LP-0018: OpenStreetMap snapshots registered on the Logos Execution Zone and distributed through Logos Storage.",
+  "license": "MIT OR Apache-2.0",
+  "repository": "https://github.com/pramadanif/logos-osm-distribution",
+  "modules": [
+    { "name": "pramadani_osm_distribution", "path": "basecamp/osm-distribution", "role": "core module: read, host, import, register, unhost" },
+    { "name": "pramadani_osm_sdk", "path": "basecamp/osm-sdk", "role": "core module: read-only SDK for other modules" },
+    { "name": "pramadani_osm_app", "path": "basecamp/osm-app", "role": "Basecamp app" },
+    { "name": "pramadani_osm_consumer_module", "path": "examples/consumer-module", "role": "template: core module using pramadani_osm_sdk" },
+    { "name": "pramadani_osm_consumer_app", "path": "examples/distribution-consumer-app", "role": "template: app using pramadani_osm_distribution" }
+  ]
+}
