@@ -7,6 +7,17 @@
 //!     LEE_WALLET_HOME_DIR=<wallet> osm-chain-v04 unhost --rpc <url> --program <id> --host <id> \
 //!         --region <region> --cid <cid>
 //!     osm-chain-v04 region-account <program> <region>
+//!     osm-chain-v04 state --rpc <url> --program <id> --region <region>
+//!
+//! For the negative probes only (probes/b5_negative_v04.sh), two commands send a message without
+//! the client's checks and without waiting, so the program's own checks are what is tested:
+//!
+//!     osm-chain-v04 probe-register --rpc … --program … --host … --region … --parent … --level … \
+//!         --cid … --source-url … --md5 … --version … --size … --timestamp <ms>
+//!     osm-chain-v04 probe-direct-apply --rpc … --program … --host … --region … --cid …
+//!
+//! `probe-direct-apply` sends `Apply` straight to the region actor, skipping the host actor: the
+//! program must refuse it (a region actor accepts messages only from this program's actors).
 //!
 //! One `--entry` sends `Register`, several send one `RegisterBatch`. The transaction goes to the
 //! host's own actor under the program (the host signs); the program forwards each entry to its
@@ -31,8 +42,7 @@ use wallet::{AccountIdentity, AccountMention};
 enum Msg {
     Register { region: String, parent: String, level: u8, cid: String, source_url: String, checksum: String, version: u32, size_bytes: u64, timestamp: u64 },
     Unhost { region: String, cid: String },
-    #[allow(dead_code)]
-    Apply,
+    Apply { region: String, parent: String, level: u8, entry: osm_sdk::registry::Entry },
     #[allow(dead_code)]
     Remove,
     RegisterBatch { entries: Vec<NewEntry>, timestamp: u64 },
@@ -178,6 +188,39 @@ async fn run(args: &[String]) -> Result<String, Failure> {
         let id = AccountId::for_public_pda(&program, &region_seed(r));
         return Ok(format!("{{\"ok\":true,\"account\":\"{}\"}}", bs58::encode(id.value()).into_string()));
     }
+    if cmd == "state" {
+        let (Some(rpc), Some(program), Some(region)) = (arg(args, "--rpc"), arg(args, "--program"), arg(args, "--region")) else {
+            return Err(invalid("state --rpc <url> --program <id> --region <region>"));
+        };
+        let reg = registry(&rpc, &program)?;
+        if osm_core::lookup(&region).is_none() {
+            // Outside the set the SDK refuses to look; read the would-be PDA directly so the
+            // probes can show that nothing was ever written there.
+            use osm_sdk::registry::RegistrySource;
+            let id = AccountId::for_public_pda(&account(&program)?, &region_seed(&region));
+            let raw = reg.source.fetch(&bs58::encode(id.value()).into_string()).map_err(|e| Failure { exit: 3, code: e.code(), message: e.to_string() })?;
+            return Ok(match raw {
+                Some(b) if !b.is_empty() => format!("{{\"unexpected_bytes\":{}}}", b.len()),
+                _ => "{}".into(),
+            });
+        }
+        let acc = read(&reg, &region)?;
+        let v = match acc {
+            None => serde_json::json!({}),
+            Some(a) => serde_json::json!({
+                "region": a.region, "parent": a.parent, "level": a.level,
+                "history": a.history.iter().map(|e| serde_json::json!({
+                    "cid": e.cid, "source_url": e.source_url, "version": e.version, "size_bytes": e.size_bytes,
+                    "hosted": e.hosted, "timestamp": e.timestamp,
+                    "registered_by": e.registered_by_b58(), "hosts": e.hosts_b58(),
+                })).collect::<Vec<_>>(),
+            }),
+        };
+        return Ok(v.to_string());
+    }
+    if cmd == "probe-register" || cmd == "probe-direct-apply" {
+        return probe(cmd, args).await;
+    }
     if cmd != "register" && cmd != "unhost" {
         return Err(invalid("usage: osm-chain-v04 register --rpc <url> --program <id> --host <id> --entry '<region>|<cid>|<url>|<md5>|<YYMMDD>|<size>'... | unhost --rpc <url> --program <id> --host <id> --region <r> --cid <cid> | region-account <program> <region>"));
     }
@@ -230,6 +273,57 @@ async fn run(args: &[String]) -> Result<String, Failure> {
     let regions: Vec<String> = todo.iter().map(|e| e.region.clone()).collect();
     confirm(&reg, &regions, &tx, |r, acc| todo.iter().filter(|e| e.region == r).all(|e| hosts(acc, &e.cid, &host_bytes)))?;
     Ok(format!("{{\"ok\":true,\"outcome\":\"confirmed\",\"tx_hash\":\"{tx}\",\"entries\":{}}}", regions.len()))
+}
+
+/// Sends one unchecked message and prints its transaction hash; the caller reads the state.
+async fn probe(cmd: &str, args: &[String]) -> Result<String, Failure> {
+    let need = |k: &str| arg(args, k).ok_or_else(|| invalid(format!("{k} is required")));
+    let program = account(&need("--program")?)?;
+    let host = account(&need("--host")?)?;
+    let region = need("--region")?;
+    let num = |k: &str| -> Result<u64, Failure> { need(k)?.parse().map_err(|_| invalid(format!("{k} is not a number"))) };
+    let region_id = AccountId::for_public_pda(&program, &region_seed(&region));
+    let tx = if cmd == "probe-register" {
+        let msg = Msg::Register {
+            region: region.clone(),
+            parent: need("--parent").unwrap_or_default(),
+            level: num("--level")? as u8,
+            cid: need("--cid")?,
+            source_url: need("--source-url")?,
+            checksum: need("--md5")?,
+            version: num("--version")? as u32,
+            size_bytes: num("--size")?,
+            timestamp: num("--timestamp")?,
+        };
+        let accounts = vec![
+            mention(AccountIdentity::Public(host), program, true),
+            mention(AccountIdentity::PublicNoSign(region_id), program, false),
+            clock_mention(),
+        ];
+        send(accounts, &msg).await?
+    } else {
+        // A forged entry naming the signer, sent to the region actor directly.
+        let h = *host.value();
+        let entry = osm_sdk::registry::Entry {
+            cid: need("--cid")?,
+            source_url: format!("https://download.geofabrik.de/{region}-261101.osm.pbf"),
+            checksum: [0; 16],
+            version: 261101,
+            size_bytes: 1,
+            hosted: true,
+            timestamp: 0,
+            registered_by: h,
+            hosts: vec![h],
+        };
+        // The region actor receives; the host signs, so the message is authorized but has no
+        // sender actor of this program.
+        let accounts = vec![
+            mention(AccountIdentity::PublicNoSign(region_id), program, false),
+            mention(AccountIdentity::Public(host), program, true),
+        ];
+        send(accounts, &Msg::Apply { region: region.clone(), parent: String::new(), level: 0, entry }).await?
+    };
+    Ok(format!("{{\"ok\":true,\"outcome\":\"sent\",\"tx_hash\":\"{tx}\"}}"))
 }
 
 #[tokio::main]

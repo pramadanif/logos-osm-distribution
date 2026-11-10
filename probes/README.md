@@ -14,3 +14,7 @@ header and ImageID they ran against.
 
 Every case of `b5_negative_v03.sh` reads the region account back with `spel inspect`; a transaction that is "included"
 but did not change state counts as rejected, never as success.
+
+`b5_negative_v04.sh`: the same cases against the LEZ 0.4 actor registry, plus p12 (a message
+sent straight to a region actor) and a `RegisterBatch` case. Driven by `scripts/localnet-v04.sh`
+(locally) and the CI job `e2e-v04`. Local results: `results-v04.txt`.

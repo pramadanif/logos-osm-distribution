@@ -74,8 +74,17 @@ the reason H1 (SPEL IDL) for 0.4 is still open. No upstream SPEL 0.4 work was vi
   (`register --entry …` one or many, `unhost`, exit codes 2/3/4) and confirms every write by
   reading the region accounts back through `osm_sdk` (`actor_states`), so the `osm` CLI drives
   0.4 with `--chain-bin osm-chain-v04`.
-- Checked: guest and client pass `cargo check`. Not yet: the risc0 guest build, a deploy, and
-  register/batch/unhost/negative probes on the 0.4-rc sequencer.
+- Checked: guest and client pass `cargo check`.
+- Run on a local 0.4-rc sequencer with `scripts/localnet-v04.sh` (probes/results-v04.txt): the
+  script deployed the 2026-11-09 guest build (program `9esExEdV…`, 4 segments) and
+  `probes/b5_negative_v04.sh` passed 15 of 15 non-batch cases: create, idempotent repeat, copy by
+  another signer adds only a host, new CID appends, unhost removes only the caller, timestamps
+  1 h old or in seconds refused by the clock check, `-latest` URL, size u64::MAX, version not the
+  URL's date, bad CID, region outside the set, decomposed country, wrong parent, and an
+  authorized message sent straight to a region actor (p12, 0.4 only). The 3 batch cases fail
+  there because that build predates `RegisterBatch`; CI job `e2e-v04` builds the current guest and
+  runs all 18.
+- Not yet: a green `e2e-v04` run, cycle counts on 0.4.
 
 Problems met (docs/BUGS_FILED.md #9–#10): the 0.4 wallet reads its password from the terminal
 unless `LEE_WALLET_PASSWORD` is set; `program-loader deploy --fee-payer` was not used for segment

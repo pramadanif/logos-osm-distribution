@@ -1,0 +1,23 @@
+# probes/b5_negative_v04.sh on a local LEZ v0.4.0-rc1 standalone sequencer, 2026-11-10
+# scripts/localnet-v04.sh; guest = the d1213b28 build from 2026-11-09 (before RegisterBatch existed),
+# so the three p08 batch cases are expected to fail here; they run against the current guest in CI e2e-v04.
+program 9esExEdVEjNWEoZMsMACojXsZHxR5sUw2gf3s7E38SkD (4 segments) on http://127.0.0.1:3041
+PASS p00_create first register creates the region account
+PASS p03a_same_signer_repeat same signer, same CID: idempotent
+PASS p01_copy_by_other_signer copied register only adds the copier as a host
+PASS p03b_same_signer_new_cid same signer, new CID appends
+PASS p03c_unhost B removes only itself
+PASS p06a_timestamp_past_window timestamp 1 h old refused by the clock check
+PASS p06b_timestamp_in_seconds seconds instead of ms refused
+PASS p04d_undated_source -latest source URL refused
+PASS p06c_size_u64_max size u64::MAX refused
+PASS p05_version_not_url_date version differs from the URL's date
+PASS p07_bad_cid malformed CID refused
+PASS p04a_region_outside_set planet never gets an account
+PASS p04b_decomposed_country india (decomposed) never gets an account
+PASS p04c_wrong_parent wrong parent refused
+PASS p12_direct_to_region_actor region actor refuses a message not sent by a host actor
+FAIL p08_batch_egypt one RegisterBatch transaction registers egypt state={}
+FAIL p08_batch_nigeria one RegisterBatch transaction registers nigeria state={}
+FAIL p08_batch_morocco one RegisterBatch transaction registers morocco state={}
+SUMMARY fails=3

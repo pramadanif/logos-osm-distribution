@@ -5568,6 +5568,7 @@ dependencies = [
  "lee_core",
  "osm_core",
  "osm_sdk",
+ "serde_json",
  "sha2 0.10.9",
  "tokio",
  "wallet",

@@ -72,3 +72,39 @@ jobs:
       - name: Logs on failure
         if: failure()
         run: tail -50 "$RUNNER_TEMP/e2e/sequencer.log" || true
+
+  e2e-v04:
+    # SC-A.5: the actor registry on a standalone LEZ v0.4.0-rc1 sequencer built from the pinned
+    # tag: deploy, register, copy, repeat, unhost, batch and refused cases (probes/b5_negative_v04.sh).
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - name: Free disk space
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq libpcsclite-dev pkg-config clang libclang-dev libssl-dev
+      - run: rustup toolchain install 1.98.1 --profile minimal
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            programs/osm_registry_v04/client -> target
+            ${{ runner.temp }}/e2e-v04/lez-v0.4.0-rc1 -> target
+          cache-all-crates: true
+          cache-on-failure: true
+      - uses: actions/cache@v4
+        with:
+          path: ~/.risc0
+          key: risc0-rust-1.97.0-rzup-0.5.0
+      - name: cargo-risczero 3.0.5 and the RISC Zero Rust toolchain
+        run: |
+          set -euo pipefail
+          cargo risczero --version 2>/dev/null | grep -q 3.0.5 || cargo install --locked cargo-risczero --version 3.0.5
+          command -v rzup >/dev/null || cargo install --locked rzup --version 0.5.0
+          rzup install rust 1.97.0
+      - name: End to end on 0.4-rc
+        run: WORK="$RUNNER_TEMP/e2e-v04" scripts/ci-e2e-v04.sh
+      - name: Logs on failure
+        if: failure()
+        run: |
+          tail -50 "$RUNNER_TEMP/e2e-v04/run/sequencer.log" || true
+          grep -v "^Transaction data" "$RUNNER_TEMP/e2e-v04/run/deploy.log" | tail -20 || true
