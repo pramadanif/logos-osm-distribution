@@ -23,7 +23,14 @@ umask 077
 t() { perl -e "alarm $1; exec @ARGV[1..\$#ARGV]" "$@" </dev/null; }
 
 # --- sequencer ---------------------------------------------------------------------------------
-rm -rf "$WORK/sequencer_home"; cp -R "$LEZ_DIR/lez/sequencer/service/sequencer_home" "$WORK/sequencer_home"
+# A fresh chain every run, set up the way LEZ's own `just run-sequencer-standalone` does (the
+# funding key is the local Bedrock node's public key, read from LEZ's Justfile).
+fund_key=$(grep -E '^BEDROCK_FUNDING_PUBLIC_KEY' "$LEZ_DIR/Justfile" | grep -oE '[0-9a-f]{64}' || true)
+[ -n "$fund_key" ] || { echo "no BEDROCK_FUNDING_PUBLIC_KEY in $LEZ_DIR/Justfile" >&2; exit 2; }
+rm -rf "$WORK/sequencer_home"
+(cd "$LEZ_DIR" && "$SEQ" setup "$WORK/sequencer_home" --config lez/sequencer/service/networks/local.json \
+  --funding-public-key "$fund_key" --create-channel) > "$WORK/setup.log" 2>&1 \
+  || { echo "sequencer setup failed" >&2; tail -20 "$WORK/setup.log" >&2; exit 3; }
 RUST_LOG=info,risc0_zkvm=warn,kameo=warn "$SEQ" start "$WORK/sequencer_home" \
   --rpc-listen-address "127.0.0.1:$PORT" --metrics-listen-address "127.0.0.1:$((PORT + 6000))" > "$WORK/sequencer.log" 2>&1 &
 SEQ_PID=$!
