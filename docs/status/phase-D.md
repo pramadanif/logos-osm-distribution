@@ -12,3 +12,21 @@
 
 Toolchain check: the unmodified `rust-with-external-lib` template also built
 (`rust_external_lib_plugin.dylib`), so the nix setup on this Mac works.
+
+## Headless load (SC-−1.4, runtime part)
+
+CI job `load` (modules run 43228643018 at `cfb770d`, macOS arm64, logosctl dev build
+`66d098d3`): a fresh logosctl session installed the `.lgx` of `pramadani_osm_sdk` and
+`pramadani_osm_distribution` from disk, loaded both and called `version` (API 1), `discover`
+(72 regions), `settings` (per-module data folder) and `resolve kenya` (a real read from the
+public v0.3 testnet, answer `null`): 12 of 12 PASS (`tests/module_load.py`). This proves the
+modules load and answer at runtime; it is not the Basecamp GUI, and the app (`ui_qml`) and the
+write methods (which need `lez_core` and a wallet) were not exercised.
+
+## Catalog (SC-D.5)
+
+Prepared locally from `logos-co/logos-modules-release-base` @ `33fb564`: `logos-repo.json` for
+`pramadanif/pramadani-osm-modules`, one submodule pinned to this repository, a release workflow
+per module pointing at its subfolder, `modules.txt` for "Release all", variants
+`darwin-arm64,linux-amd64`. Not published: creating the public repository needs the owner.
+
