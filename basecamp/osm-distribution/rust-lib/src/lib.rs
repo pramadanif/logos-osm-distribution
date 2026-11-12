@@ -12,7 +12,8 @@ use osm_sdk::SdkError;
 use serde_json::{json, Value};
 
 /// Module API. The consumer part (discover, resolve, fetch, check_updates, hosted_status) is
-/// frozen for the alpha; host, import_file, register and unhost are the distribution app's.
+/// frozen for the alpha; host, host_batch, import_file, register_entry and unhost are the
+/// distribution app's.
 pub trait PramadaniOsmDistributionModule: Send + 'static {
     /// `{"version","api"}`.
     fn version(&mut self) -> String;
@@ -35,6 +36,10 @@ pub trait PramadaniOsmDistributionModule: Send + 'static {
     /// snapshot (first of the current month by default), checks its MD5, uploads it to the
     /// configured Storage node with retries, then registers it like `register_entry`.
     fn host(&mut self, request: String) -> String;
+    /// Host up to 16 regions with one registration transaction: `{"host", "regions": [...],
+    /// "snapshot"?}`. Each region is downloaded, checked and uploaded like `host`; then one
+    /// `register_batch` registers them all, confirmed by reading every region back.
+    fn host_batch(&mut self, request: String) -> String;
     /// Import a local PBF: `{"host", "path", "region", "snapshot"}`. Checks the file against
     /// Geofabrik's published MD5 for that snapshot, uploads it, registers it.
     fn import_file(&mut self, request: String) -> String;
@@ -75,15 +80,17 @@ fn now_ms() -> u64 {
 /// Fee the sequencer reserves up front at the SPEL client's gas limit (docs/cycles.md).
 const FEE_RESERVE: u128 = (500_000 + 100_000) * 64;
 
-/// Sends `instruction` for `region` through `lez_core.send_generic_public_transaction` with the
-/// region account (not signed) and the host (signs, pays), then polls the region account until
-/// `done` holds. Never reports success from submission alone (H33).
+/// Sends `instruction` through `lez_core.send_generic_public_transaction` with the host (signs,
+/// pays) and the region accounts (not signed), in the IDL's account order: `register` and
+/// `unhost` take `[region_account, host]`, `register_batch` takes `[host, region_accounts...]`.
+/// Then polls every region account until `done(region, account, host)` holds. Never reports
+/// success from submission alone (H33).
 fn write_and_confirm(
     settings: &Value,
     host_b58: &str,
-    region: &str,
+    regions: &[String],
     instruction: osm_sdk::instruction::Instruction,
-    done: impl Fn(&osm_sdk::registry::RegionAccount, &[u8; 32]) -> bool,
+    done: impl Fn(&str, &osm_sdk::registry::RegionAccount, &[u8; 32]) -> bool,
 ) -> Result<Value, SdkError> {
     use osm_sdk::instruction::account_hex;
     use osm_sdk::registry::{account_balance, decode_account_id, region_account_id, Registry, RpcRegistry};
@@ -95,20 +102,34 @@ fn write_and_confirm(
     if have < FEE_RESERVE {
         return Err(invalid("host", format!("S105 InsufficientFunds: {have} lepta available, {FEE_RESERVE} needed for the fee reserve")));
     }
-    let account = region_account_id(program, region)?;
-    let accounts = [account_hex(&account)?, account_hex(host_b58)?];
+    let mut region_hex = Vec::new();
+    for r in regions {
+        region_hex.push(account_hex(&region_account_id(program, r)?)?);
+    }
+    let host_hex = account_hex(host_b58)?;
+    let (accounts, signing): (Vec<String>, Vec<bool>) = match instruction {
+        osm_sdk::instruction::Instruction::RegisterBatch { .. } => {
+            (std::iter::once(host_hex).chain(region_hex).collect(), std::iter::once(true).chain(regions.iter().map(|_| false)).collect())
+        }
+        _ => (region_hex.into_iter().chain(std::iter::once(host_hex)).collect(), regions.iter().map(|_| false).chain(std::iter::once(true)).collect()),
+    };
     let program_hex = account_hex(program)?;
     let tx = modules()
         .lez_core
-        .send_generic_public_transaction(&accounts, &[false, true], &instruction.to_bytes(), &program_hex, "", &[])
+        .send_generic_public_transaction(&accounts, &signing, &instruction.to_bytes(), &program_hex, "", &[])
         .map_err(|e| invalid("transaction", format!("S104 the wallet module refused the transaction: {e:?}")))?;
     let reg = Registry { source: RpcRegistry::new(rpc, program)?, program: program.to_string() };
     let start = std::time::Instant::now();
     loop {
-        if let Some(acc) = reg.region(region)? {
-            if done(&acc, &host) {
-                return Ok(json!({"confirmed": true, "wallet_answer": tx}));
+        let mut all = true;
+        for r in regions {
+            if !reg.region(r)?.is_some_and(|acc| done(r, &acc, &host)) {
+                all = false;
+                break;
             }
+        }
+        if all {
+            return Ok(json!({"confirmed": true, "regions": regions, "wallet_answer": tx}));
         }
         if start.elapsed() > std::time::Duration::from_secs(120) {
             return Err(invalid("transaction", format!("S103 TxNotIncluded: sent ({tx}) but the registry shows no change after 120 s")));
@@ -168,6 +189,25 @@ impl Distribution {
         )
     }
 
+    /// Downloads the dated snapshot of `region` (first of the current month unless `snapshot`),
+    /// checks it against Geofabrik's MD5, uploads it and returns the entry to register.
+    fn prepare(&self, region: &str, snapshot: Option<u64>) -> Result<Value, SdkError> {
+        let def = osm_core::lookup(region).ok_or_else(|| invalid("region", "not in the predefined set"))?;
+        let dir = self.data_dir("cache")?;
+        let g = self.geofabrik()?;
+        let snap = match snapshot {
+            Some(s) => u32::try_from(s).map_err(|_| invalid("snapshot", "not YYMMDD"))?,
+            None => osm_sdk::snapshot::first_of_month(g.latest_snapshot(def)?),
+        };
+        let (path, md5) = g.download_snapshot(def, snap, &dir, |_, _| {})?;
+        let cid = self.upload(&path)?;
+        let size = std::fs::metadata(&path).map_err(|err| invalid("file", err.to_string()))?.len();
+        let _ = osm_sdk::datadir::enforce_cache_cap(&dir, 20 << 30, &path);
+        let url = osm_sdk::snapshot::snapshot_url(def, snap)?;
+        Ok(json!({"region": region, "cid": cid, "source_url": url, "md5": osm_sdk::hash::to_hex(&md5),
+            "snapshot": snap, "size_bytes": size}))
+    }
+
     fn register_value(&self, e: &Value) -> Result<Value, SdkError> {
         let region = str_field(e, "region")?;
         let def = osm_core::lookup(&region).ok_or_else(|| invalid("region", "not in the predefined set"))?;
@@ -199,7 +239,7 @@ impl Distribution {
             size_bytes,
             timestamp,
         };
-        let mut out = write_and_confirm(&self.settings, &host, &region, ix, |acc, h| {
+        let mut out = write_and_confirm(&self.settings, &host, &[region], ix, |_, acc, h| {
             acc.history.iter().any(|x| x.cid == cid && x.hosts.contains(h))
         })?;
         out["cid"] = json!(cid);
@@ -263,22 +303,64 @@ impl PramadaniOsmDistributionModule for Distribution {
     fn host(&mut self, request: String) -> String {
         let r = (|| {
             let e = api::parse(&request)?;
-            let region = str_field(&e, "region")?;
+            let mut entry = self.prepare(&str_field(&e, "region")?, e["snapshot"].as_u64())?;
+            entry["host"] = json!(str_field(&e, "host")?);
+            self.register_value(&entry)
+        })();
+        api::envelope(r)
+    }
+
+    fn host_batch(&mut self, request: String) -> String {
+        let r = (|| {
+            let e = api::parse(&request)?;
             let host = str_field(&e, "host")?;
-            let def = osm_core::lookup(&region).ok_or_else(|| invalid("region", "not in the predefined set"))?;
-            let dir = self.data_dir("cache")?;
-            let g = self.geofabrik()?;
-            let snap = match e["snapshot"].as_u64() {
-                Some(s) => u32::try_from(s).map_err(|_| invalid("snapshot", "not YYMMDD"))?,
-                None => osm_sdk::snapshot::first_of_month(g.latest_snapshot(def)?),
+            let regions: Vec<String> = e["regions"]
+                .as_array()
+                .ok_or_else(|| invalid("regions", "missing array"))?
+                .iter()
+                .map(|v| v.as_str().map(str::to_string).ok_or_else(|| invalid("regions", "not a string")))
+                .collect::<Result<_, _>>()?;
+            let names: Vec<&str> = regions.iter().map(String::as_str).collect();
+            osm_core::entry::validate_batch_shape(&names, &[]).map_err(|err| invalid("regions", format!("{} {err:?}", err.code())))?;
+            let timestamp = now_ms();
+            let mut entries = Vec::new();
+            for r in &regions {
+                let x = self.prepare(r, e["snapshot"].as_u64())?;
+                let def = osm_core::lookup(r).expect("checked by prepare");
+                let version = x["snapshot"].as_u64().expect("set by prepare") as u32;
+                osm_core::entry::validate_entry(&osm_core::entry::EntryInput {
+                    region: r,
+                    parent: def.parent,
+                    level: def.level,
+                    cid: x["cid"].as_str().unwrap_or(""),
+                    source_url: x["source_url"].as_str().unwrap_or(""),
+                    checksum_hex: x["md5"].as_str().unwrap_or(""),
+                    version,
+                    size_bytes: x["size_bytes"].as_u64().unwrap_or(0),
+                    timestamp_ms: timestamp,
+                })
+                .map_err(|err| invalid("entry", format!("{r}: {} {err:?}", err.code())))?;
+                entries.push((def, x));
+            }
+            let s = |k: &str| entries.iter().map(|(_, x)| x[k].as_str().unwrap_or("").to_string()).collect::<Vec<_>>();
+            let ix = osm_sdk::instruction::Instruction::RegisterBatch {
+                regions: regions.clone(),
+                parents: entries.iter().map(|(d, _)| d.parent.unwrap_or("").to_string()).collect(),
+                levels: entries.iter().map(|(d, _)| u8::from(d.level == osm_core::Level::Subregion)).collect(),
+                cids: s("cid"),
+                source_urls: s("source_url"),
+                checksums: s("md5"),
+                versions: entries.iter().map(|(_, x)| x["snapshot"].as_u64().unwrap_or(0)).collect(),
+                sizes: entries.iter().map(|(_, x)| x["size_bytes"].as_u64().unwrap_or(0)).collect(),
+                timestamp,
             };
-            let (path, md5) = g.download_snapshot(def, snap, &dir, |_, _| {})?;
-            let cid = self.upload(&path)?;
-            let size = std::fs::metadata(&path).map_err(|err| invalid("file", err.to_string()))?.len();
-            let _ = osm_sdk::datadir::enforce_cache_cap(&dir, 20 << 30, &path);
-            let url = osm_sdk::snapshot::snapshot_url(def, snap)?;
-            self.register_value(&json!({"host": host, "region": region, "cid": cid, "source_url": url,
-                "md5": osm_sdk::hash::to_hex(&md5), "snapshot": snap, "size_bytes": size}))
+            let cids: std::collections::HashMap<String, String> =
+                entries.iter().map(|(d, x)| (d.region.to_string(), x["cid"].as_str().unwrap_or("").to_string())).collect();
+            let mut out = write_and_confirm(&self.settings, &host, &regions, ix, |r, acc, h| {
+                acc.history.iter().any(|x| Some(&x.cid) == cids.get(r) && x.hosts.contains(h))
+            })?;
+            out["entries"] = json!(entries.iter().map(|(_, x)| x.clone()).collect::<Vec<_>>());
+            Ok(out)
         })();
         api::envelope(r)
     }
@@ -311,7 +393,7 @@ impl PramadaniOsmDistributionModule for Distribution {
             let (region, cid, host) = (str_field(&e, "region")?, str_field(&e, "cid")?, str_field(&e, "host")?);
             osm_core::lookup(&region).ok_or_else(|| invalid("region", "not in the predefined set"))?;
             let ix = osm_sdk::instruction::Instruction::Unhost { region: region.clone(), cid: cid.clone() };
-            write_and_confirm(&self.settings, &host, &region, ix, |acc, h| {
+            write_and_confirm(&self.settings, &host, &[region], ix, |_, acc, h| {
                 !acc.history.iter().any(|x| x.cid == cid && x.hosts.contains(h))
             })
         })();

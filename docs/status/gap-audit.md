@@ -33,7 +33,7 @@ W1–W14, with status and what blocks it. Categories:
 | C.6b | done | README documents `LEE_WALLET_PASSWORD` |
 | C.9 | done | fuzz, bounds, confirm-or-S103, data dir, cache cap |
 | D.1 | built | `pramadani_osm_distribution` (with `lez_core`) built + packaged in CI run 42757080576, Linux + macOS; not loaded in Basecamp |
-| D.2 | built | `pramadani_osm_app` built in the same run; never opened in Basecamp; bulk host is sequential `host` calls |
+| D.2 | built | `pramadani_osm_app` built in the same run; never opened in Basecamp; bulk host = `host_batch` (one `register_batch` per 16 regions) |
 | D.2b | partial | names checked by tests/module_manifests.py; side-by-side install with rival catalogs needs Basecamp (human/desktop) |
 | D.3 | built | both templates built in the same run; not loaded in Basecamp |
 | D.4 | done | `module.json` + tests/module_manifests.py in CI |

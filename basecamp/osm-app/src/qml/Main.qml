@@ -178,7 +178,10 @@ Item {
         root.selectedChanged();
     }
 
-    // Bulk host runs one region at a time: each one downloads a large file and uploads it.
+    // Bulk host: the module downloads and uploads the regions one by one, then registers each
+    // group of up to 16 (the program's batch limit) in one transaction. One region uses `host`.
+    readonly property int maxBatch: 16
+
     function hostSelected() {
         root.hostQueue = selectedIds();
         hostNext();
@@ -190,14 +193,18 @@ Item {
             return;
         }
         var q = root.hostQueue;
-        var region = q.shift();
+        var group = q.splice(0, root.maxBatch);
         root.hostQueue = q;
-        var req = {"host": hostField.text, "region": region};
+        var req = {"host": hostField.text};
         if (snapshotField.text.length > 0)
             req.snapshot = Number(snapshotField.text);
-        run("host", JSON.stringify(req), function (a) {
-            hostNext();
-        });
+        if (group.length === 1) {
+            req.region = group[0];
+            run("host", JSON.stringify(req), function (a) { hostNext(); });
+        } else {
+            req.regions = group;
+            run("host_batch", JSON.stringify(req), function (a) { hostNext(); });
+        }
     }
 
     function describe(method, a) {
@@ -218,6 +225,8 @@ Item {
                            + formatSnapshot(d[i].available) + (d[i].update_available ? "  update available" : ""));
             return lines.join("\n");
         }
+        if (method === "host_batch")
+            return "confirmed on-chain in one transaction: " + d.regions.join(", ");
         if (method === "host" || method === "import_file" || method === "register_entry" || method === "unhost")
             return "confirmed on-chain" + (d.cid ? "\nCID " + d.cid : "");
         return JSON.stringify(d, null, 2);
