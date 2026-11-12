@@ -54,3 +54,33 @@ jobs:
           name: lgx-${{ matrix.os }}
           path: out/*/*.lgx
           if-no-files-found: error
+
+  load:
+    # SC--1.4 (headless part): install the core modules from their .lgx into a logosctl session,
+    # load them and call their methods; a call that does not answer with {"ok":true} fails.
+    # The dev logosctl takes the -dev variant a local nix build produces.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build logosctl (dev) and the module packages
+        run: |
+          set -eu
+          nix build -L 'github:logos-co/logos-logoscore-cli#ctl' -o ctl
+          nix flake metadata --json 'github:logos-co/logos-logoscore-cli' | python3 -c 'import json,sys; print("logosctl rev", json.load(sys.stdin)["revision"])'
+          mkdir -p drop
+          for m in osm-sdk osm-distribution; do
+            nix build -L "./basecamp/$m#lgx" -o "lgx-$m"
+            cp lgx-$m/*.lgx drop/ && chmod +w drop/*.lgx
+          done
+          ls -l drop
+      - name: Install, load and call
+        run: python3 tests/module_load.py ./ctl/bin/logosctl ./drop
