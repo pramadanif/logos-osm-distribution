@@ -150,13 +150,27 @@ def _():
     return ok, "LICENSE-MIT and LICENSE-APACHE"
 
 
+def fetch_json(url):
+    return json.load(urllib.request.urlopen(url, timeout=60))
+
+
+def our_modules():
+    return {m["name"]: m["path"] for m in json.load(open(os.path.join(ROOT, "module.json")))["modules"]}
+
+
+def catalog_index(url):
+    """logos-repo.json -> its index.json (the file Logos clients read)."""
+    return fetch_json(fetch_json(url)["indexUrl"])
+
+
 @check(11, "Catalog logos-repo.json resolves and lists the modules (H11)")
 def _():
     url = os.environ.get("CATALOG_URL")
     if not url:
         return False, "CATALOG_URL not set (no catalog yet)"
-    d = json.load(urllib.request.urlopen(url, timeout=30))
-    return bool(d), f"{url} answered"
+    names = {p["name"] for p in catalog_index(url)["packages"]}
+    missing = sorted(set(our_modules()) - names)
+    return not missing, f"index lists {len(names)} packages; missing {missing}" if missing else f"all {len(names)} modules listed"
 
 
 @check(12, "0.4 program id in README and solution, live on the RPC (H12)")
@@ -193,12 +207,43 @@ def _():
 
 @check(16, "Catalog .lgx sha256 matches the index and the pinned source (H18)")
 def _():
-    return False, "no catalog release yet" if not os.environ.get("CATALOG_URL") else "not implemented until the first release"
+    url = os.environ.get("CATALOG_URL")
+    if not url:
+        return False, "CATALOG_URL not set (no catalog release yet)"
+    import hashlib
+    bad = []
+    by_name = {p["name"]: p for p in catalog_index(url)["packages"]}
+    for name, path in our_modules().items():
+        pkg = by_name.get(name)
+        if not pkg:
+            bad.append(f"{name}: not in the index")
+            continue
+        newest = max(pkg["versions"], key=lambda v: v["releasedAt"])
+        body = urllib.request.urlopen(newest["url"], timeout=600).read()
+        if hashlib.sha256(body).hexdigest() != newest["sha256"]:
+            bad.append(f"{name}: downloaded .lgx sha256 differs from the index")
+        source = json.load(open(os.path.join(ROOT, path, "metadata.json")))["version"]
+        if newest["manifest"]["version"] != source:
+            bad.append(f"{name}: catalog {newest['manifest']['version']} vs source {source}")
+    return not bad, "; ".join(bad) if bad else "every package matches its index entry and source version"
+
+
+# Catalogs of other LP-0018 entries whose module names we must not reuse (docs/adr/0008).
+OTHER_CATALOGS = ["https://raw.githubusercontent.com/YodHeVauHe/logos-osm-modules/main/logos-repo.json"]
 
 
 @check(17, "Module names and data dirs unique vs known catalogs (H19)")
 def _():
-    return os.path.exists(os.path.join(ROOT, "module.json")), "needs module.json"
+    code, out, err = sh(sys.executable, "-I", os.path.join(ROOT, "tests/module_manifests.py"))
+    if code != 0:
+        return False, (out + err).strip().splitlines()[-1]
+    ours, clash = set(our_modules()), []
+    for u in OTHER_CATALOGS:
+        try:
+            clash += sorted(ours & {p["name"] for p in catalog_index(u)["packages"]})
+        except Exception as e:  # an unreachable catalog is not a pass
+            return False, f"{u}: {e}"
+    return not clash, f"names shared with other catalogs: {clash}" if clash else "manifests consistent; no shared names"
 
 
 @check(18, "docs/security.md lists every untrusted input with its bound (H21)")

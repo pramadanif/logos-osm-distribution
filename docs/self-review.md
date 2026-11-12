@@ -47,15 +47,14 @@ Needs a desktop Basecamp session.
 **M4 (open). No public data.** Nothing is registered on any public network, so P-F8 and the
 coverage criteria (F.3–F.5) are unproven. Needs the public Storage node (VPS) and testnet 0.4.
 
-**L2 (open). The 0.4 batch is unproven on a sequencer.** `RegisterBatch` is in the program and the
-client, and type-checks; the locally deployed guest predates it. CI `e2e-v04` builds the current
-guest and runs the batch cases.
+**L2 (fixed after this review's pin).** CI `e2e-v04` run 43227068962 at `5cfda57` built the current
+guest and passed all 18 cases on a 0.4-rc sequencer, including `RegisterBatch`.
 
 **L3 (open). No SPEL IDL for 0.4.** SPEL generates plan/apply code for v0.3 only. The 0.4 program
 is a plain actor program; no 0.4 IDL is claimed (H1 partly open).
 
-**L4 (open). App bulk host is sequential.** The Basecamp app hosts several regions as one `host`
-call each; one `register_batch` transaction exists only in the CLI path.
+**L4 (fixed after this review's pin, `fa7e67e`).** The module's `host_batch` registers up to 16
+regions in one `register_batch`; the app's bulk host uses it. Compiled in CI; not run in Basecamp.
 
 ## What works (with evidence)
 

@@ -84,7 +84,10 @@ the reason H1 (SPEL IDL) for 0.4 is still open. No upstream SPEL 0.4 work was vi
   authorized message sent straight to a region actor (p12, 0.4 only). The 3 batch cases fail
   there because that build predates `RegisterBatch`; CI job `e2e-v04` builds the current guest and
   runs all 18.
-- Not yet: a green `e2e-v04` run, cycle counts on 0.4.
+- CI `e2e-v04` (run 43227068962 at `5cfda57`, Linux, LEZ v0.4.0-rc1 built from the tag, guest
+  built from this commit with `RegisterBatch`): deploy (program `HyzTm8oL…`, 4 segments) and all 18
+  probe cases PASS, including the three `RegisterBatch` cases (`SUMMARY fails=0`).
+- Cycle counts on 0.4: docs/cycles.md (register and unhost; batch from the next `e2e-v04` run).
 
 Problems met (docs/BUGS_FILED.md #9–#10): the 0.4 wallet reads its password from the terminal
 unless `LEE_WALLET_PASSWORD` is set; `program-loader deploy --fee-payer` was not used for segment

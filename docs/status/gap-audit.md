@@ -26,7 +26,7 @@ W1–W14, with status and what blocks it. Categories:
 | A.1 | done except ADR 0001/0003 "Proposed" wording | proven on v0.3 and 0.4-rc; flip to Accepted (code-free, do now) |
 | A.2, A.3 | done | |
 | A.4 | vps | module and templates built (modules CI); public data needs the VPS node |
-| A.5 | code (CI pending) | `scripts/localnet-v04.sh` + probes: 15/15 non-batch on a local 0.4-rc sequencer (probes/results-v04.txt); CI job `e2e-v04` written, first run pending |
+| A.5 | done | CI `e2e-v04` green 18/18 incl. `RegisterBatch` (run 43227068962 at 5cfda57); local 15/15 (probes/results-v04.txt) |
 | B.1, B.3, B.4, B.5 | done (v0.3) | |
 | B.2 | done | all listed behaviours on a real sequencer (18 probes) + max-fill test |
 | C.1–C.8 | done | |
