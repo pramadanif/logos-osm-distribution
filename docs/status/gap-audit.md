@@ -17,7 +17,7 @@ W1–W14, with status and what blocks it. Categories:
 | −1.2 | done | v0.4.0-rc1 standalone sequencer runs |
 | −1.2b | done | docs/status/basecamp-modules.md |
 | −1.3 | done | two local Storage nodes, CID round trip |
-| −1.4 | code | Basecamp + hello mkLogosModule (now possible) |
+| −1.4 | partial | headless: our core modules install, load and answer in logosctl on Linux + macOS (modules run 43228643018); Basecamp GUI not run |
 | −1.5 | done for v0.3; 0.4 route chosen (b) | SPEL 0.4 port is item "0.4" below |
 | −1.5b | done | docs/status/geofabrik.md |
 | −1.5c | human | 0.4 funding: no faucet for 0.4 in any Logos repo; ask Logos |

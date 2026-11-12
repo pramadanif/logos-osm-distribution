@@ -15,11 +15,11 @@ Toolchain check: the unmodified `rust-with-external-lib` template also built
 
 ## Headless load (SC-−1.4, runtime part)
 
-CI job `load` (modules run 43228643018 at `cfb770d`, macOS arm64, logosctl dev build
+CI job `load` (modules run 43228643018 at `cfb770d`, Linux amd64 and macOS arm64, logosctl dev build
 `66d098d3`): a fresh logosctl session installed the `.lgx` of `pramadani_osm_sdk` and
 `pramadani_osm_distribution` from disk, loaded both and called `version` (API 1), `discover`
 (72 regions), `settings` (per-module data folder) and `resolve kenya` (a real read from the
-public v0.3 testnet, answer `null`): 12 of 12 PASS (`tests/module_load.py`). This proves the
+public v0.3 testnet, answer `null`): 12 of 12 PASS on each OS (`tests/module_load.py`). This proves the
 modules load and answer at runtime; it is not the Basecamp GUI, and the app (`ui_qml`) and the
 write methods (which need `lez_core` and a wallet) were not exercised.
 
