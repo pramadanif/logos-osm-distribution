@@ -1,0 +1,66 @@
+{
+  "image_id": "d1213b2811def8ad89db14db2d34c6523ffc6b0b2723f0eca95897e720881c1a",
+  "rows": [
+    {
+      "case": "register",
+      "exec_ms": 1056.265417,
+      "padded_cycles": 131072,
+      "program": "osm_registry_v04",
+      "receiver": "host actor",
+      "segments": 1,
+      "user_cycles": 25033
+    },
+    {
+      "case": "register",
+      "exec_ms": 35.994625,
+      "padded_cycles": 65536,
+      "program": "clock",
+      "receiver": "clock",
+      "segments": 1,
+      "user_cycles": 8532
+    },
+    {
+      "case": "register",
+      "exec_ms": 35.860375,
+      "padded_cycles": 65536,
+      "program": "osm_registry_v04",
+      "receiver": "region actor",
+      "segments": 1,
+      "user_cycles": 17271
+    },
+    {
+      "case": "unhost",
+      "exec_ms": 36.021416,
+      "padded_cycles": 65536,
+      "program": "osm_registry_v04",
+      "receiver": "host actor",
+      "segments": 1,
+      "user_cycles": 12531
+    },
+    {
+      "case": "unhost",
+      "exec_ms": 35.33525,
+      "padded_cycles": 65536,
+      "program": "osm_registry_v04",
+      "receiver": "region actor",
+      "segments": 1,
+      "user_cycles": 16084
+    },
+    {
+      "case": "register_batch_1",
+      "error": "Guest panicked: message must decode from borsh: Custom { kind: InvalidData, error: \"Unexpected variant tag: 4\" }"
+    },
+    {
+      "case": "register_batch_5",
+      "error": "Guest panicked: message must decode from borsh: Custom { kind: InvalidData, error: \"Unexpected variant tag: 4\" }"
+    },
+    {
+      "case": "register_batch_10",
+      "error": "Guest panicked: message must decode from borsh: Custom { kind: InvalidData, error: \"Unexpected variant tag: 4\" }"
+    },
+    {
+      "case": "register_batch_16",
+      "error": "Guest panicked: message must decode from borsh: Custom { kind: InvalidData, error: \"Unexpected variant tag: 4\" }"
+    }
+  ]
+}

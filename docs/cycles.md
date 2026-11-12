@@ -34,4 +34,24 @@ per transaction at the SPEL client's default gas limit.
 - Apply into an account that already holds 8 entries (ring rotation); the cases above write into
   empty accounts.
 - Proving time (`--prove` path). The public testnet executes public transactions without proofs.
-- LEZ 0.4 (needs the 0.4 port).
+- `register_batch` on LEZ 0.4 with the current guest (CI job `e2e-v04` prints it).
+
+## LEZ 0.4 actor registry
+
+Measured with `programs/osm_registry_v04/client/src/bin/cycle-bench-v04.rs`, the executor path
+of LEZ v0.4.0-rc1's `tools/cycle_bench`: the whole delivery runs through `WholeExecution`, and
+each transition (our host actor, the clock program, our region actor) runs in the RISC Zero
+executor with `Program::write_receive_input`. One row per transition; a caller pays for all.
+
+- Program: the 2026-11-09 guest build, ImageID `d1213b2811def8ad89db14db2d34c6523ffc6b0b2723f0eca95897e720881c1a`
+  (built before `RegisterBatch` existed, so it has no batch numbers).
+- Measured: 2026-11-12, macOS arm64, risc0-zkvm 3.0.5 executor. Raw output:
+  `probes/data/cycles-v04-d1213b28.json`.
+
+| Operation | Host actor | Clock | Region actor | Total user cycles | Total padded cycles |
+|-----------|------------|-------|--------------|-------------------|---------------------|
+| `Register` | 25,033 | 8,532 | 17,271 | 50,836 | 262,144 |
+| `Unhost` | 12,531 | — | 16,084 | 28,615 | 131,072 |
+
+So one registration costs about the same on 0.4 as on v0.3 (50,836 vs 49,970 user cycles); on
+0.4 part of it moves to the clock program, which now checks the timestamp.

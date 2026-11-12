@@ -5562,12 +5562,16 @@ version = "0.0.1"
 name = "osm_registry_v04_client"
 version = "0.0.1"
 dependencies = [
+ "anyhow",
  "borsh",
  "bs58",
  "clock_core",
+ "lee",
  "lee_core",
  "osm_core",
  "osm_sdk",
+ "programs",
+ "risc0-zkvm",
  "serde_json",
  "sha2 0.10.9",
  "tokio",

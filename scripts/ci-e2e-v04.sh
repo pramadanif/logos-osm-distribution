@@ -41,5 +41,10 @@ if [ -n "$snark" ] && [ -d "$snark/$arch" ]; then export RAPIDSNARK_LIB_DIR="$sn
 (cd "$root/programs/osm_registry_v04/client" && cargo build --release --locked)
 echo "::endgroup::"
 
+echo "::group::executor cycles (cycle-bench-v04)"
+"$root/programs/osm_registry_v04/client/target/release/cycle-bench-v04" "$guest" > "$WORK/cycles-v04.json"
+cat "$WORK/cycles-v04.json"
+echo "::endgroup::"
+
 LEZ_DIR="$lez" GUEST_BIN="$guest" CHAIN="$root/programs/osm_registry_v04/client/target/release/osm-chain-v04" \
   WORK="$WORK/run" "$root/scripts/localnet-v04.sh"

@@ -23,7 +23,7 @@ grep -q "48 countries at country level and 24 subregions" README.md && pass "REA
 
 python3 -I - <<'PY' && pass "cycles.md equals probes/data" || fail "cycles.md differs from probes/data"
 import json, glob, re, sys
-raw = json.load(open(sorted(glob.glob("probes/data/cycles-*.json"))[-1]))["rows"]
+raw = json.load(open(sorted(glob.glob("probes/data/cycles-v03*.json"))[-1]))["rows"]
 by = {}
 for r in raw:
     by.setdefault(r["instruction"], {})[r["phase"]] = r
@@ -32,6 +32,20 @@ for name, n in [("register", 1), ("register_batch n=1", 1), ("register_batch n=5
     p, a = by[name]["plan"]["user_cycles"], by[name]["apply"]["user_cycles"]
     op = "register" if name == "register" else "register_batch"
     row = f"| `{op}` | {n} | {p:,} | {a:,} | {p + a:,} |"
+    if row not in doc:
+        print("missing row:", row); sys.exit(1)
+PY
+
+python3 -I - <<'PY' && pass "cycles.md 0.4 table equals probes/data" || fail "cycles.md 0.4 table differs from probes/data"
+import json, glob, sys
+rows = json.load(open(sorted(glob.glob("probes/data/cycles-v04-*.json"))[-1]))["rows"]
+doc = open("docs/cycles.md").read()
+for case, op in [("register", "Register"), ("unhost", "Unhost")]:
+    r = [x for x in rows if x.get("case") == case]
+    get = lambda who: next((x["user_cycles"] for x in r if x["receiver"] == who), None)
+    cell = lambda v: "—" if v is None else f"{v:,}"
+    total = sum(x["user_cycles"] for x in r); padded = sum(x["padded_cycles"] for x in r)
+    row = f"| `{op}` | {cell(get('host actor'))} | {cell(get('clock'))} | {cell(get('region actor'))} | {total:,} | {padded:,} |"
     if row not in doc:
         print("missing row:", row); sys.exit(1)
 PY
