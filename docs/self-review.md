@@ -1,69 +1,92 @@
 # Self-review (evaluator method on our own repo)
 
-Pinned commit: `9bee4623b2a4ed046066e85a199576d8a3757a26` (https://github.com/pramadanif/logos-osm-distribution, `main`).
-Date: 2026-11-09. Reviewer: the build agent, following plan Appendix E and docs/status/e1-extra.md.
+Pinned commit: `b9053ae0a2d5b20aaf362bd5888f72e2a40daf33` (https://github.com/pramadanif/logos-osm-distribution, `main`).
+Date: 2026-11-12. Reviewer: the build agent, following plan Appendix E and docs/status/e1-extra.md.
+Previous review: 2026-11-09 at `9bee462`.
 
 ## Verdict
 
-Early-stage repository: the frozen region set, shared validation, design records, and the
-offline half of the SDK and CLI (discovery, dated snapshots, MD5 import check, Storage REST
-client with retry, private data folder). Nothing on-chain, no Basecamp module. What exists is
-tested: 47 tests pass on a fresh clone and CI is green on Linux, macOS and Windows. It is not yet
-usable for hosting or downloading through Logos. 0 high, 0 medium findings open.
+A working alpha on LEZ v0.3 and a proven step on LEZ 0.4-rc, not yet a submission. The SPEL
+registry, SDK, C ABI and CLI run end to end on a local v0.3.1 sequencer with real Storage nodes,
+in CI on every push. The program is deployed on the public v0.3 testnet but registers nothing
+there yet (no public Storage node). The 0.4 actor registry passes 15 of 15 non-batch negative and
+repeat-signer probes on a local v0.4.0-rc1 sequencer. All five Basecamp modules compile and
+package on Linux and macOS, but none has been opened in Basecamp. Coverage (25 regions / 15
+countries), the 0.4 testnet, adoption and the video are all open. 0 high findings open; 2 medium
+(M3, M4 below).
 
 ## How I reviewed
 
-Cloned https://github.com/pramadanif/logos-osm-distribution into a temporary directory,
-ran `cargo test --locked`, listed tracked files for secrets and private files, read CI
-check-runs for HEAD through the API, and compared README statements with the code.
+Cloned the repository into a temporary directory at `b9053ae`, ran `cargo test --locked`, listed
+tracked files for wallets, keys, passwords and private plan files, read the CI runs through the
+API, and compared README and docs statements with code and evidence files.
 
 ## README says / Observed
 
-| README says | Observed |
-|-------------|----------|
-| "Nothing is deployed and there is no release yet" | true: no program, no catalog |
-| `cargo test --locked` builds and tests | 47 passed, 0 failed |
-| CI (not claimed in README) | 3/3 jobs success on 9bee462 |
+| Statement | Observed |
+|-----------|----------|
+| `cargo test --locked` builds and tests | 76 passed, 0 failed (fresh clone, macOS arm64) |
+| e2e on a real sequencer in CI | first green run 42755836260 at `0f9a9f2` |
+| Basecamp modules built with logos-module-builder | modules run 42757080576 at `05b1389`: 5 `.lgx` on Linux amd64 and macOS |
+| program on the public v0.3 testnet | `networks.json` id and ImageID match README (doc-truth job) |
+| 0.4 actor registry | 15/15 non-batch probes, probes/results-v04.txt; CI job `e2e-v04` not green yet |
+| cycle counts | v0.3 table and 0.4 table equal the raw JSON in probes/data (doc-truth job) |
+
+Tracked files: no wallet, key, password or evaluator corpus; `docs/plan/` holds only the public
+prize text (`prize-LP-0018.md`); the private plan and prompt files are gitignored.
 
 ## Findings
 
-**M1 (fixed). README was empty.** Now states status and what works. Fixed in b71cce0.
+**M1, M2, L1 (fixed in the previous review).** Empty README, CI never run, synthetic test CID.
 
-**M2 (fixed). CI never ran.** Green on 3 OSes at 9bee462 (run 42555186573).
+**M3 (open). Basecamp modules never loaded in Basecamp.** They compile and package, and the
+manifests are tested, but no screen of the app or the templates has been seen running. Until then
+H20 (every feature in the UI), D.6 (states, two profiles, Qt number formatting) and W5 are unproven.
+Needs a desktop Basecamp session.
 
-**L1 (fixed). Test CID was synthetic.** Tests now use a CID from a real v0.5.3 upload; the SDK
-client was also run against two real nodes. Validation stays structural on purpose.
+**M4 (open). No public data.** Nothing is registered on any public network, so P-F8 and the
+coverage criteria (F.3–F.5) are unproven. Needs the public Storage node (VPS) and testnet 0.4.
 
-## What works
+**L2 (open). The 0.4 batch is unproven on a sequencer.** `RegisterBatch` is in the program and the
+client, and type-checks; the locally deployed guest predates it. CI `e2e-v04` builds the current
+guest and runs the batch cases.
 
-- `osm regions`, `osm discover --no-geofabrik`: 72 regions offline; `osm snapshot <region>`
-  reads the dated snapshot from Geofabrik's redirect and its MD5 (checked live once).
-- Storage REST client: request shape, Content-Length upload, atomic download, error classes,
-  CID check before any request (local scripted server).
+**L3 (open). No SPEL IDL for 0.4.** SPEL generates plan/apply code for v0.3 only. The 0.4 program
+is a plain actor program; no 0.4 IDL is claimed (H1 partly open).
 
-- `regions/predefined.json` and `osm_core::PREDEFINED` agree, 72 leaves, no overlap (5 tests).
-- Entry validation rejects out-of-set regions, wrong parent/level, undated or foreign source
-  URLs (including a look-alike host and a non-ASCII digit), bad MD5 forms without normalising,
-  sizes 0 and above 64 GiB including `u64::MAX`, timestamps 0, 1 and below the floor (8 tests).
+**L4 (open). App bulk host is sequential.** The Basecamp app hosts several regions as one `host`
+call each; one `register_batch` transaction exists only in the CLI path.
+
+## What works (with evidence)
+
+- Registry on v0.3: deploy, register, batch of 16, unhost, append-only history with hosts; 18/18
+  negative and repeat-signer probes on a real sequencer (probes/results.txt).
+- Registry on 0.4-rc: signer as host actor, clock-checked timestamp, region actor via PDA seed,
+  same account layout read by the same SDK; 15/15 probes incl. a direct message to a region actor
+  refused (probes/results-v04.txt).
+- Storage: upload with retries, download by CID and MD5 check against two real nodes and in CI by
+  an independent node; 2 GiB streamed at 2.7 MB peak memory.
+- Downloads without Geofabrik (CI blocks it); dated first-of-month snapshots with MD5 from
+  Geofabrik.
+- C ABI under ASan/UBSan; decoder fuzzed; atomic local writes survive `kill -9`.
+- Cycle counts: v0.3 register 49,970 and 0.4 Register 50,836 user cycles (docs/cycles.md).
 
 ## Not tested
 
-Everything on-chain, a real Storage node, Basecamp, ASan/UBSan, fuzzing, two profiles,
-catalogs. The REST client has only met a scripted server, not a real node.
+Basecamp at runtime (M3), any public registration (M4), the 0.4 batch on a sequencer (L2),
+testnet 0.4, Android, proving time.
 
 ## E.1 rows
 
-All rows 1–55 and E56–E87: open, no code yet in their area, except
-- 13 (§2 guards 2–3): off-chain part done in osm_core (closed set, size cap); on-chain open.
-- 15 (H37 bounds): size and timestamp bounds in osm_core with edge tests; program, SDK, FFI open.
-- 19, 26, E85: N/A (no key derivation, no secret hashing, no own identity).
-- 31 (SPEL): open, route recorded in docs/status/spel.md.
+Row-by-row status is in docs/criteria-checklist.md and the gate list in
+docs/status/gap-audit.md (refreshed 2026-11-10); this review changes no row's status beyond them.
 
 ## Environment
 
-macOS 26.0.1 arm64, rustc 1.95.0. No network writes.
+macOS 26.0.1 arm64, rustc 1.95.0 (workspace), 1.98.1 (0.4 client). LEZ v0.3.1 `1a003bfb`,
+v0.4.0-rc1 `1806e873`; Logos Storage v0.5.3; logos-module-builder `5f74cdb3`.
 
 ## Test traffic
 
-No transaction or upload to any public network. Read-only requests to download.geofabrik.de:
-the index (twice), a few HEAD requests and `.md5` files, on 2026-11-09.
+Public v0.3 testnet: one faucet claim and one program deploy of 6 transactions (docs/test-traffic.md). Everything
+else ran on local sequencers and local Storage nodes. Read-only requests to download.geofabrik.de.
