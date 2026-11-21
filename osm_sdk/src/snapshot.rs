@@ -9,6 +9,16 @@ pub fn latest_url(def: &RegionDef) -> String {
     format!("{GEOFABRIK_BASE}{}-latest.osm.pbf", def.geofabrik_path)
 }
 
+/// The same file in Geofabrik's layout before November 2026, without the per-region folder
+/// (`asia/china/henan-latest.osm.pbf`). Only for recognising older indexes and entries.
+pub fn earlier_latest_url(def: &RegionDef) -> String {
+    let dir = def
+        .geofabrik_path
+        .rsplit_once('/')
+        .map_or(def.geofabrik_path, |(d, _)| d);
+    format!("{GEOFABRIK_BASE}{dir}-latest.osm.pbf")
+}
+
 /// URL of the dated snapshot `YYMMDD`.
 pub fn snapshot_url(def: &RegionDef, yymmdd: u32) -> Result<String, SdkError> {
     let url = format!("{GEOFABRIK_BASE}{}-{yymmdd:06}.osm.pbf", def.geofabrik_path);

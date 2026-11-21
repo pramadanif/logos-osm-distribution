@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "source": "logos-co/lambda-prize prizes/LP-0018.md @ dbf3365952afaae9ec256f803fa2c5116ac6b82c, section Predefined Regions (closed set)",
-  "geofabrik_index_checked": "2026-11-09",
+  "geofabrik_index_checked": "2026-11-21",
   "notes": [
-    "region = prize leaf id; geofabrik_id = id in index-v1-nogeom.json; geofabrik_path = URL path without -latest.osm.pbf",
+    "region = prize leaf id; geofabrik_id = id in index-v1-nogeom.json; geofabrik_path = URL path without -latest.osm.pbf (one folder per region since Geofabrik's November 2026 layout; the older <parent>/<leaf>-YYMMDD.osm.pbf form is still accepted when validating)",
     "Ireland -> ireland-and-northern-ireland and Malaysia -> malaysia-singapore-brunei: the prize gives names only, see docs/status/conflicts.md C1"
   ],
   "regions": [
@@ -13,7 +13,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "germany",
-      "geofabrik_path": "europe/germany"
+      "geofabrik_path": "europe/germany/germany"
     },
     {
       "region": "france",
@@ -21,7 +21,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "france",
-      "geofabrik_path": "europe/france"
+      "geofabrik_path": "europe/france/france"
     },
     {
       "region": "great-britain",
@@ -29,7 +29,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "great-britain",
-      "geofabrik_path": "europe/great-britain"
+      "geofabrik_path": "europe/great-britain/great-britain"
     },
     {
       "region": "italy",
@@ -37,7 +37,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "italy",
-      "geofabrik_path": "europe/italy"
+      "geofabrik_path": "europe/italy/italy"
     },
     {
       "region": "spain",
@@ -45,7 +45,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "spain",
-      "geofabrik_path": "europe/spain"
+      "geofabrik_path": "europe/spain/spain"
     },
     {
       "region": "poland",
@@ -53,7 +53,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "poland",
-      "geofabrik_path": "europe/poland"
+      "geofabrik_path": "europe/poland/poland"
     },
     {
       "region": "netherlands",
@@ -61,7 +61,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "netherlands",
-      "geofabrik_path": "europe/netherlands"
+      "geofabrik_path": "europe/netherlands/netherlands"
     },
     {
       "region": "belgium",
@@ -69,7 +69,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "belgium",
-      "geofabrik_path": "europe/belgium"
+      "geofabrik_path": "europe/belgium/belgium"
     },
     {
       "region": "switzerland",
@@ -77,7 +77,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "switzerland",
-      "geofabrik_path": "europe/switzerland"
+      "geofabrik_path": "europe/switzerland/switzerland"
     },
     {
       "region": "austria",
@@ -85,7 +85,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "austria",
-      "geofabrik_path": "europe/austria"
+      "geofabrik_path": "europe/austria/austria"
     },
     {
       "region": "czech-republic",
@@ -93,7 +93,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "czech-republic",
-      "geofabrik_path": "europe/czech-republic"
+      "geofabrik_path": "europe/czech-republic/czech-republic"
     },
     {
       "region": "sweden",
@@ -101,7 +101,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "sweden",
-      "geofabrik_path": "europe/sweden"
+      "geofabrik_path": "europe/sweden/sweden"
     },
     {
       "region": "norway",
@@ -109,7 +109,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "norway",
-      "geofabrik_path": "europe/norway"
+      "geofabrik_path": "europe/norway/norway"
     },
     {
       "region": "denmark",
@@ -117,7 +117,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "denmark",
-      "geofabrik_path": "europe/denmark"
+      "geofabrik_path": "europe/denmark/denmark"
     },
     {
       "region": "finland",
@@ -125,7 +125,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "finland",
-      "geofabrik_path": "europe/finland"
+      "geofabrik_path": "europe/finland/finland"
     },
     {
       "region": "portugal",
@@ -133,7 +133,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "portugal",
-      "geofabrik_path": "europe/portugal"
+      "geofabrik_path": "europe/portugal/portugal"
     },
     {
       "region": "greece",
@@ -141,7 +141,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "greece",
-      "geofabrik_path": "europe/greece"
+      "geofabrik_path": "europe/greece/greece"
     },
     {
       "region": "ireland-and-northern-ireland",
@@ -149,7 +149,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "ireland-and-northern-ireland",
-      "geofabrik_path": "europe/ireland-and-northern-ireland"
+      "geofabrik_path": "europe/ireland-and-northern-ireland/ireland-and-northern-ireland"
     },
     {
       "region": "hungary",
@@ -157,7 +157,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "hungary",
-      "geofabrik_path": "europe/hungary"
+      "geofabrik_path": "europe/hungary/hungary"
     },
     {
       "region": "romania",
@@ -165,7 +165,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "romania",
-      "geofabrik_path": "europe/romania"
+      "geofabrik_path": "europe/romania/romania"
     },
     {
       "region": "bulgaria",
@@ -173,7 +173,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "bulgaria",
-      "geofabrik_path": "europe/bulgaria"
+      "geofabrik_path": "europe/bulgaria/bulgaria"
     },
     {
       "region": "ukraine",
@@ -181,7 +181,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "ukraine",
-      "geofabrik_path": "europe/ukraine"
+      "geofabrik_path": "europe/ukraine/ukraine"
     },
     {
       "region": "belarus",
@@ -189,7 +189,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "belarus",
-      "geofabrik_path": "europe/belarus"
+      "geofabrik_path": "europe/belarus/belarus"
     },
     {
       "region": "turkey",
@@ -197,7 +197,7 @@
       "level": "country",
       "continent": "europe",
       "geofabrik_id": "turkey",
-      "geofabrik_path": "europe/turkey"
+      "geofabrik_path": "europe/turkey/turkey"
     },
     {
       "region": "canada",
@@ -205,7 +205,7 @@
       "level": "country",
       "continent": "north-america",
       "geofabrik_id": "canada",
-      "geofabrik_path": "north-america/canada"
+      "geofabrik_path": "north-america/canada/canada"
     },
     {
       "region": "mexico",
@@ -213,7 +213,7 @@
       "level": "country",
       "continent": "north-america",
       "geofabrik_id": "mexico",
-      "geofabrik_path": "north-america/mexico"
+      "geofabrik_path": "north-america/mexico/mexico"
     },
     {
       "region": "japan",
@@ -221,7 +221,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "japan",
-      "geofabrik_path": "asia/japan"
+      "geofabrik_path": "asia/japan/japan"
     },
     {
       "region": "south-korea",
@@ -229,7 +229,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "south-korea",
-      "geofabrik_path": "asia/south-korea"
+      "geofabrik_path": "asia/south-korea/south-korea"
     },
     {
       "region": "indonesia",
@@ -237,7 +237,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "indonesia",
-      "geofabrik_path": "asia/indonesia"
+      "geofabrik_path": "asia/indonesia/indonesia"
     },
     {
       "region": "thailand",
@@ -245,7 +245,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "thailand",
-      "geofabrik_path": "asia/thailand"
+      "geofabrik_path": "asia/thailand/thailand"
     },
     {
       "region": "vietnam",
@@ -253,7 +253,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "vietnam",
-      "geofabrik_path": "asia/vietnam"
+      "geofabrik_path": "asia/vietnam/vietnam"
     },
     {
       "region": "malaysia-singapore-brunei",
@@ -261,7 +261,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "malaysia-singapore-brunei",
-      "geofabrik_path": "asia/malaysia-singapore-brunei"
+      "geofabrik_path": "asia/malaysia-singapore-brunei/malaysia-singapore-brunei"
     },
     {
       "region": "philippines",
@@ -269,7 +269,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "philippines",
-      "geofabrik_path": "asia/philippines"
+      "geofabrik_path": "asia/philippines/philippines"
     },
     {
       "region": "pakistan",
@@ -277,7 +277,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "pakistan",
-      "geofabrik_path": "asia/pakistan"
+      "geofabrik_path": "asia/pakistan/pakistan"
     },
     {
       "region": "bangladesh",
@@ -285,7 +285,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "bangladesh",
-      "geofabrik_path": "asia/bangladesh"
+      "geofabrik_path": "asia/bangladesh/bangladesh"
     },
     {
       "region": "iran",
@@ -293,7 +293,7 @@
       "level": "country",
       "continent": "asia",
       "geofabrik_id": "iran",
-      "geofabrik_path": "asia/iran"
+      "geofabrik_path": "asia/iran/iran"
     },
     {
       "region": "australia",
@@ -301,7 +301,7 @@
       "level": "country",
       "continent": "oceania",
       "geofabrik_id": "australia",
-      "geofabrik_path": "australia-oceania/australia"
+      "geofabrik_path": "australia-oceania/australia/australia"
     },
     {
       "region": "brazil",
@@ -309,7 +309,7 @@
       "level": "country",
       "continent": "south-america",
       "geofabrik_id": "brazil",
-      "geofabrik_path": "south-america/brazil"
+      "geofabrik_path": "south-america/brazil/brazil"
     },
     {
       "region": "argentina",
@@ -317,7 +317,7 @@
       "level": "country",
       "continent": "south-america",
       "geofabrik_id": "argentina",
-      "geofabrik_path": "south-america/argentina"
+      "geofabrik_path": "south-america/argentina/argentina"
     },
     {
       "region": "colombia",
@@ -325,7 +325,7 @@
       "level": "country",
       "continent": "south-america",
       "geofabrik_id": "colombia",
-      "geofabrik_path": "south-america/colombia"
+      "geofabrik_path": "south-america/colombia/colombia"
     },
     {
       "region": "peru",
@@ -333,7 +333,7 @@
       "level": "country",
       "continent": "south-america",
       "geofabrik_id": "peru",
-      "geofabrik_path": "south-america/peru"
+      "geofabrik_path": "south-america/peru/peru"
     },
     {
       "region": "chile",
@@ -341,7 +341,7 @@
       "level": "country",
       "continent": "south-america",
       "geofabrik_id": "chile",
-      "geofabrik_path": "south-america/chile"
+      "geofabrik_path": "south-america/chile/chile"
     },
     {
       "region": "south-africa",
@@ -349,7 +349,7 @@
       "level": "country",
       "continent": "africa",
       "geofabrik_id": "south-africa",
-      "geofabrik_path": "africa/south-africa"
+      "geofabrik_path": "africa/south-africa/south-africa"
     },
     {
       "region": "egypt",
@@ -357,7 +357,7 @@
       "level": "country",
       "continent": "africa",
       "geofabrik_id": "egypt",
-      "geofabrik_path": "africa/egypt"
+      "geofabrik_path": "africa/egypt/egypt"
     },
     {
       "region": "nigeria",
@@ -365,7 +365,7 @@
       "level": "country",
       "continent": "africa",
       "geofabrik_id": "nigeria",
-      "geofabrik_path": "africa/nigeria"
+      "geofabrik_path": "africa/nigeria/nigeria"
     },
     {
       "region": "kenya",
@@ -373,7 +373,7 @@
       "level": "country",
       "continent": "africa",
       "geofabrik_id": "kenya",
-      "geofabrik_path": "africa/kenya"
+      "geofabrik_path": "africa/kenya/kenya"
     },
     {
       "region": "morocco",
@@ -381,7 +381,7 @@
       "level": "country",
       "continent": "africa",
       "geofabrik_id": "morocco",
-      "geofabrik_path": "africa/morocco"
+      "geofabrik_path": "africa/morocco/morocco"
     },
     {
       "region": "ethiopia",
@@ -389,7 +389,7 @@
       "level": "country",
       "continent": "africa",
       "geofabrik_id": "ethiopia",
-      "geofabrik_path": "africa/ethiopia"
+      "geofabrik_path": "africa/ethiopia/ethiopia"
     },
     {
       "region": "us/california",
@@ -397,7 +397,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/california",
-      "geofabrik_path": "north-america/us/california"
+      "geofabrik_path": "north-america/us/california/california"
     },
     {
       "region": "us/texas",
@@ -405,7 +405,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/texas",
-      "geofabrik_path": "north-america/us/texas"
+      "geofabrik_path": "north-america/us/texas/texas"
     },
     {
       "region": "us/florida",
@@ -413,7 +413,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/florida",
-      "geofabrik_path": "north-america/us/florida"
+      "geofabrik_path": "north-america/us/florida/florida"
     },
     {
       "region": "us/new-york",
@@ -421,7 +421,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/new-york",
-      "geofabrik_path": "north-america/us/new-york"
+      "geofabrik_path": "north-america/us/new-york/new-york"
     },
     {
       "region": "us/washington",
@@ -429,7 +429,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/washington",
-      "geofabrik_path": "north-america/us/washington"
+      "geofabrik_path": "north-america/us/washington/washington"
     },
     {
       "region": "us/illinois",
@@ -437,7 +437,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/illinois",
-      "geofabrik_path": "north-america/us/illinois"
+      "geofabrik_path": "north-america/us/illinois/illinois"
     },
     {
       "region": "us/georgia",
@@ -445,7 +445,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/georgia",
-      "geofabrik_path": "north-america/us/georgia"
+      "geofabrik_path": "north-america/us/georgia/georgia"
     },
     {
       "region": "us/pennsylvania",
@@ -453,7 +453,7 @@
       "level": "subregion",
       "continent": "north-america",
       "geofabrik_id": "us/pennsylvania",
-      "geofabrik_path": "north-america/us/pennsylvania"
+      "geofabrik_path": "north-america/us/pennsylvania/pennsylvania"
     },
     {
       "region": "india/central-zone",
@@ -461,7 +461,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "central-zone",
-      "geofabrik_path": "asia/india/central-zone"
+      "geofabrik_path": "asia/india/central-zone/central-zone"
     },
     {
       "region": "india/eastern-zone",
@@ -469,7 +469,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "eastern-zone",
-      "geofabrik_path": "asia/india/eastern-zone"
+      "geofabrik_path": "asia/india/eastern-zone/eastern-zone"
     },
     {
       "region": "india/north-eastern-zone",
@@ -477,7 +477,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "north-eastern-zone",
-      "geofabrik_path": "asia/india/north-eastern-zone"
+      "geofabrik_path": "asia/india/north-eastern-zone/north-eastern-zone"
     },
     {
       "region": "india/northern-zone",
@@ -485,7 +485,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "northern-zone",
-      "geofabrik_path": "asia/india/northern-zone"
+      "geofabrik_path": "asia/india/northern-zone/northern-zone"
     },
     {
       "region": "india/southern-zone",
@@ -493,7 +493,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "southern-zone",
-      "geofabrik_path": "asia/india/southern-zone"
+      "geofabrik_path": "asia/india/southern-zone/southern-zone"
     },
     {
       "region": "india/western-zone",
@@ -501,7 +501,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "western-zone",
-      "geofabrik_path": "asia/india/western-zone"
+      "geofabrik_path": "asia/india/western-zone/western-zone"
     },
     {
       "region": "china/guangdong",
@@ -509,7 +509,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "guangdong",
-      "geofabrik_path": "asia/china/guangdong"
+      "geofabrik_path": "asia/china/guangdong/guangdong"
     },
     {
       "region": "china/jiangsu",
@@ -517,7 +517,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "jiangsu",
-      "geofabrik_path": "asia/china/jiangsu"
+      "geofabrik_path": "asia/china/jiangsu/jiangsu"
     },
     {
       "region": "china/shandong",
@@ -525,7 +525,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "shandong",
-      "geofabrik_path": "asia/china/shandong"
+      "geofabrik_path": "asia/china/shandong/shandong"
     },
     {
       "region": "china/zhejiang",
@@ -533,7 +533,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "zhejiang",
-      "geofabrik_path": "asia/china/zhejiang"
+      "geofabrik_path": "asia/china/zhejiang/zhejiang"
     },
     {
       "region": "china/sichuan",
@@ -541,7 +541,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "sichuan",
-      "geofabrik_path": "asia/china/sichuan"
+      "geofabrik_path": "asia/china/sichuan/sichuan"
     },
     {
       "region": "china/henan",
@@ -549,7 +549,7 @@
       "level": "subregion",
       "continent": "asia",
       "geofabrik_id": "henan",
-      "geofabrik_path": "asia/china/henan"
+      "geofabrik_path": "asia/china/henan/henan"
     },
     {
       "region": "russia/central-fed-district",
@@ -557,7 +557,7 @@
       "level": "subregion",
       "continent": "russia",
       "geofabrik_id": "central-fed-district",
-      "geofabrik_path": "russia/central-fed-district"
+      "geofabrik_path": "russia/central-fed-district/central-fed-district"
     },
     {
       "region": "russia/northwestern-fed-district",
@@ -565,7 +565,7 @@
       "level": "subregion",
       "continent": "russia",
       "geofabrik_id": "northwestern-fed-district",
-      "geofabrik_path": "russia/northwestern-fed-district"
+      "geofabrik_path": "russia/northwestern-fed-district/northwestern-fed-district"
     },
     {
       "region": "russia/volga-fed-district",
@@ -573,7 +573,7 @@
       "level": "subregion",
       "continent": "russia",
       "geofabrik_id": "volga-fed-district",
-      "geofabrik_path": "russia/volga-fed-district"
+      "geofabrik_path": "russia/volga-fed-district/volga-fed-district"
     },
     {
       "region": "russia/siberian-fed-district",
@@ -581,7 +581,7 @@
       "level": "subregion",
       "continent": "russia",
       "geofabrik_id": "siberian-fed-district",
-      "geofabrik_path": "russia/siberian-fed-district"
+      "geofabrik_path": "russia/siberian-fed-district/siberian-fed-district"
     }
   ]
 }

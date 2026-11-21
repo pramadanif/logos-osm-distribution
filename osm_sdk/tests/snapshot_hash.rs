@@ -10,18 +10,26 @@ fn urls_and_redirects() {
     let id = lookup("indonesia").unwrap();
     assert_eq!(
         latest_url(id),
-        "https://download.geofabrik.de/asia/indonesia-latest.osm.pbf"
+        "https://download.geofabrik.de/asia/indonesia/indonesia-latest.osm.pbf"
     );
     assert_eq!(
         snapshot_url(id, 261001).unwrap(),
-        "https://download.geofabrik.de/asia/indonesia-261001.osm.pbf"
+        "https://download.geofabrik.de/asia/indonesia/indonesia-261001.osm.pbf"
     );
     assert!(snapshot_url(id, 261301).is_err());
     assert!(snapshot_url(id, 1_000_000).is_err());
     assert_eq!(first_of_month(261108), 261101);
-    // Location value observed on 2026-11-09 (docs/status/geofabrik.md).
+    // Location values observed on 2026-11-09 (earlier layout) and 2026-11-21 (one folder per
+    // region, docs/status/geofabrik.md); both are read.
     let loc = "https://download.geofabrik.de/asia/indonesia-261108.osm.pbf";
     assert_eq!(snapshot_from_location(id, loc).unwrap(), 261108);
+    let loc = "https://download.geofabrik.de/asia/indonesia/indonesia-261120.osm.pbf";
+    assert_eq!(snapshot_from_location(id, loc).unwrap(), 261120);
+    assert!(snapshot_from_location(
+        id,
+        "https://download.geofabrik.de/asia/indonesia/japan-261108.osm.pbf"
+    )
+    .is_err());
     assert!(snapshot_from_location(
         id,
         "https://download.geofabrik.de/asia/japan-261108.osm.pbf"

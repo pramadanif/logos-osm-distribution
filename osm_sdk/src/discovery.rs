@@ -3,7 +3,7 @@
 use osm_core::{RegionDef, PREDEFINED};
 use serde::Deserialize;
 
-use crate::snapshot::latest_url;
+use crate::snapshot::{earlier_latest_url, latest_url};
 use crate::SdkError;
 
 #[derive(Deserialize)]
@@ -59,11 +59,14 @@ pub fn discover_from_index(json: &[u8]) -> Result<Discovery, SdkError> {
     })?;
     let mut out = Discovery::default();
     for def in PREDEFINED.iter() {
-        let want = latest_url(def);
-        let hit = index
-            .features
-            .iter()
-            .find(|f| f.properties.urls.pbf.as_deref() == Some(want.as_str()));
+        // The current layout first; an index in the earlier layout still matches.
+        let want = [latest_url(def), earlier_latest_url(def)];
+        let hit = want.iter().find_map(|w| {
+            index
+                .features
+                .iter()
+                .find(|f| f.properties.urls.pbf.as_deref() == Some(w.as_str()))
+        });
         match hit {
             Some(f) => out.regions.push(DiscoveredRegion {
                 def,

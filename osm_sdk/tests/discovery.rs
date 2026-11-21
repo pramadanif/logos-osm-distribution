@@ -43,8 +43,8 @@ fn real_index_lists_all_72_and_nothing_else() {
 fn renamed_region_is_reported_missing_not_guessed() {
     let raw = String::from_utf8(FIXTURE.to_vec()).unwrap();
     let renamed = raw.replace(
-        "asia/indonesia-latest.osm.pbf",
-        "asia/indonesia-renamed-latest.osm.pbf",
+        "asia/indonesia/indonesia-latest.osm.pbf",
+        "asia/indonesia/indonesia-renamed-latest.osm.pbf",
     );
     let d = discover_from_index(renamed.as_bytes()).unwrap();
     assert_eq!(d.regions.len(), 71);

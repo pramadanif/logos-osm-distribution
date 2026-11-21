@@ -143,7 +143,7 @@ fn unhosted_falls_back_to_geofabrik_when_allowed() {
     let (base, _rx) = common::serve(vec![
         (
             "307 Temporary Redirect",
-            vec![("Location", "{BASE}africa/kenya-261108.osm.pbf".into())],
+            vec![("Location", "{BASE}africa/kenya/kenya-261108.osm.pbf".into())],
             vec![],
         ),
         (
@@ -170,7 +170,7 @@ fn unhosted_falls_back_to_geofabrik_when_allowed() {
     assert_eq!(
         f.source,
         Source::Geofabrik {
-            url: "https://download.geofabrik.de/africa/kenya-261101.osm.pbf".into()
+            url: "https://download.geofabrik.de/africa/kenya/kenya-261101.osm.pbf".into()
         }
     );
     assert_eq!(std::fs::read(&f.path).unwrap(), body);

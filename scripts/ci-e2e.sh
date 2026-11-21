@@ -76,7 +76,7 @@ echo "::endgroup::"
 
 echo "::group::storage nodes + fixture Geofabrik"
 eval "$("$root/scripts/storage-two-nodes.sh" "$STORAGE_BIN" "$WORK/storage" | sed 's/^/export /')"
-eval "$("$root/tools/fake-geofabrik.sh" "$WORK/geofabrik" 8099 asia/china/henan 261101 | sed 's/^/export /')"
+eval "$("$root/tools/fake-geofabrik.sh" "$WORK/geofabrik" 8099 asia/china/henan/henan 261101 | sed 's/^/export /')"
 echo "::endgroup::"
 
 OSM_RPC=http://127.0.0.1:3040 OSM_PROGRAM="$program" OSM_HOST_ACCOUNT="${payer#Public/}" \

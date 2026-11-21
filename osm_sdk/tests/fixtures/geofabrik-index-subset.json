@@ -1,1454 +1,1650 @@
 {
  "type": "FeatureCollection",
- "captured": "2026-11-09",
+ "captured": "2026-11-21",
  "features": [
   {
    "type": "Feature",
    "properties": {
     "id": "argentina",
-    "parent": "south-america",
-    "iso3166-1:alpha2": [
-     "AR"
-    ],
     "name": "Argentina",
+    "iso3166-1:alpha2": "AR",
+    "parent": "south-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/south-america/argentina-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/south-america/argentina-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/argentina-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/south-america/argentina-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/south-america/argentina/argentina.poly",
+     "geojson": "https://download.geofabrik.de/south-america/argentina/argentina.geojson",
+     "pbf": "https://download.geofabrik.de/south-america/argentina/argentina-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/south-america/argentina/updates",
+     "gpkg": "https://download.geofabrik.de/south-america/argentina/argentina-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/south-america/argentina/argentina-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/south-america:argentina",
-     "updates": "https://download.geofabrik.de/south-america/argentina-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/argentina/argentina-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/south-america/argentina/argentina-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "australia",
-    "parent": "australia-oceania",
-    "iso3166-1:alpha2": [
-     "AU"
-    ],
     "name": "Australia",
+    "iso3166-1:alpha2": "AU",
+    "parent": "australia-oceania",
     "urls": {
-     "pbf": "https://download.geofabrik.de/australia-oceania/australia-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/australia-oceania/australia-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/australia-oceania/australia-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/australia-oceania/australia-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/australia-oceania/australia/australia.poly",
+     "geojson": "https://download.geofabrik.de/australia-oceania/australia/australia.geojson",
+     "pbf": "https://download.geofabrik.de/australia-oceania/australia/australia-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/australia-oceania/australia/updates",
      "taginfo": "https://taginfo.geofabrik.de/australia-oceania:australia",
-     "updates": "https://download.geofabrik.de/australia-oceania/australia-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/australia-oceania/australia/australia-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/australia-oceania/australia/australia-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "austria",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "AT"
-    ],
     "name": "Austria",
+    "iso3166-1:alpha2": "AT",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/austria-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/austria-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/austria-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/austria-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/austria/austria.poly",
+     "geojson": "https://download.geofabrik.de/europe/austria/austria.geojson",
+     "pbf": "https://download.geofabrik.de/europe/austria/austria-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/austria/updates",
+     "gpkg": "https://download.geofabrik.de/europe/austria/austria-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/austria/austria-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:austria",
-     "updates": "https://download.geofabrik.de/europe/austria-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/austria/austria-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/austria/austria-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "bangladesh",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "BD"
-    ],
     "name": "Bangladesh",
+    "iso3166-1:alpha2": "BD",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/bangladesh-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/bangladesh-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/bangladesh-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/bangladesh-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/bangladesh/bangladesh.poly",
+     "geojson": "https://download.geofabrik.de/asia/bangladesh/bangladesh.geojson",
+     "pbf": "https://download.geofabrik.de/asia/bangladesh/bangladesh-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/bangladesh/updates",
+     "gpkg": "https://download.geofabrik.de/asia/bangladesh/bangladesh-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/bangladesh/bangladesh-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:bangladesh",
-     "updates": "https://download.geofabrik.de/asia/bangladesh-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/bangladesh/bangladesh-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/bangladesh/bangladesh-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "belarus",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "BY"
-    ],
     "name": "Belarus",
+    "iso3166-1:alpha2": "BY",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/belarus-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/belarus-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/belarus-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/belarus-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/belarus/belarus.poly",
+     "geojson": "https://download.geofabrik.de/europe/belarus/belarus.geojson",
+     "pbf": "https://download.geofabrik.de/europe/belarus/belarus-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/belarus/updates",
+     "gpkg": "https://download.geofabrik.de/europe/belarus/belarus-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/belarus/belarus-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:belarus",
-     "updates": "https://download.geofabrik.de/europe/belarus-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/belarus/belarus-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/belarus/belarus-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "belgium",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "BE"
-    ],
     "name": "Belgium",
+    "iso3166-1:alpha2": "BE",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/belgium-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/belgium-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/belgium-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/belgium-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/belgium/belgium.poly",
+     "geojson": "https://download.geofabrik.de/europe/belgium/belgium.geojson",
+     "pbf": "https://download.geofabrik.de/europe/belgium/belgium-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/belgium/updates",
+     "gpkg": "https://download.geofabrik.de/europe/belgium/belgium-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/belgium/belgium-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:belgium",
-     "updates": "https://download.geofabrik.de/europe/belgium-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/belgium/belgium-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/belgium/belgium-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "brazil",
-    "parent": "south-america",
-    "iso3166-1:alpha2": [
-     "BR"
-    ],
     "name": "Brazil",
+    "iso3166-1:alpha2": "BR",
+    "parent": "south-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/south-america/brazil-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/brazil-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/south-america/brazil-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/south-america/brazil/brazil.poly",
+     "geojson": "https://download.geofabrik.de/south-america/brazil/brazil.geojson",
+     "pbf": "https://download.geofabrik.de/south-america/brazil/brazil-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/south-america/brazil/updates",
      "taginfo": "https://taginfo.geofabrik.de/south-america:brazil",
-     "updates": "https://download.geofabrik.de/south-america/brazil-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/brazil/brazil-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/south-america/brazil/brazil-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "britain-and-ireland",
-    "parent": "europe",
     "name": "Britain and Ireland",
+    "comment": "See separate sections for <a href=\"/europe/united-kingdom/\">United Kingdom</a> and <a href=\"/europe/ireland-and-northern-ireland/\">Ireland</a>.",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/britain-and-ireland-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/britain-and-ireland-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/britain-and-ireland/britain-and-ireland.poly",
+     "geojson": "https://download.geofabrik.de/europe/britain-and-ireland/britain-and-ireland.geojson",
+     "pbf": "https://download.geofabrik.de/europe/britain-and-ireland/britain-and-ireland-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/britain-and-ireland/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:britain-and-ireland",
-     "updates": "https://download.geofabrik.de/europe/britain-and-ireland-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/britain-and-ireland/britain-and-ireland-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/britain-and-ireland/britain-and-ireland-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "bulgaria",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "BG"
-    ],
     "name": "Bulgaria",
+    "iso3166-1:alpha2": "BG",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/bulgaria-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/bulgaria-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/bulgaria-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/bulgaria-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/bulgaria/bulgaria.poly",
+     "geojson": "https://download.geofabrik.de/europe/bulgaria/bulgaria.geojson",
+     "pbf": "https://download.geofabrik.de/europe/bulgaria/bulgaria-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/bulgaria/updates",
+     "gpkg": "https://download.geofabrik.de/europe/bulgaria/bulgaria-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/bulgaria/bulgaria-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:bulgaria",
-     "updates": "https://download.geofabrik.de/europe/bulgaria-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/bulgaria/bulgaria-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/bulgaria/bulgaria-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "canada",
-    "parent": "north-america",
-    "iso3166-1:alpha2": [
-     "CA"
-    ],
     "name": "Canada",
+    "iso3166-1:alpha2": "CA",
+    "parent": "north-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/canada-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/canada-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/canada-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/north-america/canada/canada.poly",
+     "geojson": "https://download.geofabrik.de/north-america/canada/canada.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/canada/canada-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/canada/updates",
      "taginfo": "https://taginfo.geofabrik.de/north-america:canada",
-     "updates": "https://download.geofabrik.de/north-america/canada-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/canada/canada-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/canada/canada-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "central-fed-district",
-    "parent": "russia",
     "name": "Central Federal District",
+    "parent": "russia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/russia/central-fed-district-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/central-fed-district-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/russia/central-fed-district-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/russia/central-fed-district/central-fed-district.poly",
+     "geojson": "https://download.geofabrik.de/russia/central-fed-district/central-fed-district.geojson",
+     "pbf": "https://download.geofabrik.de/russia/central-fed-district/central-fed-district-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/russia/central-fed-district/updates",
+     "gpkg": "https://download.geofabrik.de/russia/central-fed-district/central-fed-district-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/russia/central-fed-district/central-fed-district-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/russia:central-fed-district",
-     "updates": "https://download.geofabrik.de/russia/central-fed-district-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/central-fed-district/central-fed-district-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/russia/central-fed-district/central-fed-district-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "central-zone",
-    "parent": "india",
     "name": "Central Zone",
+    "parent": "india",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/india/central-zone-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/india/central-zone-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/central-zone-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/india/central-zone-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/india/central-zone/central-zone.poly",
+     "geojson": "https://download.geofabrik.de/asia/india/central-zone/central-zone.geojson",
+     "pbf": "https://download.geofabrik.de/asia/india/central-zone/central-zone-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/india/central-zone/updates",
+     "gpkg": "https://download.geofabrik.de/asia/india/central-zone/central-zone-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/india/central-zone/central-zone-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:india:central-zone",
-     "updates": "https://download.geofabrik.de/asia/india/central-zone-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/central-zone/central-zone-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/india/central-zone/central-zone-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "chile",
-    "parent": "south-america",
-    "iso3166-1:alpha2": [
-     "CL"
-    ],
     "name": "Chile",
+    "iso3166-1:alpha2": "CL",
+    "parent": "south-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/south-america/chile-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/south-america/chile-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/chile-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/south-america/chile-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/south-america/chile/chile.poly",
+     "geojson": "https://download.geofabrik.de/south-america/chile/chile.geojson",
+     "pbf": "https://download.geofabrik.de/south-america/chile/chile-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/south-america/chile/updates",
+     "gpkg": "https://download.geofabrik.de/south-america/chile/chile-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/south-america/chile/chile-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/south-america:chile",
-     "updates": "https://download.geofabrik.de/south-america/chile-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/chile/chile-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/south-america/chile/chile-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "china",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "CN"
-    ],
     "name": "China",
+    "iso3166-1:alpha2": "CN",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/china-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/china-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/china-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/china/china.poly",
+     "geojson": "https://download.geofabrik.de/asia/china/china.geojson",
+     "pbf": "https://download.geofabrik.de/asia/china/china-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/china/updates",
      "taginfo": "https://taginfo.geofabrik.de/asia:china",
-     "updates": "https://download.geofabrik.de/asia/china-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/china-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/china/china-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "colombia",
-    "parent": "south-america",
-    "iso3166-1:alpha2": [
-     "CO"
-    ],
     "name": "Colombia",
+    "iso3166-1:alpha2": "CO",
+    "parent": "south-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/south-america/colombia-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/south-america/colombia-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/colombia-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/south-america/colombia-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/south-america/colombia/colombia.poly",
+     "geojson": "https://download.geofabrik.de/south-america/colombia/colombia.geojson",
+     "pbf": "https://download.geofabrik.de/south-america/colombia/colombia-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/south-america/colombia/updates",
+     "gpkg": "https://download.geofabrik.de/south-america/colombia/colombia-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/south-america/colombia/colombia-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/south-america:colombia",
-     "updates": "https://download.geofabrik.de/south-america/colombia-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/colombia/colombia-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/south-america/colombia/colombia-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "czech-republic",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "CZ"
-    ],
     "name": "Czech Republic",
+    "iso3166-1:alpha2": "CZ",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/czech-republic-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/czech-republic-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/czech-republic-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/czech-republic-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/czech-republic/czech-republic.poly",
+     "geojson": "https://download.geofabrik.de/europe/czech-republic/czech-republic.geojson",
+     "pbf": "https://download.geofabrik.de/europe/czech-republic/czech-republic-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/czech-republic/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:czech-republic",
-     "updates": "https://download.geofabrik.de/europe/czech-republic-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/czech-republic/czech-republic-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/czech-republic/czech-republic-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "denmark",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "DK"
-    ],
     "name": "Denmark",
+    "iso3166-1:alpha2": "DK",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/denmark-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/denmark-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/denmark-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/denmark-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/denmark/denmark.poly",
+     "geojson": "https://download.geofabrik.de/europe/denmark/denmark.geojson",
+     "pbf": "https://download.geofabrik.de/europe/denmark/denmark-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/denmark/updates",
+     "gpkg": "https://download.geofabrik.de/europe/denmark/denmark-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/denmark/denmark-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:denmark",
-     "updates": "https://download.geofabrik.de/europe/denmark-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/denmark/denmark-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/denmark/denmark-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "eastern-zone",
-    "parent": "india",
     "name": "Eastern Zone",
+    "parent": "india",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/india/eastern-zone-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/india/eastern-zone-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/eastern-zone-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/india/eastern-zone-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/india/eastern-zone/eastern-zone.poly",
+     "geojson": "https://download.geofabrik.de/asia/india/eastern-zone/eastern-zone.geojson",
+     "pbf": "https://download.geofabrik.de/asia/india/eastern-zone/eastern-zone-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/india/eastern-zone/updates",
+     "gpkg": "https://download.geofabrik.de/asia/india/eastern-zone/eastern-zone-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/india/eastern-zone/eastern-zone-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:india:eastern-zone",
-     "updates": "https://download.geofabrik.de/asia/india/eastern-zone-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/eastern-zone/eastern-zone-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/india/eastern-zone/eastern-zone-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "egypt",
-    "parent": "africa",
-    "iso3166-1:alpha2": [
-     "EG"
-    ],
     "name": "Egypt",
+    "iso3166-1:alpha2": "EG",
+    "parent": "africa",
     "urls": {
-     "pbf": "https://download.geofabrik.de/africa/egypt-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/africa/egypt-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/egypt-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/africa/egypt-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/africa/egypt/egypt.poly",
+     "geojson": "https://download.geofabrik.de/africa/egypt/egypt.geojson",
+     "pbf": "https://download.geofabrik.de/africa/egypt/egypt-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/africa/egypt/updates",
+     "gpkg": "https://download.geofabrik.de/africa/egypt/egypt-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/africa/egypt/egypt-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/africa:egypt",
-     "updates": "https://download.geofabrik.de/africa/egypt-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/egypt/egypt-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/africa/egypt/egypt-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "ethiopia",
-    "parent": "africa",
-    "iso3166-1:alpha2": [
-     "ET"
-    ],
     "name": "Ethiopia",
+    "iso3166-1:alpha2": "ET",
+    "parent": "africa",
     "urls": {
-     "pbf": "https://download.geofabrik.de/africa/ethiopia-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/africa/ethiopia-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/ethiopia-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/africa/ethiopia-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/africa/ethiopia/ethiopia.poly",
+     "geojson": "https://download.geofabrik.de/africa/ethiopia/ethiopia.geojson",
+     "pbf": "https://download.geofabrik.de/africa/ethiopia/ethiopia-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/africa/ethiopia/updates",
+     "gpkg": "https://download.geofabrik.de/africa/ethiopia/ethiopia-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/africa/ethiopia/ethiopia-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/africa:ethiopia",
-     "updates": "https://download.geofabrik.de/africa/ethiopia-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/ethiopia/ethiopia-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/africa/ethiopia/ethiopia-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "finland",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "FI"
-    ],
     "name": "Finland",
+    "iso3166-1:alpha2": "FI",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/finland-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/finland-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/finland-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/finland-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/finland/finland.poly",
+     "geojson": "https://download.geofabrik.de/europe/finland/finland.geojson",
+     "pbf": "https://download.geofabrik.de/europe/finland/finland-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/finland/updates",
+     "gpkg": "https://download.geofabrik.de/europe/finland/finland-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/finland/finland-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:finland",
-     "updates": "https://download.geofabrik.de/europe/finland-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/finland/finland-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/finland/finland-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "france",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "FR"
-    ],
     "name": "France",
+    "comment": "Note that while the DOM/TOM regions are listed under \"Sub Regions\" below for convenience, the \"France\" file only contains France Metropolitaine (mainland France).",
+    "iso3166-1:alpha2": "FR",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/france-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/france-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/france-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/france/france.poly",
+     "geojson": "https://download.geofabrik.de/europe/france/france.geojson",
+     "pbf": "https://download.geofabrik.de/europe/france/france-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/france/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:france",
-     "updates": "https://download.geofabrik.de/europe/france-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/france/france-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/france/france-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "georgia",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "GE"
-    ],
     "name": "Georgia",
+    "iso3166-1:alpha2": "GE",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/georgia-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/georgia-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/georgia-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/georgia-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/georgia/georgia.poly",
+     "geojson": "https://download.geofabrik.de/europe/georgia/georgia.geojson",
+     "pbf": "https://download.geofabrik.de/europe/georgia/georgia-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/georgia/updates",
+     "gpkg": "https://download.geofabrik.de/europe/georgia/georgia-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/georgia/georgia-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:georgia",
-     "updates": "https://download.geofabrik.de/europe/georgia-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/georgia/georgia-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/georgia/georgia-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "germany",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "DE"
-    ],
     "name": "Germany",
+    "iso3166-1:alpha2": "DE",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/germany-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/germany-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/germany-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/germany/germany.poly",
+     "geojson": "https://download.geofabrik.de/europe/germany/germany.geojson",
+     "pbf": "https://download.geofabrik.de/europe/germany/germany-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/germany/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:germany",
-     "updates": "https://download.geofabrik.de/europe/germany-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/germany/germany-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/germany/germany-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "great-britain",
-    "parent": "europe",
     "name": "Great Britain",
+    "comment": "This includes no part of Ireland. See <a href=\"/europe/united-kingdom/\">United Kingdom</a> for a file that also has Northern Ireland, or <a href=\"/europe/britain-and-ireland/\">Britain and Ireland</a> for a larger extract of the region.",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/great-britain-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/great-britain-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/great-britain-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/great-britain/great-britain.poly",
+     "geojson": "https://download.geofabrik.de/europe/great-britain/great-britain.geojson",
+     "pbf": "https://download.geofabrik.de/europe/great-britain/great-britain-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/great-britain/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:great-britain",
-     "updates": "https://download.geofabrik.de/europe/great-britain-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/great-britain/great-britain-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/great-britain/great-britain-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "greece",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "GR"
-    ],
     "name": "Greece",
+    "iso3166-1:alpha2": "GR",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/greece-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/greece-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/greece-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/greece-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/greece/greece.poly",
+     "geojson": "https://download.geofabrik.de/europe/greece/greece.geojson",
+     "pbf": "https://download.geofabrik.de/europe/greece/greece-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/greece/updates",
+     "gpkg": "https://download.geofabrik.de/europe/greece/greece-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/greece/greece-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:greece",
-     "updates": "https://download.geofabrik.de/europe/greece-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/greece/greece-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/greece/greece-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "guangdong",
-    "parent": "china",
     "name": "Guangdong (with Hong Kong and Macau)",
+    "parent": "china",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/china/guangdong-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/china/guangdong-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/guangdong-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/china/guangdong-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/china/guangdong/guangdong.poly",
+     "geojson": "https://download.geofabrik.de/asia/china/guangdong/guangdong.geojson",
+     "pbf": "https://download.geofabrik.de/asia/china/guangdong/guangdong-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/china/guangdong/updates",
+     "gpkg": "https://download.geofabrik.de/asia/china/guangdong/guangdong-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/china/guangdong/guangdong-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:china:guangdong",
-     "updates": "https://download.geofabrik.de/asia/china/guangdong-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/guangdong/guangdong-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/china/guangdong/guangdong-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "henan",
-    "parent": "china",
     "name": "Henan",
+    "parent": "china",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/china/henan-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/china/henan-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/henan-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/china/henan-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/china/henan/henan.poly",
+     "geojson": "https://download.geofabrik.de/asia/china/henan/henan.geojson",
+     "pbf": "https://download.geofabrik.de/asia/china/henan/henan-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/china/henan/updates",
+     "gpkg": "https://download.geofabrik.de/asia/china/henan/henan-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/china/henan/henan-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:china:henan",
-     "updates": "https://download.geofabrik.de/asia/china/henan-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/henan/henan-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/china/henan/henan-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "hungary",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "HU"
-    ],
     "name": "Hungary",
+    "iso3166-1:alpha2": "HU",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/hungary-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/hungary-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/hungary-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/hungary-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/hungary/hungary.poly",
+     "geojson": "https://download.geofabrik.de/europe/hungary/hungary.geojson",
+     "pbf": "https://download.geofabrik.de/europe/hungary/hungary-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/hungary/updates",
+     "gpkg": "https://download.geofabrik.de/europe/hungary/hungary-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/hungary/hungary-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:hungary",
-     "updates": "https://download.geofabrik.de/europe/hungary-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/hungary/hungary-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/hungary/hungary-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "india",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "IN"
-    ],
     "name": "India",
+    "iso3166-1:alpha2": "IN",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/india-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/india-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/india-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/india/india.poly",
+     "geojson": "https://download.geofabrik.de/asia/india/india.geojson",
+     "pbf": "https://download.geofabrik.de/asia/india/india-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/india/updates",
      "taginfo": "https://taginfo.geofabrik.de/asia:india",
-     "updates": "https://download.geofabrik.de/asia/india-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/india-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/india/india-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "indonesia",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "ID"
-    ],
     "name": "Indonesia (with East Timor)",
+    "comment": "East Timor is included in the Indonesia extract.",
+    "iso3166-1:alpha2": "ID",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/indonesia-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/indonesia-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/indonesia-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/indonesia-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/indonesia/indonesia.poly",
+     "geojson": "https://download.geofabrik.de/asia/indonesia/indonesia.geojson",
+     "pbf": "https://download.geofabrik.de/asia/indonesia/indonesia-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/indonesia/updates",
      "taginfo": "https://taginfo.geofabrik.de/asia:indonesia",
-     "updates": "https://download.geofabrik.de/asia/indonesia-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/indonesia/indonesia-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/indonesia/indonesia-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "iran",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "IR"
-    ],
     "name": "Iran",
+    "iso3166-1:alpha2": "IR",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/iran-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/iran-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/iran-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/iran-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/iran/iran.poly",
+     "geojson": "https://download.geofabrik.de/asia/iran/iran.geojson",
+     "pbf": "https://download.geofabrik.de/asia/iran/iran-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/iran/updates",
+     "gpkg": "https://download.geofabrik.de/asia/iran/iran-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/iran/iran-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:iran",
-     "updates": "https://download.geofabrik.de/asia/iran-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/iran/iran-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/iran/iran-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "ireland-and-northern-ireland",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "IE"
-    ],
     "name": "Ireland and Northern Ireland",
+    "iso3166-1:alpha2": "IE",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/ireland-and-northern-ireland-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/ireland-and-northern-ireland-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/ireland-and-northern-ireland-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/ireland-and-northern-ireland-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland.poly",
+     "geojson": "https://download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland.geojson",
+     "pbf": "https://download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/ireland-and-northern-ireland/updates",
+     "gpkg": "https://download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:ireland-and-northern-ireland",
-     "updates": "https://download.geofabrik.de/europe/ireland-and-northern-ireland-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "italy",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "IT"
-    ],
     "name": "Italy",
+    "iso3166-1:alpha2": "IT",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/italy-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/italy-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/italy-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/italy/italy.poly",
+     "geojson": "https://download.geofabrik.de/europe/italy/italy.geojson",
+     "pbf": "https://download.geofabrik.de/europe/italy/italy-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/italy/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:italy",
-     "updates": "https://download.geofabrik.de/europe/italy-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/italy/italy-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/italy/italy-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "japan",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "JP"
-    ],
     "name": "Japan",
+    "iso3166-1:alpha2": "JP",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/japan-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/japan-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/japan-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/japan/japan.poly",
+     "geojson": "https://download.geofabrik.de/asia/japan/japan.geojson",
+     "pbf": "https://download.geofabrik.de/asia/japan/japan-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/japan/updates",
      "taginfo": "https://taginfo.geofabrik.de/asia:japan",
-     "updates": "https://download.geofabrik.de/asia/japan-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/japan/japan-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/japan/japan-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "jiangsu",
-    "parent": "china",
     "name": "Jiangsu",
+    "parent": "china",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/china/jiangsu-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/china/jiangsu-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/jiangsu-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/china/jiangsu-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/china/jiangsu/jiangsu.poly",
+     "geojson": "https://download.geofabrik.de/asia/china/jiangsu/jiangsu.geojson",
+     "pbf": "https://download.geofabrik.de/asia/china/jiangsu/jiangsu-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/china/jiangsu/updates",
+     "gpkg": "https://download.geofabrik.de/asia/china/jiangsu/jiangsu-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/china/jiangsu/jiangsu-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:china:jiangsu",
-     "updates": "https://download.geofabrik.de/asia/china/jiangsu-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/jiangsu/jiangsu-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/china/jiangsu/jiangsu-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "kenya",
-    "parent": "africa",
-    "iso3166-1:alpha2": [
-     "KE"
-    ],
     "name": "Kenya",
+    "iso3166-1:alpha2": "KE",
+    "parent": "africa",
     "urls": {
-     "pbf": "https://download.geofabrik.de/africa/kenya-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/africa/kenya-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/kenya-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/africa/kenya-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/africa/kenya/kenya.poly",
+     "geojson": "https://download.geofabrik.de/africa/kenya/kenya.geojson",
+     "pbf": "https://download.geofabrik.de/africa/kenya/kenya-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/africa/kenya/updates",
+     "gpkg": "https://download.geofabrik.de/africa/kenya/kenya-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/africa/kenya/kenya-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/africa:kenya",
-     "updates": "https://download.geofabrik.de/africa/kenya-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/kenya/kenya-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/africa/kenya/kenya-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "malaysia-singapore-brunei",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "MY"
-    ],
     "name": "Malaysia, Singapore, and Brunei",
+    "iso3166-1:alpha2": "MY,SG,BN",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/malaysia-singapore-brunei-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/malaysia-singapore-brunei-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/malaysia-singapore-brunei-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/malaysia-singapore-brunei-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei.poly",
+     "geojson": "https://download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei.geojson",
+     "pbf": "https://download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/malaysia-singapore-brunei/updates",
+     "gpkg": "https://download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:malaysia-singapore-brunei",
-     "updates": "https://download.geofabrik.de/asia/malaysia-singapore-brunei-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "mexico",
-    "parent": "north-america",
-    "iso3166-1:alpha2": [
-     "MX"
-    ],
     "name": "Mexico",
+    "iso3166-1:alpha2": "MX",
+    "parent": "north-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/mexico-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/mexico-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/mexico-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/mexico-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/north-america/mexico/mexico.poly",
+     "geojson": "https://download.geofabrik.de/north-america/mexico/mexico.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/mexico/mexico-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/mexico/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/mexico/mexico-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/mexico/mexico-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/north-america:mexico",
-     "updates": "https://download.geofabrik.de/north-america/mexico-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/mexico/mexico-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/mexico/mexico-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "morocco",
-    "parent": "africa",
-    "iso3166-1:alpha2": [
-     "MA"
-    ],
     "name": "Morocco",
+    "iso3166-1:alpha2": "MA",
+    "parent": "africa",
     "urls": {
-     "pbf": "https://download.geofabrik.de/africa/morocco-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/africa/morocco-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/morocco-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/africa/morocco-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/africa/morocco/morocco.poly",
+     "geojson": "https://download.geofabrik.de/africa/morocco/morocco.geojson",
+     "pbf": "https://download.geofabrik.de/africa/morocco/morocco-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/africa/morocco/updates",
+     "gpkg": "https://download.geofabrik.de/africa/morocco/morocco-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/africa/morocco/morocco-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/africa:morocco",
-     "updates": "https://download.geofabrik.de/africa/morocco-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/morocco/morocco-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/africa/morocco/morocco-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "netherlands",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "NL"
-    ],
     "name": "Netherlands",
+    "iso3166-1:alpha2": "NL",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/netherlands-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/netherlands-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/netherlands-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/netherlands-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/netherlands/netherlands.poly",
+     "geojson": "https://download.geofabrik.de/europe/netherlands/netherlands.geojson",
+     "pbf": "https://download.geofabrik.de/europe/netherlands/netherlands-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/netherlands/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:netherlands",
-     "updates": "https://download.geofabrik.de/europe/netherlands-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/netherlands/netherlands-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/netherlands/netherlands-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "nigeria",
-    "parent": "africa",
-    "iso3166-1:alpha2": [
-     "NG"
-    ],
     "name": "Nigeria",
+    "iso3166-1:alpha2": "NG",
+    "parent": "africa",
     "urls": {
-     "pbf": "https://download.geofabrik.de/africa/nigeria-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/africa/nigeria-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/nigeria-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/africa/nigeria-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/africa/nigeria/nigeria.poly",
+     "geojson": "https://download.geofabrik.de/africa/nigeria/nigeria.geojson",
+     "pbf": "https://download.geofabrik.de/africa/nigeria/nigeria-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/africa/nigeria/updates",
+     "gpkg": "https://download.geofabrik.de/africa/nigeria/nigeria-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/africa/nigeria/nigeria-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/africa:nigeria",
-     "updates": "https://download.geofabrik.de/africa/nigeria-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/nigeria/nigeria-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/africa/nigeria/nigeria-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "north-eastern-zone",
-    "parent": "india",
     "name": "North-Eastern Zone",
+    "parent": "india",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/india/north-eastern-zone-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/india/north-eastern-zone-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/north-eastern-zone-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/india/north-eastern-zone-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone.poly",
+     "geojson": "https://download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone.geojson",
+     "pbf": "https://download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/india/north-eastern-zone/updates",
+     "gpkg": "https://download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:india:north-eastern-zone",
-     "updates": "https://download.geofabrik.de/asia/india/north-eastern-zone-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "northern-zone",
-    "parent": "india",
     "name": "Northern Zone",
+    "parent": "india",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/india/northern-zone-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/india/northern-zone-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/northern-zone-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/india/northern-zone-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/india/northern-zone/northern-zone.poly",
+     "geojson": "https://download.geofabrik.de/asia/india/northern-zone/northern-zone.geojson",
+     "pbf": "https://download.geofabrik.de/asia/india/northern-zone/northern-zone-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/india/northern-zone/updates",
+     "gpkg": "https://download.geofabrik.de/asia/india/northern-zone/northern-zone-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/india/northern-zone/northern-zone-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:india:northern-zone",
-     "updates": "https://download.geofabrik.de/asia/india/northern-zone-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/northern-zone/northern-zone-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/india/northern-zone/northern-zone-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "northwestern-fed-district",
-    "parent": "russia",
     "name": "Northwestern Federal District",
+    "parent": "russia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/russia/northwestern-fed-district-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/russia/northwestern-fed-district-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/northwestern-fed-district-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/russia/northwestern-fed-district-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district.poly",
+     "geojson": "https://download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district.geojson",
+     "pbf": "https://download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/russia/northwestern-fed-district/updates",
+     "gpkg": "https://download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/russia:northwestern-fed-district",
-     "updates": "https://download.geofabrik.de/russia/northwestern-fed-district-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "norway",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "NO"
-    ],
     "name": "Norway",
+    "iso3166-1:alpha2": "NO",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/norway-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/norway-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/norway-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/norway-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/norway/norway.poly",
+     "geojson": "https://download.geofabrik.de/europe/norway/norway.geojson",
+     "pbf": "https://download.geofabrik.de/europe/norway/norway-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/norway/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:norway",
-     "updates": "https://download.geofabrik.de/europe/norway-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/norway/norway-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/norway/norway-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "pakistan",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "PK"
-    ],
     "name": "Pakistan",
+    "iso3166-1:alpha2": "PK",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/pakistan-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/pakistan-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/pakistan-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/pakistan-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/pakistan/pakistan.poly",
+     "geojson": "https://download.geofabrik.de/asia/pakistan/pakistan.geojson",
+     "pbf": "https://download.geofabrik.de/asia/pakistan/pakistan-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/pakistan/updates",
+     "gpkg": "https://download.geofabrik.de/asia/pakistan/pakistan-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/pakistan/pakistan-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:pakistan",
-     "updates": "https://download.geofabrik.de/asia/pakistan-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/pakistan/pakistan-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/pakistan/pakistan-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "peru",
-    "parent": "south-america",
-    "iso3166-1:alpha2": [
-     "PE"
-    ],
     "name": "Peru",
+    "iso3166-1:alpha2": "PE",
+    "parent": "south-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/south-america/peru-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/south-america/peru-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/peru-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/south-america/peru-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/south-america/peru/peru.poly",
+     "geojson": "https://download.geofabrik.de/south-america/peru/peru.geojson",
+     "pbf": "https://download.geofabrik.de/south-america/peru/peru-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/south-america/peru/updates",
+     "gpkg": "https://download.geofabrik.de/south-america/peru/peru-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/south-america/peru/peru-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/south-america:peru",
-     "updates": "https://download.geofabrik.de/south-america/peru-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/south-america/peru/peru-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/south-america/peru/peru-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "philippines",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "PH"
-    ],
     "name": "Philippines",
+    "iso3166-1:alpha2": "PH",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/philippines-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/philippines-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/philippines-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/philippines-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/philippines/philippines.poly",
+     "geojson": "https://download.geofabrik.de/asia/philippines/philippines.geojson",
+     "pbf": "https://download.geofabrik.de/asia/philippines/philippines-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/philippines/updates",
+     "gpkg": "https://download.geofabrik.de/asia/philippines/philippines-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/philippines/philippines-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:philippines",
-     "updates": "https://download.geofabrik.de/asia/philippines-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/philippines/philippines-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/philippines/philippines-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "poland",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "PL"
-    ],
     "name": "Poland",
+    "iso3166-1:alpha2": "PL",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/poland-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/poland-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/poland-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/poland/poland.poly",
+     "geojson": "https://download.geofabrik.de/europe/poland/poland.geojson",
+     "pbf": "https://download.geofabrik.de/europe/poland/poland-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/poland/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:poland",
-     "updates": "https://download.geofabrik.de/europe/poland-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/poland/poland-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/poland/poland-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "portugal",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "PT"
-    ],
     "name": "Portugal",
+    "iso3166-1:alpha2": "PT",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/portugal-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/portugal-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/portugal-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/portugal-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/portugal/portugal.poly",
+     "geojson": "https://download.geofabrik.de/europe/portugal/portugal.geojson",
+     "pbf": "https://download.geofabrik.de/europe/portugal/portugal-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/portugal/updates",
+     "gpkg": "https://download.geofabrik.de/europe/portugal/portugal-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/portugal/portugal-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:portugal",
-     "updates": "https://download.geofabrik.de/europe/portugal-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/portugal/portugal-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/portugal/portugal-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "romania",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "RO"
-    ],
     "name": "Romania",
+    "iso3166-1:alpha2": "RO",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/romania-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/romania-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/romania-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/romania-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/romania/romania.poly",
+     "geojson": "https://download.geofabrik.de/europe/romania/romania.geojson",
+     "pbf": "https://download.geofabrik.de/europe/romania/romania-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/romania/updates",
+     "gpkg": "https://download.geofabrik.de/europe/romania/romania-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/romania/romania-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:romania",
-     "updates": "https://download.geofabrik.de/europe/romania-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/romania/romania-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/romania/romania-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "russia",
-    "iso3166-1:alpha2": [
-     "RU"
-    ],
     "name": "Russian Federation",
+    "special_regions": [
+     "kaliningrad"
+    ],
+    "comment": "Russia is listed under both Asia and Europe. Please note that the inclusion of Crimea does not constitute a political statement; Crimea is included in both the Russia and the Ukraine downloads.",
+    "iso3166-1:alpha2": "RU",
+    "parent": null,
     "urls": {
-     "pbf": "https://download.geofabrik.de/russia-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/russia-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/russia/russia.poly",
+     "geojson": "https://download.geofabrik.de/russia/russia.geojson",
+     "pbf": "https://download.geofabrik.de/russia/russia-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/russia/updates",
      "taginfo": "https://taginfo.geofabrik.de/russia",
-     "updates": "https://download.geofabrik.de/russia-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/russia-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/russia/russia-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "shandong",
-    "parent": "china",
     "name": "Shandong",
+    "parent": "china",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/china/shandong-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/china/shandong-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/shandong-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/china/shandong-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/china/shandong/shandong.poly",
+     "geojson": "https://download.geofabrik.de/asia/china/shandong/shandong.geojson",
+     "pbf": "https://download.geofabrik.de/asia/china/shandong/shandong-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/china/shandong/updates",
+     "gpkg": "https://download.geofabrik.de/asia/china/shandong/shandong-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/china/shandong/shandong-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:china:shandong",
-     "updates": "https://download.geofabrik.de/asia/china/shandong-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/shandong/shandong-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/china/shandong/shandong-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "siberian-fed-district",
-    "parent": "russia",
     "name": "Siberian Federal District",
+    "parent": "russia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/russia/siberian-fed-district-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/russia/siberian-fed-district-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/siberian-fed-district-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/russia/siberian-fed-district-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district.poly",
+     "geojson": "https://download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district.geojson",
+     "pbf": "https://download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/russia/siberian-fed-district/updates",
+     "gpkg": "https://download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/russia:siberian-fed-district",
-     "updates": "https://download.geofabrik.de/russia/siberian-fed-district-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "sichuan",
-    "parent": "china",
     "name": "Sichuan",
+    "parent": "china",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/china/sichuan-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/china/sichuan-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/sichuan-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/china/sichuan-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/china/sichuan/sichuan.poly",
+     "geojson": "https://download.geofabrik.de/asia/china/sichuan/sichuan.geojson",
+     "pbf": "https://download.geofabrik.de/asia/china/sichuan/sichuan-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/china/sichuan/updates",
+     "gpkg": "https://download.geofabrik.de/asia/china/sichuan/sichuan-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/china/sichuan/sichuan-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:china:sichuan",
-     "updates": "https://download.geofabrik.de/asia/china/sichuan-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/sichuan/sichuan-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/china/sichuan/sichuan-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "south-africa",
-    "parent": "africa",
-    "iso3166-1:alpha2": [
-     "ZA"
-    ],
     "name": "South Africa",
+    "iso3166-1:alpha2": "ZA",
+    "parent": "africa",
     "urls": {
-     "pbf": "https://download.geofabrik.de/africa/south-africa-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/africa/south-africa-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/south-africa-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/africa/south-africa-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/africa/south-africa/south-africa.poly",
+     "geojson": "https://download.geofabrik.de/africa/south-africa/south-africa.geojson",
+     "pbf": "https://download.geofabrik.de/africa/south-africa/south-africa-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/africa/south-africa/updates",
+     "gpkg": "https://download.geofabrik.de/africa/south-africa/south-africa-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/africa/south-africa/south-africa-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/africa:south-africa",
-     "updates": "https://download.geofabrik.de/africa/south-africa-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/south-africa/south-africa-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/africa/south-africa/south-africa-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "south-africa-and-lesotho",
-    "parent": "africa",
     "name": "South Africa (includes Lesotho)",
+    "parent": "africa",
     "urls": {
-     "pbf": "https://download.geofabrik.de/africa/south-africa-and-lesotho-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/south-africa-and-lesotho-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/africa/south-africa-and-lesotho-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/africa/south-africa-and-lesotho/south-africa-and-lesotho.poly",
+     "geojson": "https://download.geofabrik.de/africa/south-africa-and-lesotho/south-africa-and-lesotho.geojson",
+     "pbf": "https://download.geofabrik.de/africa/south-africa-and-lesotho/south-africa-and-lesotho-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/africa/south-africa-and-lesotho/updates",
      "taginfo": "https://taginfo.geofabrik.de/africa:south-africa-and-lesotho",
-     "updates": "https://download.geofabrik.de/africa/south-africa-and-lesotho-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/africa/south-africa-and-lesotho/south-africa-and-lesotho-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/africa/south-africa-and-lesotho/south-africa-and-lesotho-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "south-korea",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "KR"
-    ],
     "name": "South Korea",
+    "iso3166-1:alpha2": "KR",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/south-korea-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/south-korea-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/south-korea-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/south-korea-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/south-korea/south-korea.poly",
+     "geojson": "https://download.geofabrik.de/asia/south-korea/south-korea.geojson",
+     "pbf": "https://download.geofabrik.de/asia/south-korea/south-korea-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/south-korea/updates",
+     "gpkg": "https://download.geofabrik.de/asia/south-korea/south-korea-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/south-korea/south-korea-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:south-korea",
-     "updates": "https://download.geofabrik.de/asia/south-korea-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/south-korea/south-korea-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/south-korea/south-korea-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "southern-zone",
-    "parent": "india",
     "name": "Southern Zone",
+    "parent": "india",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/india/southern-zone-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/india/southern-zone-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/southern-zone-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/india/southern-zone-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/india/southern-zone/southern-zone.poly",
+     "geojson": "https://download.geofabrik.de/asia/india/southern-zone/southern-zone.geojson",
+     "pbf": "https://download.geofabrik.de/asia/india/southern-zone/southern-zone-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/india/southern-zone/updates",
+     "gpkg": "https://download.geofabrik.de/asia/india/southern-zone/southern-zone-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/india/southern-zone/southern-zone-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:india:southern-zone",
-     "updates": "https://download.geofabrik.de/asia/india/southern-zone-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/southern-zone/southern-zone-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/india/southern-zone/southern-zone-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "spain",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "ES"
-    ],
     "name": "Spain",
+    "special_regions": [
+     "canary-islands"
+    ],
+    "iso3166-1:alpha2": "ES",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/spain-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/spain-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/spain-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/spain-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/spain/spain.poly",
+     "geojson": "https://download.geofabrik.de/europe/spain/spain.geojson",
+     "pbf": "https://download.geofabrik.de/europe/spain/spain-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/spain/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:spain",
-     "updates": "https://download.geofabrik.de/europe/spain-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/spain/spain-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/spain/spain-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "sweden",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "SE"
-    ],
     "name": "Sweden",
+    "iso3166-1:alpha2": "SE",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/sweden-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/sweden-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/sweden-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/sweden-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/sweden/sweden.poly",
+     "geojson": "https://download.geofabrik.de/europe/sweden/sweden.geojson",
+     "pbf": "https://download.geofabrik.de/europe/sweden/sweden-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/sweden/updates",
+     "gpkg": "https://download.geofabrik.de/europe/sweden/sweden-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/sweden/sweden-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:sweden",
-     "updates": "https://download.geofabrik.de/europe/sweden-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/sweden/sweden-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/sweden/sweden-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "switzerland",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "CH"
-    ],
     "name": "Switzerland",
+    "iso3166-1:alpha2": "CH",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/switzerland-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/switzerland-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/switzerland-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/switzerland-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/switzerland/switzerland.poly",
+     "geojson": "https://download.geofabrik.de/europe/switzerland/switzerland.geojson",
+     "pbf": "https://download.geofabrik.de/europe/switzerland/switzerland-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/switzerland/updates",
+     "gpkg": "https://download.geofabrik.de/europe/switzerland/switzerland-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/switzerland/switzerland-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:switzerland",
-     "updates": "https://download.geofabrik.de/europe/switzerland-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/switzerland/switzerland-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/switzerland/switzerland-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "thailand",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "TH"
-    ],
     "name": "Thailand",
+    "iso3166-1:alpha2": "TH",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/thailand-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/thailand-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/thailand-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/thailand-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/thailand/thailand.poly",
+     "geojson": "https://download.geofabrik.de/asia/thailand/thailand.geojson",
+     "pbf": "https://download.geofabrik.de/asia/thailand/thailand-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/thailand/updates",
+     "gpkg": "https://download.geofabrik.de/asia/thailand/thailand-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/thailand/thailand-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:thailand",
-     "updates": "https://download.geofabrik.de/asia/thailand-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/thailand/thailand-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/thailand/thailand-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "turkey",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "TR"
-    ],
     "name": "Turkey",
+    "iso3166-1:alpha2": "TR",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/turkey-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/turkey-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/turkey-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/turkey-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/turkey/turkey.poly",
+     "geojson": "https://download.geofabrik.de/europe/turkey/turkey.geojson",
+     "pbf": "https://download.geofabrik.de/europe/turkey/turkey-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/turkey/updates",
+     "gpkg": "https://download.geofabrik.de/europe/turkey/turkey-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/turkey/turkey-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:turkey",
-     "updates": "https://download.geofabrik.de/europe/turkey-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/turkey/turkey-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/turkey/turkey-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "ukraine",
+    "name": "Ukraine",
+    "iso3166-1:alpha2": "UA",
     "parent": "europe",
-    "iso3166-1:alpha2": [
-     "UA"
-    ],
-    "name": "Ukraine (with Crimea)",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/ukraine-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/europe/ukraine-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/ukraine-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/ukraine-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/ukraine/ukraine.poly",
+     "geojson": "https://download.geofabrik.de/europe/ukraine/ukraine.geojson",
+     "pbf": "https://download.geofabrik.de/europe/ukraine/ukraine-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/ukraine/updates",
+     "gpkg": "https://download.geofabrik.de/europe/ukraine/ukraine-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/europe/ukraine/ukraine-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/europe:ukraine",
-     "updates": "https://download.geofabrik.de/europe/ukraine-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/ukraine/ukraine-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/ukraine/ukraine-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "united-kingdom",
-    "parent": "europe",
-    "iso3166-1:alpha2": [
-     "GB"
-    ],
     "name": "United Kingdom",
+    "comment": "This includes Great Britain and Northern Ireland, but not the Isle of Man or Channel Islands. See <a href=\"/europe/britain-and-ireland/\">Britain and Ireland</a> for a larger extract of the region. Note that while the Falklands and Bermuda are listed under \"Sub Regions\" below for convenience, their data is not contained in the United Kingdom file itself.",
+    "iso3166-1:alpha2": "GB",
+    "parent": "europe",
     "urls": {
-     "pbf": "https://download.geofabrik.de/europe/united-kingdom-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/united-kingdom-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/europe/united-kingdom-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/europe/united-kingdom/united-kingdom.poly",
+     "geojson": "https://download.geofabrik.de/europe/united-kingdom/united-kingdom.geojson",
+     "pbf": "https://download.geofabrik.de/europe/united-kingdom/united-kingdom-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/europe/united-kingdom/updates",
      "taginfo": "https://taginfo.geofabrik.de/europe:united-kingdom",
-     "updates": "https://download.geofabrik.de/europe/united-kingdom-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/europe/united-kingdom/united-kingdom-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/europe/united-kingdom/united-kingdom-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us",
-    "parent": "north-america",
-    "iso3166-1:alpha2": [
-     "US"
-    ],
     "name": "United States of America",
+    "special_regions": [
+     "us-northeast",
+     "us-south",
+     "us-midwest",
+     "us-west",
+     "us-pacific"
+    ],
+    "iso3166-1:alpha2": "US",
+    "parent": "north-america",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/north-america/us/us.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/us.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/us-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/updates",
      "taginfo": "https://taginfo.geofabrik.de/north-america:us",
-     "updates": "https://download.geofabrik.de/north-america/us-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/us-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/us-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/california",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-CA"
-    ],
-    "name": "us/california",
+    "name": "California",
+    "path-slug": "california",
+    "iso3166-2": "US-CA",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/california-latest.osm.pbf",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/california-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/california-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:california",
-     "updates": "https://download.geofabrik.de/north-america/us/california-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/california/california.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/california/california.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/california/california-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/california/updates",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/california",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/california/california-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/california/california-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/florida",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-FL"
-    ],
-    "name": "us/florida",
+    "name": "Florida",
+    "path-slug": "florida",
+    "iso3166-2": "US-FL",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/florida-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/us/florida-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/florida-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/florida-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:florida",
-     "updates": "https://download.geofabrik.de/north-america/us/florida-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/florida/florida.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/florida/florida.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/florida/florida-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/florida/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/us/florida/florida-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/us/florida/florida-latest-free.shp.zip",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/florida",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/florida/florida-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/florida/florida-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/georgia",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-GA"
-    ],
     "name": "Georgia",
+    "path-slug": "georgia",
+    "iso3166-2": "US-GA",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/georgia-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/us/georgia-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/georgia-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/georgia-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:georgia",
-     "updates": "https://download.geofabrik.de/north-america/us/georgia-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/georgia/georgia.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/georgia/georgia.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/georgia/georgia-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/georgia/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/us/georgia/georgia-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/us/georgia/georgia-latest-free.shp.zip",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/georgia",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/georgia/georgia-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/georgia/georgia-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/illinois",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-IL"
-    ],
-    "name": "us/illinois",
+    "name": "Illinois",
+    "path-slug": "illinois",
+    "iso3166-2": "US-IL",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/illinois-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/us/illinois-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/illinois-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/illinois-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:illinois",
-     "updates": "https://download.geofabrik.de/north-america/us/illinois-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/illinois/illinois.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/illinois/illinois.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/illinois/illinois-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/illinois/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/us/illinois/illinois-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/us/illinois/illinois-latest-free.shp.zip",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/illinois",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/illinois/illinois-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/illinois/illinois-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/new-york",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-NY"
-    ],
-    "name": "us/new-york",
+    "name": "New York",
+    "path-slug": "new-york",
+    "iso3166-2": "US-NY",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/new-york-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/us/new-york-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/new-york-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/new-york-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:new-york",
-     "updates": "https://download.geofabrik.de/north-america/us/new-york-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/new-york/new-york.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/new-york/new-york.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/new-york/new-york-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/new-york/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/us/new-york/new-york-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/us/new-york/new-york-latest-free.shp.zip",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/new-york",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/new-york/new-york-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/new-york/new-york-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/pennsylvania",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-PA"
-    ],
-    "name": "us/pennsylvania",
+    "name": "Pennsylvania",
+    "path-slug": "pennsylvania",
+    "iso3166-2": "US-PA",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/pennsylvania-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/us/pennsylvania-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/pennsylvania-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/pennsylvania-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:pennsylvania",
-     "updates": "https://download.geofabrik.de/north-america/us/pennsylvania-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/pennsylvania/pennsylvania.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/pennsylvania/pennsylvania.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/pennsylvania/pennsylvania-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/pennsylvania/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/us/pennsylvania/pennsylvania-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/us/pennsylvania/pennsylvania-latest-free.shp.zip",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/pennsylvania",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/pennsylvania/pennsylvania-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/pennsylvania/pennsylvania-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/texas",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-TX"
-    ],
-    "name": "us/texas",
+    "name": "Texas",
+    "path-slug": "texas",
+    "iso3166-2": "US-TX",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/texas-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/us/texas-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/texas-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/texas-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:texas",
-     "updates": "https://download.geofabrik.de/north-america/us/texas-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/texas/texas.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/texas/texas.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/texas/texas-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/texas/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/us/texas/texas-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/us/texas/texas-latest-free.shp.zip",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/texas",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/texas/texas-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/texas/texas-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "us/washington",
-    "parent": "north-america",
-    "iso3166-2": [
-     "US-WA"
-    ],
-    "name": "us/washington",
+    "name": "Washington",
+    "path-slug": "washington",
+    "iso3166-2": "US-WA",
+    "parent": "us",
     "urls": {
-     "pbf": "https://download.geofabrik.de/north-america/us/washington-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/north-america/us/washington-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/washington-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/north-america/us/washington-internal.osh.pbf",
-     "taginfo": "https://taginfo.geofabrik.de/north-america:us:washington",
-     "updates": "https://download.geofabrik.de/north-america/us/washington-updates"
+     "poly": "https://download.geofabrik.de/north-america/us/washington/washington.poly",
+     "geojson": "https://download.geofabrik.de/north-america/us/washington/washington.geojson",
+     "pbf": "https://download.geofabrik.de/north-america/us/washington/washington-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/north-america/us/washington/updates",
+     "gpkg": "https://download.geofabrik.de/north-america/us/washington/washington-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/north-america/us/washington/washington-latest-free.shp.zip",
+     "taginfo": "https://taginfo.geofabrik.de/north-america:us:us/washington",
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/north-america/us/washington/washington-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/north-america/us/washington/washington-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "vietnam",
-    "parent": "asia",
-    "iso3166-1:alpha2": [
-     "VN"
-    ],
     "name": "Vietnam",
+    "iso3166-1:alpha2": "VN",
+    "parent": "asia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/vietnam-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/vietnam-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/vietnam-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/vietnam-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/vietnam/vietnam.poly",
+     "geojson": "https://download.geofabrik.de/asia/vietnam/vietnam.geojson",
+     "pbf": "https://download.geofabrik.de/asia/vietnam/vietnam-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/vietnam/updates",
+     "gpkg": "https://download.geofabrik.de/asia/vietnam/vietnam-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/vietnam/vietnam-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:vietnam",
-     "updates": "https://download.geofabrik.de/asia/vietnam-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/vietnam/vietnam-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/vietnam/vietnam-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "volga-fed-district",
-    "parent": "russia",
     "name": "Volga Federal District",
+    "parent": "russia",
     "urls": {
-     "pbf": "https://download.geofabrik.de/russia/volga-fed-district-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/russia/volga-fed-district-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/volga-fed-district-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/russia/volga-fed-district-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/russia/volga-fed-district/volga-fed-district.poly",
+     "geojson": "https://download.geofabrik.de/russia/volga-fed-district/volga-fed-district.geojson",
+     "pbf": "https://download.geofabrik.de/russia/volga-fed-district/volga-fed-district-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/russia/volga-fed-district/updates",
+     "gpkg": "https://download.geofabrik.de/russia/volga-fed-district/volga-fed-district-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/russia/volga-fed-district/volga-fed-district-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/russia:volga-fed-district",
-     "updates": "https://download.geofabrik.de/russia/volga-fed-district-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/russia/volga-fed-district/volga-fed-district-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/russia/volga-fed-district/volga-fed-district-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "western-zone",
-    "parent": "india",
     "name": "Western Zone",
+    "parent": "india",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/india/western-zone-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/india/western-zone-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/western-zone-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/india/western-zone-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/india/western-zone/western-zone.poly",
+     "geojson": "https://download.geofabrik.de/asia/india/western-zone/western-zone.geojson",
+     "pbf": "https://download.geofabrik.de/asia/india/western-zone/western-zone-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/india/western-zone/updates",
+     "gpkg": "https://download.geofabrik.de/asia/india/western-zone/western-zone-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/india/western-zone/western-zone-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:india:western-zone",
-     "updates": "https://download.geofabrik.de/asia/india/western-zone-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/india/western-zone/western-zone-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/india/western-zone/western-zone-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   },
   {
    "type": "Feature",
    "properties": {
     "id": "zhejiang",
-    "parent": "china",
     "name": "Zhejiang",
+    "parent": "china",
     "urls": {
-     "pbf": "https://download.geofabrik.de/asia/china/zhejiang-latest.osm.pbf",
-     "shp": "https://download.geofabrik.de/asia/china/zhejiang-latest-free.shp.zip",
-     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/zhejiang-latest-internal.osm.pbf",
-     "history": "https://osm-internal.download.geofabrik.de/asia/china/zhejiang-internal.osh.pbf",
+     "poly": "https://download.geofabrik.de/asia/china/zhejiang/zhejiang.poly",
+     "geojson": "https://download.geofabrik.de/asia/china/zhejiang/zhejiang.geojson",
+     "pbf": "https://download.geofabrik.de/asia/china/zhejiang/zhejiang-latest.osm.pbf",
+     "updates": "https://download.geofabrik.de/asia/china/zhejiang/updates",
+     "gpkg": "https://download.geofabrik.de/asia/china/zhejiang/zhejiang-latest-free.gpkg.zip",
+     "shp": "https://download.geofabrik.de/asia/china/zhejiang/zhejiang-latest-free.shp.zip",
      "taginfo": "https://taginfo.geofabrik.de/asia:china:zhejiang",
-     "updates": "https://download.geofabrik.de/asia/china/zhejiang-updates"
+     "pbf-internal": "https://osm-internal.download.geofabrik.de/asia/china/zhejiang/zhejiang-latest-internal.osm.pbf",
+     "history": "https://osm-internal.download.geofabrik.de/asia/china/zhejiang/zhejiang-internal.osh.pbf"
     }
-   }
+   },
+   "geometry": null
   }
  ]
 }

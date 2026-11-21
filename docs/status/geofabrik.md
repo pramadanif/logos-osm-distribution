@@ -2,6 +2,24 @@
 
 Checked 2026-11-09 against the live server. Commands are reproducible; outputs below are what was observed on that day.
 
+## Layout change (found 2026-11-21)
+
+Geofabrik moved every extract into its own folder. `index-v1-nogeom.json` now lists
+`https://download.geofabrik.de/asia/china/henan/henan-latest.osm.pbf` (was
+`asia/china/henan-latest.osm.pbf`); for all 72 regions the new path is the old one plus
+`/<leaf>`. `-latest` is still a 307 to the dated file of the day
+(`asia/china/henan/henan-261120.osm.pbf`), dated first-of-month files and their `.md5` exist in
+the new folder, and the bytes are unchanged (henan-261101 MD5 `5f3c0413…` in both). Old URLs
+answer 301 to the new place for most regions, but for China's provinces the redirect points to
+`china/henan/…` without `asia/` and returns 404.
+
+Found while hosting on the public network: `osm host` refused the redirect as "not a dated
+snapshot". Fix: `regions/predefined.json` and `osm_core` use the new paths; validation (SDK and
+program) accepts the new and the earlier form, so entries registered before the move stay valid;
+discovery matches an index in either layout. The registry program's rules changed, so its
+ImageID changes: the v0.3 rehearsal program on the public testnet still runs the earlier rules
+(earlier layout only) until it is redeployed.
+
 ## Dated snapshots
 
 - `<region>-latest.osm.pbf` is an HTTP 307 redirect to the dated file of the day:

@@ -244,3 +244,33 @@ fn batch_shape() {
         Err(EntryError::DuplicateInBatch)
     );
 }
+
+#[test]
+fn source_url_in_both_geofabrik_layouts() {
+    use osm_core::entry::snapshot_from_source_url;
+    // One folder per region (Geofabrik since November 2026) and the earlier flat form.
+    let current = "https://download.geofabrik.de/asia/china/henan/henan-261101.osm.pbf";
+    let earlier = "https://download.geofabrik.de/asia/china/henan-261101.osm.pbf";
+    assert_eq!(snapshot_from_source_url("china/henan", current), Ok(261101));
+    assert_eq!(snapshot_from_source_url("china/henan", earlier), Ok(261101));
+    assert_eq!(
+        snapshot_from_source_url(
+            "kenya",
+            "https://download.geofabrik.de/africa/kenya/kenya-261120.osm.pbf"
+        ),
+        Ok(261120)
+    );
+    // Another region's file, a folder that is not the region's, and undated files stay invalid.
+    for bad in [
+        "https://download.geofabrik.de/asia/china/shandong/shandong-261101.osm.pbf",
+        "https://download.geofabrik.de/asia/china/henan/shandong-261101.osm.pbf",
+        "https://download.geofabrik.de/asia/china/shandong/henan-261101.osm.pbf",
+        "https://download.geofabrik.de/asia/china/henan/henan-latest.osm.pbf",
+        "https://download.geofabrik.de/asia/china/henan/henan/henan-261101.osm.pbf",
+    ] {
+        assert!(
+            snapshot_from_source_url("china/henan", bad).is_err(),
+            "{bad}"
+        );
+    }
+}

@@ -153,13 +153,23 @@ fn hex_nibble(c: u8) -> Result<u8, EntryError> {
 }
 
 /// Returns the snapshot date as `YYMMDD` when `url` is
-/// `https://download.geofabrik.de/<geofabrik_path>-YYMMDD.osm.pbf` for `region`.
+/// `https://download.geofabrik.de/<geofabrik_path>-YYMMDD.osm.pbf` for `region`. Geofabrik moved
+/// every extract into its own folder in November 2026 (`asia/china/henan/henan-YYMMDD.osm.pbf`);
+/// the earlier form without the folder (`asia/china/henan-YYMMDD.osm.pbf`) is accepted too, so
+/// entries registered before the move stay valid.
 pub fn snapshot_from_source_url(region: &str, url: &str) -> Result<u32, EntryError> {
     let def = lookup(region).ok_or(EntryError::RegionNotInSet)?;
-    let rest = url
+    let path = url
         .strip_prefix(GEOFABRIK_BASE)
-        .and_then(|r| r.strip_prefix(def.geofabrik_path))
-        .and_then(|r| r.strip_prefix('-'))
+        .ok_or(EntryError::BadSourceUrl)?;
+    let earlier = def
+        .geofabrik_path
+        .rsplit_once('/')
+        .map(|(dir, _)| dir)
+        .ok_or(EntryError::BadSourceUrl)?;
+    let rest = [def.geofabrik_path, earlier]
+        .iter()
+        .find_map(|p| path.strip_prefix(p).and_then(|r| r.strip_prefix('-')))
         .and_then(|r| r.strip_suffix(".osm.pbf"))
         .ok_or(EntryError::BadSourceUrl)?;
     let d = rest.as_bytes();

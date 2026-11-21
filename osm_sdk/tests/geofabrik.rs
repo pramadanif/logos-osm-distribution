@@ -19,7 +19,9 @@ fn redirect(loc: &str) -> common::Reply {
 
 #[test]
 fn latest_snapshot_reads_redirect_without_download() {
-    let (base, rx) = serve(vec![redirect("{BASE}asia/indonesia-261108.osm.pbf")]);
+    let (base, rx) = serve(vec![redirect(
+        "{BASE}asia/indonesia/indonesia-261108.osm.pbf",
+    )]);
     let g = Geofabrik::with_base(&base);
     assert_eq!(
         g.latest_snapshot(lookup("indonesia").unwrap()).unwrap(),
@@ -27,7 +29,7 @@ fn latest_snapshot_reads_redirect_without_download() {
     );
     assert_eq!(
         rx.recv().unwrap().0,
-        "HEAD /asia/indonesia-latest.osm.pbf HTTP/1.1"
+        "HEAD /asia/indonesia/indonesia-latest.osm.pbf HTTP/1.1"
     );
 }
 
@@ -87,7 +89,7 @@ fn snapshot_md5_and_gone_snapshot() {
     );
     assert_eq!(
         rx.recv().unwrap().0,
-        "GET /asia/indonesia-261001.osm.pbf.md5 HTTP/1.1"
+        "GET /asia/indonesia/indonesia-261001.osm.pbf.md5 HTTP/1.1"
     );
     let e = g.snapshot_md5(id, 240601).unwrap_err();
     assert_eq!(e.code(), "S122");
@@ -106,7 +108,7 @@ fn subregion_md5_uses_leaf_file_name() {
         .unwrap();
     assert_eq!(
         rx.recv().unwrap().0,
-        "GET /asia/india/central-zone-261101.osm.pbf.md5 HTTP/1.1"
+        "GET /asia/india/central-zone/central-zone-261101.osm.pbf.md5 HTTP/1.1"
     );
 }
 
@@ -170,7 +172,7 @@ fn download_snapshot_full_resume_and_mismatch() {
     rx.recv().unwrap();
     assert_eq!(
         rx.recv().unwrap().0,
-        "GET /asia/china/henan-261101.osm.pbf HTTP/1.1"
+        "GET /asia/china/henan/henan-261101.osm.pbf HTTP/1.1"
     );
     std::fs::remove_file(&path).unwrap();
 

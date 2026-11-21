@@ -32,7 +32,10 @@ pub struct RegionDef {
     /// Decomposed country (`us`, `india`, `china`, `russia`) for subregions, `None` for countries.
     pub parent: Option<&'static str>,
     pub level: Level,
-    /// Geofabrik download path without the `-latest.osm.pbf` / `-YYMMDD.osm.pbf` suffix.
+    /// Geofabrik download path without the `-latest.osm.pbf` / `-YYMMDD.osm.pbf` suffix, in
+    /// Geofabrik's current layout with one folder per region (`asia/china/henan/henan`). URLs in
+    /// the earlier layout (`asia/china/henan-YYMMDD.osm.pbf`) are still accepted, see
+    /// [`entry::snapshot_from_source_url`].
     pub geofabrik_path: &'static str,
 }
 
