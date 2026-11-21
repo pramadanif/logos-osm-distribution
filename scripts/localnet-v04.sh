@@ -8,7 +8,7 @@
 #   GUEST_BIN=<osm_registry_v04.bin from cargo risczero build> \
 #   CHAIN=<osm-chain-v04> WORK=<empty dir> scripts/localnet-v04.sh
 #
-# PORT (default 3041) is the RPC port. Exits non-zero when any step or probe fails; a missing
+# PORT (default 3041) is the RPC port; IMAGE_ID, when set, is checked against the deployed header. Exits non-zero when any step or probe fails; a missing
 # binary or a sequencer that does not start is a failure, never a skip.
 set -euo pipefail
 : "${LEZ_DIR:?}" "${GUEST_BIN:?}" "${CHAIN:?}" "${WORK:?}"
@@ -60,6 +60,12 @@ HOSTS=(); while read -r a; do HOSTS+=("$a"); done < <(t 60 "$W" account list 2>/
 PROGRAM="$(WALLET="$W" PAYER="${HOSTS[0]}" GUEST_BIN="$GUEST_BIN" "$(dirname "$0")/deploy-program-v04.sh" 2> "$WORK/deploy.log")" \
   || { echo "deploy failed" >&2; tail -20 "$WORK/deploy.log" >&2; exit 4; }
 echo "program $PROGRAM ($(grep -oE '[0-9]+ segments' "$WORK/deploy.log")) on $RPC"
+
+# The program header on chain carries the ImageID of the guest we built (same check as for a
+# public deployment, scripts/verify-onchain.sh step 1).
+if [ -n "${IMAGE_ID:-}" ]; then
+  RPC="$RPC" PROGRAM="$PROGRAM" IMAGE_ID="$IMAGE_ID" HEADER_ONLY=1 "$(dirname "$0")/verify-onchain.sh"
+fi
 
 # --- probes ------------------------------------------------------------------------------------
 CHAIN="$CHAIN" RPC="$RPC" PROGRAM="$PROGRAM" HOST_A="${HOSTS[0]}" HOST_B="${HOSTS[1]}" \

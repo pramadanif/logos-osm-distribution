@@ -46,5 +46,6 @@ echo "::group::executor cycles (cycle-bench-v04)"
 cat "$WORK/cycles-v04.json"
 echo "::endgroup::"
 
-LEZ_DIR="$lez" GUEST_BIN="$guest" CHAIN="$root/programs/osm_registry_v04/client/target/release/osm-chain-v04" \
+image_id=$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1]))["image_id"])' "$WORK/cycles-v04.json")
+LEZ_DIR="$lez" GUEST_BIN="$guest" IMAGE_ID="$image_id" CHAIN="$root/programs/osm_registry_v04/client/target/release/osm-chain-v04" \
   WORK="$WORK/run" "$root/scripts/localnet-v04.sh"
