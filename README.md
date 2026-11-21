@@ -118,6 +118,14 @@ SPEL does not support 0.4 yet, so there is no 0.4 IDL (docs/status/lez-04-port.m
 | `pramadani_osm_consumer_module`, `pramadani_osm_consumer_app` | `examples/` | templates |
 
 Build one with `nix build ./basecamp/osm-distribution#lgx-portable`. `module.json` indexes them.
+
+Using the app: open **OSM Maps**, set the sequencer RPC, registry program, Storage API and your
+LEZ account under **Settings** (defaults: the v0.3 rehearsal deployment above). **Regions** lists
+the 72 regions with their hosted snapshot and host count; **Details** shows CID, MD5, snapshot and
+size; **Download** fetches by CID and checks the MD5; tick regions and **Check updates** compares
+with Geofabrik. **Host** hosts the ticked regions (one transaction per 16); **Import** registers a
+local file after the MD5 check. **Activity** shows each action as submitting, confirmed (read back
+from the chain) or failed with its error code ([docs/error-codes.md](docs/error-codes.md)).
 Catalog: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`
 (no release published yet).
 

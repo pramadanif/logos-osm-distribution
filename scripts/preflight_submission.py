@@ -295,11 +295,14 @@ def _():
     return head == PIN, f"main {head[:12]} vs pin {PIN[:12]}"
 
 
-@check(25, "Negative tests on a real sequencer green (H30, H31, H37)")
+@check(25, "Negative tests on a real sequencer green, v0.3 and 0.4 (H30, H31, H37)")
 def _():
     t = read("probes/results.txt")
     last = [l for l in t.splitlines() if "b5_negative" in l and "SUMMARY" in l]
-    return bool(last) and last[-1].endswith("fails=0"), last[-1] if last else "no b5 run recorded"
+    v03 = bool(last) and last[-1].endswith("fails=0")
+    # The 0.4 probes run in CI job e2e-v04 against a sequencer built from the LEZ tag.
+    v04 = check_runs(PIN).get("e2e-v04")
+    return v03 and v04 == "success", f"v0.3: {last[-1] if last else 'no b5 run recorded'}; 0.4 e2e-v04 on the pin: {v04}"
 
 
 @check(26, "Decoder tested on accounts captured from a real sequencer in CI (H32)")

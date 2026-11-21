@@ -14,18 +14,18 @@ Testnet 0.4 is the only network that counts; v0.3 evidence is rehearsal and is l
 | P-F4 | Bulk host with opt-out; only the non-overlapping set is exposed | done (CLI) | `osm host --region …` (one batch), `osm bulk-register --skip`; set-only rejection in program and SDK (probes p04) |
 | P-F5 | Local import with MD5 check at import time | done | `osm import`; S130/S132 runs in docs/status/phase-C.md |
 | P-F6 | Update check per region path | done | `osm update-check`; `osm_sdk/tests/status.rs` |
-| P-F7 | Registry program: fields, unique region, query by region/parent/CID, batch | done on v0.3 | program `programs/osm_registry`; `osm lookup`; probes 18/18 |
+| P-F7 | Registry program: fields, unique region, query by region/parent/CID, batch | done on v0.3; done on 0.4-rc | v0.3 `programs/osm_registry` (probes 18/18); 0.4 `programs/osm_registry_v04` incl. `RegisterBatch` (CI `e2e-v04` 18/18, run 43227068962); `osm lookup` |
 | P-F8 | End to end on testnet 0.4 | open | needs 0.4 port (docs/status/lez-04-port.md) |
-| P-F9 | SDK module with stable API, embedding example, app uses the full SDK | partial | SDK + C ABI + docs/sdk.md; Basecamp module and app not built (needs nix) |
+| P-F9 | SDK module with stable API, embedding example, app uses the full SDK | partial | `pramadani_osm_sdk` (read-only, API 1) and `pramadani_osm_distribution` built in CI and loaded in logosctl (modules run 43228643018); templates in `examples/`; app calls every distribution method; not run in the Basecamp GUI |
 
 ## Usability
 
 | ID | Criterion | Status | Evidence |
 |----|-----------|--------|----------|
-| P-U1 | Basecamp app GUI, build docs, downloadable assets | open | needs nix |
-| P-U2 | SDK/module + API docs + embedding example running as a Basecamp module | partial | docs/sdk.md, `osm_sdk/examples/resolve.rs`, `osm_ffi`; Basecamp module open |
+| P-U1 | Basecamp app GUI, build docs, downloadable assets | partial | `basecamp/osm-app` built on Linux + macOS (CI artifacts `lgx-*`); README "Basecamp"; catalog created, first release pending; GUI not yet opened |
+| P-U2 | SDK/module + API docs + embedding example running as a Basecamp module | partial | docs/sdk.md; `examples/consumer-module` built in CI; core modules load and answer in logosctl; not yet in the Basecamp GUI |
 | P-U3 | CLI: host, batch-register, lookup region/parent/CID, update check, download, import | done | README "Command line"; docs/status/phase-C.md SC-C.7 |
-| P-U4 | UX shows hosted status, versions, verification results | partial | CLI shows all three; app open |
+| P-U4 | UX shows hosted status, versions, verification results | partial | CLI shows all three; app shows hosted snapshot + host count, details (CID, MD5, snapshot, size), download verification and update check (QML in `basecamp/osm-app`); not yet seen running |
 
 ## Reliability
 
@@ -40,19 +40,19 @@ Testnet 0.4 is the only network that counts; v0.3 evidence is rehearsal and is l
 
 | ID | Criterion | Status | Evidence |
 |----|-----------|--------|----------|
-| P-P1 | Cycle counts for register and batch-register | done on v0.3 | docs/cycles.md |
+| P-P1 | Cycle counts for register and batch-register | done on v0.3 and 0.4-rc | docs/cycles.md (both tables checked by the doc-truth job) |
 
 ## Supportability
 
 | ID | Criterion | Status | Evidence |
 |----|-----------|--------|----------|
 | P-S1 | Deployed and tested on testnet 0.4 | open | v0.3 public testnet deployment in README is rehearsal |
-| P-S2 | Linux, macOS (and Windows) | partial | CI builds and tests on Linux, macOS, Windows; app not built |
-| P-S3 | Modules built with logos-module-builder | open | needs nix |
-| P-S4 | Catalog fork + release action + logos-repo.json | open | needs nix and the modules |
+| P-S2 | Linux, macOS (and Windows) | partial | Rust crates on Linux, macOS, Windows; modules + app built and core modules loaded on Linux and macOS; GUI use on macOS not yet shown |
+| P-S3 | Modules built with logos-module-builder | done | `.github/workflows/modules.yml`: 5 modules, Linux + macOS |
+| P-S4 | Catalog fork + release action + logos-repo.json | partial | `pramadanif/pramadani-osm-modules` from logos-modules-release-base, validate job green; first "Release all modules" run pending |
 | P-S5 | IDL generated via SPEL | done for v0.3 | `idl/osm_registry.json`; CI `idl` job regenerates and diffs |
-| P-S6 | E2E host → query → download against a standalone sequencer in CI | partial | `.github/workflows/e2e.yml` written; first green run pending |
-| P-S7 | README: setup, program id, region list, CLI and app usage | partial | README (app usage open) |
+| P-S6 | E2E host → query → download against a standalone sequencer in CI | done | `.github/workflows/e2e.yml` `e2e-sequencer` (first green run 42755836260) and `e2e-v04` |
+| P-S7 | README: setup, program id, region list, CLI and app usage | done | README sections Build and test, Deployments, Regions, Command line, Basecamp (app usage) |
 | P-S8 | SDK docs with region → CID worked example | done | docs/sdk.md |
 
 ## Adoption (required)
