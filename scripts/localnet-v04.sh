@@ -57,24 +57,9 @@ HOSTS=(); while read -r a; do HOSTS+=("$a"); done < <(t 60 "$W" account list 2>/
 [ "${#HOSTS[@]}" -eq 2 ] || { echo "need two funded genesis accounts, got ${#HOSTS[@]}" >&2; exit 4; }
 
 # --- deploy ------------------------------------------------------------------------------------
-# The program-loader splits the ELF into 96 KiB segments, one account each. It does not use
-# --fee-payer for segment uploads (docs/BUGS_FILED.md), so every new account is funded first.
-# The wallet decides how many segments the ELF needs (it is not the file size / 96 KiB), so ask
-# it first: a deploy with one segment account fails before sending and names the right count.
-new() { t 60 "$W" account new public 2>&1 | grep -oE 'Public/[1-9A-HJ-NP-Za-km-z]{32,44}' | head -1; }
-H=$(new)
-n=$(t 120 "$W" program-loader deploy --elf "$GUEST_BIN" --header "$H" --segments "$(new)" --fee-payer "${HOSTS[0]#Public/}" 2>&1 \
-  | grep -oE 'splits into [0-9]+ segment' | grep -oE '[0-9]+' || true)
-[ -n "$n" ] || n=1
-S=(); for _ in $(seq 1 "$n"); do S+=("$(new)"); done
-for acc in "$H" "${S[@]}"; do
-  t 200 "$W" auth-transfer send --from "${HOSTS[0]}" --to "$acc" --amount 100000000 > /dev/null 2>&1 \
-    || { echo "funding $acc failed" >&2; exit 4; }
-done
-t 1800 "$W" program-loader deploy --elf "$GUEST_BIN" --header "$H" --segments "${S[@]}" --fee-payer "${HOSTS[0]#Public/}" \
-  > "$WORK/deploy.log" 2>&1 || { echo "deploy failed" >&2; grep -v "^Transaction data" "$WORK/deploy.log" | tail -20 >&2; exit 4; }
-PROGRAM="${H#Public/}"
-echo "program $PROGRAM ($n segments) on $RPC"
+PROGRAM="$(WALLET="$W" PAYER="${HOSTS[0]}" GUEST_BIN="$GUEST_BIN" "$(dirname "$0")/deploy-program-v04.sh" 2> "$WORK/deploy.log")" \
+  || { echo "deploy failed" >&2; tail -20 "$WORK/deploy.log" >&2; exit 4; }
+echo "program $PROGRAM ($(grep -oE '[0-9]+ segments' "$WORK/deploy.log")) on $RPC"
 
 # --- probes ------------------------------------------------------------------------------------
 CHAIN="$CHAIN" RPC="$RPC" PROGRAM="$PROGRAM" HOST_A="${HOSTS[0]}" HOST_B="${HOSTS[1]}" \

@@ -38,14 +38,22 @@ PY
 
 python3 -I - <<'PY' && pass "cycles.md 0.4 table equals probes/data" || fail "cycles.md 0.4 table differs from probes/data"
 import json, glob, sys
-rows = json.load(open(sorted(glob.glob("probes/data/cycles-v04-*.json"))[-1]))["rows"]
+files = glob.glob("probes/data/cycles-v04-*.json")
+if len(files) != 1:
+    print("expected exactly one cycles-v04 file, got", files); sys.exit(1)
+d = json.load(open(files[0])); rows = d["rows"]
 doc = open("docs/cycles.md").read()
-for case, op in [("register", "Register"), ("unhost", "Unhost")]:
+if d["image_id"] not in doc:
+    print("ImageID not in cycles.md"); sys.exit(1)
+cases = [("register", "Register", 1), ("unhost", "Unhost", 1)] + [(f"register_batch_{n}", "RegisterBatch", n) for n in (1, 5, 10, 16)]
+for case, op, n in cases:
     r = [x for x in rows if x.get("case") == case]
-    get = lambda who: next((x["user_cycles"] for x in r if x["receiver"] == who), None)
-    cell = lambda v: "—" if v is None else f"{v:,}"
+    if not r or any("error" in x for x in r):
+        print("no clean rows for", case); sys.exit(1)
+    g = lambda who: sum(x["user_cycles"] for x in r if x["receiver"] == who)
+    cell = lambda v: "—" if v == 0 else f"{v:,}"
     total = sum(x["user_cycles"] for x in r); padded = sum(x["padded_cycles"] for x in r)
-    row = f"| `{op}` | {cell(get('host actor'))} | {cell(get('clock'))} | {cell(get('region actor'))} | {total:,} | {padded:,} |"
+    row = f"| `{op}` | {n} | {cell(g('host actor'))} | {cell(g('clock'))} | {cell(g('region actor'))} | {total:,} | {padded:,} |"
     if row not in doc:
         print("missing row:", row); sys.exit(1)
 PY

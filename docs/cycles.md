@@ -34,24 +34,29 @@ per transaction at the SPEL client's default gas limit.
 - Apply into an account that already holds 8 entries (ring rotation); the cases above write into
   empty accounts.
 - Proving time (`--prove` path). The public testnet executes public transactions without proofs.
-- `register_batch` on LEZ 0.4 with the current guest (CI job `e2e-v04` prints it).
 
 ## LEZ 0.4 actor registry
 
 Measured with `programs/osm_registry_v04/client/src/bin/cycle-bench-v04.rs`, the executor path
 of LEZ v0.4.0-rc1's `tools/cycle_bench`: the whole delivery runs through `WholeExecution`, and
-each transition (our host actor, the clock program, our region actor) runs in the RISC Zero
-executor with `Program::write_receive_input`. One row per transition; a caller pays for all.
+each transition (our host actor, the clock program, each region actor) runs in the RISC Zero
+executor with `Program::write_receive_input`. A caller pays for every transition.
 
-- Program: the 2026-11-09 guest build, ImageID `d1213b2811def8ad89db14db2d34c6523ffc6b0b2723f0eca95897e720881c1a`
-  (built before `RegisterBatch` existed, so it has no batch numbers).
-- Measured: 2026-11-12, macOS arm64, risc0-zkvm 3.0.5 executor. Raw output:
-  `probes/data/cycles-v04-d1213b28.json`.
+- Program: the guest built from this repository in CI, ImageID `13bda53e3ec2492031b9206d9d29751b51cf966f674849c92187edb935d6c77c`
+  (the one CI `e2e-v04` deployed and probed, 18/18).
+- Measured: CI run 43237131386 at `d35ea94`, ubuntu-latest, risc0-zkvm 3.0.5 executor, job
+  `e2e-v04` step "executor cycles". Raw output: `probes/data/cycles-v04-13bda53e.json`.
 
-| Operation | Host actor | Clock | Region actor | Total user cycles | Total padded cycles |
-|-----------|------------|-------|--------------|-------------------|---------------------|
-| `Register` | 25,033 | 8,532 | 17,271 | 50,836 | 262,144 |
-| `Unhost` | 12,531 | — | 16,084 | 28,615 | 131,072 |
+| Operation | Regions | Host actor | Clock | Region actors | Total user cycles | Total padded cycles |
+|-----------|---------|------------|-------|---------------|-------------------|---------------------|
+| `Register` | 1 | 25,428 | 8,532 | 17,426 | 51,386 | 262,144 |
+| `Unhost` | 1 | 12,704 | — | 16,237 | 28,941 | 131,072 |
+| `RegisterBatch` | 1 | 25,934 | 8,532 | 17,426 | 51,892 | 262,144 |
+| `RegisterBatch` | 5 | 91,512 | 8,532 | 86,855 | 186,899 | 655,360 |
+| `RegisterBatch` | 10 | 174,193 | 8,532 | 174,069 | 356,794 | 983,040 |
+| `RegisterBatch` | 16 | 275,499 | 8,532 | 278,645 | 562,676 | 1,638,400 |
 
-So one registration costs about the same on 0.4 as on v0.3 (50,836 vs 49,970 user cycles); on
-0.4 part of it moves to the clock program, which now checks the timestamp.
+One registration costs about the same on 0.4 as on v0.3 (51,386 vs 49,970 user cycles); on 0.4
+part of it moves to the clock program, which checks the timestamp. In a batch the clock check
+runs once and the host actor grows by about 16k user cycles per region, while each region actor
+costs the same as alone (about 17.4k).

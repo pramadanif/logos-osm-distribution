@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # One command to verify everything on a network from a clean clone (W1), public endpoints only:
-#  1. the program header on chain carries the ImageID recorded for this deployment (E59);
+#  1. the program header on chain carries the ImageID recorded for this deployment (E59); the
+#     header is the program-loader's data, "shards" on LEZ v0.3 and "actor_states" on 0.4;
 #  2. coverage: every hosted CID fetched from Logos Storage and checked against Geofabrik's
 #     published MD5, counted by the prize rules (scripts/verify-coverage.sh).
 #   OSM_STORAGE=<Storage node API> [PROFILE=<networks.json profile>] scripts/verify-onchain.sh
@@ -13,7 +14,7 @@ rpc="$(get rpc)"; program="$(get program)"; want="$(get program_image_id)"
 echo "1. program header $program on $rpc"
 got="$(curl -fsS --max-time 30 -X POST "$rpc" -H 'content-type: application/json' \
   -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getAccount\",\"params\":[\"$program\"]}" \
-  | python3 -I -c 'import json,sys; s=json.load(sys.stdin)["result"]["data"]["shards"]; v=[x for x in s.values() if len(x)>=32]; print(bytes(v[0][:32]).hex() if v else "")')"
+  | python3 -I -c 'import json,sys; d=json.load(sys.stdin)["result"]["data"]; s=d.get("actor_states") or d.get("shards") or {}; v=[x for x in s.values() if len(x)>=32]; print(bytes(v[0][:32]).hex() if v else "")')"
 [ "$got" = "$want" ] || { echo "   ImageID on chain $got differs from recorded $want" >&2; exit 1; }
 echo "   ImageID $got matches networks.json"
 echo "2. coverage"

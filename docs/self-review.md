@@ -68,7 +68,7 @@ regions in one `register_batch`; the app's bulk host uses it. Compiled in CI; no
 - Downloads without Geofabrik (CI blocks it); dated first-of-month snapshots with MD5 from
   Geofabrik.
 - C ABI under ASan/UBSan; decoder fuzzed; atomic local writes survive `kill -9`.
-- Cycle counts: v0.3 register 49,970 and 0.4 Register 50,836 user cycles (docs/cycles.md).
+- Cycle counts: v0.3 register 49,970 and 0.4 Register 51,386 user cycles on the CI-built guest `13bda53e` (docs/cycles.md).
 
 ## Not tested
 

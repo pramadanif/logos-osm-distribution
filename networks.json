@@ -12,7 +12,19 @@
       "counts_for_prize": false,
       "note": "Rehearsal network for module authors. Testnet 0.4 is the only network that counts (plan rule 5)."
     },
-    "v04-local": { "lez": "v0.4.0-rc1", "rpc": "http://127.0.0.1:3040", "program": null, "counts_for_prize": false },
-    "v04-public": { "lez": "v0.4", "rpc": null, "program": null, "counts_for_prize": true, "note": "Not launched yet." }
+    "v04-local": {
+      "lez": "v0.4.0-rc1",
+      "rpc": "http://127.0.0.1:3041",
+      "program": null,
+      "counts_for_prize": false,
+      "note": "scripts/localnet-v04.sh: a fresh chain each run, so no fixed program id."
+    },
+    "v04-public": {
+      "lez": "v0.4",
+      "rpc": null,
+      "program": null,
+      "counts_for_prize": true,
+      "note": "Not launched yet."
+    }
   }
 }
