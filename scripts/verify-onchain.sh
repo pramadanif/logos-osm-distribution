@@ -18,7 +18,7 @@ got="$(curl -fsS --max-time 30 -X POST "$rpc" -H 'content-type: application/json
   -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getAccount\",\"params\":[\"$program\"]}" \
   | python3 -I -c 'import json,sys; d=json.load(sys.stdin)["result"]["data"]; s=d.get("actor_states") or d.get("shards") or {}; v=[x for x in s.values() if len(x)>=32]; print(bytes(v[0][:32]).hex() if v else "")')"
 [ "$got" = "$want" ] || { echo "   ImageID on chain $got differs from recorded $want" >&2; exit 1; }
-echo "   ImageID $got matches networks.json"
+echo "   ImageID $got matches the recorded ImageID${IMAGE_ID:+ (IMAGE_ID)}"
 [ "${HEADER_ONLY:-0}" = 1 ] && exit 0
 echo "2. coverage"
 OSM_RPC="$rpc" OSM_PROGRAM="$program" exec "$root/scripts/verify-coverage.sh" "$@"

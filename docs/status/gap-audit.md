@@ -47,8 +47,8 @@ W1–W14, with status and what blocks it. Categories:
 | E.6 | done | doc-truth job + docs/claims.md |
 | E.7 | partial | ASan/UBSan for FFI, liveness, script tests done; C++ module under ASan after D.1 |
 | F.1 | done for 0.4-rc | step-1 actor program deployed locally (lez-04-port.md); redo with the SPEL build |
-| F.2 | vps | |
-| F.3, F.4, F.5 | vps + 0.4 | 30 entries / 20 countries; plan in docs/status/coverage-plan.md |
+| F.2 | done | public Storage node `139.190.104.17:8070` (deploy/storage-node/public-node.json), test CID fetched from outside with matching MD5 (2026-11-21) |
+| F.3, F.4, F.5 | 0.4 | 30 entries / 20 countries; plan in docs/status/coverage-plan.md |
 | G.1 | done (v0.3) | docs/cycles.md; redo on 0.4 |
 | G.2 | code + human | template repo; 15-minute test with 2 devs is human |
 | G.3 | done | docs/adoption.md |

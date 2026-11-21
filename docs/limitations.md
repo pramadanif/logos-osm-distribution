@@ -23,8 +23,11 @@ Written as found, not at the end. Each line says what, why, and what a user shou
   Basecamp, so its screens, two-profile isolation and Qt number formatting are untested.
 - **The C++ parts are not run under ASan/UBSan.** Only the C ABI is (CI `ffi-sanitizers`); the app
   backend and the C++ template need a Qt build under the sanitizers.
-- **No public Storage node yet.** CIDs registered from this machine cannot be fetched by others
-  until the node runs on a public server, so nothing is registered on the public v0.3 testnet.
+- **One public Storage node, on a shared small server.** The project's node
+  (`139.190.104.17:8070`, deploy/storage-node/public-node.json) shares a 2 vCPU / 2 GB server with
+  other services, so it is capped at 30 GiB of data and 700 MB of memory with low CPU and I/O
+  priority. Map data registered by us is fetchable by anyone while it runs; nothing is registered
+  on a public chain yet (testnet 0.4 is not live).
 - **Timestamps on v0.3 are client-supplied** but bound to block time: the program declares the
   transaction valid only within ±10 minutes of the value, in milliseconds.
 - **Fee reserve.** Each write needs 38,400,000 lepta available up front (the sequencer reserves

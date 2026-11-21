@@ -270,13 +270,13 @@ def _():
     return results[6][2] if len(results) > 6 else False, "covered by check 7 (verify-coverage reports per entry)"
 
 
-@check(22, "Public Storage node reachable from outside (H27)")
+@check(22, "Public Storage node serves data to an outside node (H27)")
 def _():
-    url = os.environ.get("PUBLIC_NODE")
-    if not url:
-        return False, "PUBLIC_NODE not set (VPS not up yet)"
-    urllib.request.urlopen(url.rstrip("/") + "/debug/info", timeout=20)
-    return True, f"{url} answered"
+    # Run from a machine that is not the node itself; CI runs the same script daily (public-node).
+    if not os.environ.get("STORAGE_BIN"):
+        return False, "STORAGE_BIN not set (a logos-storage binary to run the outside node)"
+    code, out, err = sh("bash", os.path.join(ROOT, "scripts/check-public-node.sh"), timeout=600)
+    return code == 0, (out + err).strip().splitlines()[-1] if (out + err).strip() else f"exit {code}"
 
 
 @check(23, "Abort rules re-checked today: no merged or approved rival")

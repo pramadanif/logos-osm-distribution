@@ -2,15 +2,24 @@
 # Public Logos Storage node for LP-0018 coverage (ADR 0005, H3, H27). Ubuntu 22.04/24.04, run with
 # sudo. Idempotent: re-running upgrades the binary to the pinned version and restarts the unit.
 #
-#   sudo deploy/storage-node/setup.sh <public-ip> [listen-port]
+#   sudo [QUOTA_GIB=30] [MEMORY_MAX=700M] deploy/storage-node/setup.sh <public-ip> [listen-port]
 #
 # - runs as the unprivileged user `osmstorage`, data in /var/lib/osm-storage (0700)
 # - REST API on 127.0.0.1:8080 only; only the libp2p port (default 8070/tcp) is opened
 # - joins the Logos Storage testnet preset; restarts on failure and on boot
 # - prints the node's peer id and SPR at the end
+# - safe beside other services on a small server: disk quota (QUOTA_GIB, default 30 GiB), memory
+#   cap (MEMORY_MAX, default 700M), low CPU and I/O priority, at most 40 peers
 set -euo pipefail
 [ "$(id -u)" = 0 ] || { echo "run with sudo" >&2; exit 2; }
 ip="${1:?usage: setup.sh <public-ip> [listen-port]}"; port="${2:-8070}"
+quota_gib="${QUOTA_GIB:-30}"; memory_max="${MEMORY_MAX:-700M}"
+case "$quota_gib" in ''|*[!0-9]*) echo "QUOTA_GIB must be a whole number" >&2; exit 2 ;; esac
+# The REST API must not collide with another service on this host.
+if ss -ltn 2>/dev/null | awk '{print $4}' | grep -qE '127\.0\.0\.1:8080$|\*:8080$|0\.0\.0\.0:8080$' \
+   && ! systemctl is-active --quiet osm-storage.service; then
+  echo "port 8080 is already used by another service" >&2; exit 2
+fi
 version=v0.5.3
 case "$(uname -m)" in
   x86_64)  asset=logos-storage-linux-amd64-$version.zip; sha=1086fae4f283cab882f133abe4d5a88cfae8d61edba9f0094c7f75b368ec9d56 ;;
@@ -38,7 +47,8 @@ User=osmstorage
 Group=osmstorage
 UMask=0077
 ExecStart=/opt/osm-storage/logos-storage --network=logos.test --data-dir=/var/lib/osm-storage/data \
-  --api-bindaddr=127.0.0.1 --api-port=8080 --listen-port=$port --nat=extip:$ip --log-level=info
+  --api-bindaddr=127.0.0.1 --api-port=8080 --listen-port=$port --nat=extip:$ip --log-level=info \
+  --storage-quota=$((quota_gib * 1024 * 1024 * 1024)) --max-peers=40
 Restart=always
 RestartSec=5
 NoNewPrivileges=true
@@ -46,6 +56,10 @@ ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/lib/osm-storage
 PrivateTmp=true
+MemoryMax=$memory_max
+CPUWeight=20
+IOWeight=20
+Nice=10
 
 [Install]
 WantedBy=multi-user.target

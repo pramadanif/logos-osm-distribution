@@ -1,0 +1,44 @@
+name: public-node
+
+# H27 / F.2: the project's public Logos Storage node serves the test CID to a GitHub runner,
+# a machine it has never seen (scripts/check-public-node.sh). Daily, and when the node's setup
+# or record changes.
+on:
+  schedule:
+    - cron: "41 4 * * *"
+  push:
+    branches: [main]
+    paths: ["deploy/storage-node/**", "scripts/check-public-node.sh", ".github/workflows/public-node.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  retrieve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      STORAGE_VERSION: v0.5.3
+      STORAGE_SHA256: 1086fae4f283cab882f133abe4d5a88cfae8d61edba9f0094c7f75b368ec9d56
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: storage.zip
+          key: logos-storage-${{ env.STORAGE_VERSION }}-${{ env.STORAGE_SHA256 }}
+      - name: Fetch pinned Logos Storage node
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5 6; do
+            [ -f storage.zip ] && break
+            gh release download "$STORAGE_VERSION" -R logos-storage/logos-storage-nim \
+              -p "logos-storage-linux-amd64-$STORAGE_VERSION.zip" -O storage.zip && break
+            echo "download attempt $i failed"; sleep $((i * 20))
+          done
+          echo "$STORAGE_SHA256  storage.zip" | sha256sum -c -
+          unzip -q storage.zip -d storage-bin && chmod +x storage-bin/*
+      - name: Fetch the test CID from the public node
+        run: STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" scripts/check-public-node.sh

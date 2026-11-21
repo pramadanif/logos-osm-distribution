@@ -88,7 +88,8 @@ P-F9 (Basecamp module), P-U1, P-S1, P-S3, P-S4, P-A1–P-A3.
 Discovery, host, bulk host, import, update check, download and the registry with query by
 region, parent and CID run end to end on a local LEZ v0.3.1 sequencer with real Storage nodes,
 with negative tests on that sequencer (18/18). On the public v0.3 testnet the program is deployed
-but no region is registered yet (no public Storage node). *Pending:* testnet 0.4.
+but no region is registered there yet; the public Storage node serves data to outside nodes
+(test CID fetched with matching MD5). *Pending:* testnet 0.4.
 
 ### Usability
 CLI with JSON output and documented exit codes; SDK guide with a worked example; C ABI; a

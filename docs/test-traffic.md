@@ -13,3 +13,4 @@ local Storage nodes are not listed (they are not shared).
 | 2026-11-09 | LEZ v0.3 public testnet `https://testnet.lez.logos.co` | program deploy (header + 5 segments, 6 transactions), program `5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS`, ImageID `f329edb2…` | fee 3,629,536 lepta |
 
 Nothing has been uploaded to a public Logos Storage network yet.
+| 2026-11-21 | Logos Storage testnet (`logos.test`) | our public node `139.190.104.17:8070` joined the network; one 1 MiB random test file uploaded to it (CID `zDvZRwzm5R1mLaFHkPqqFqSJFMUJKvAXzTCSGJWEQaZuGvCyvaEG`) and fetched once by a local node | 1 MiB |
