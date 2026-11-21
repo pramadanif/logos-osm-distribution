@@ -11,10 +11,18 @@ Written as found, not at the end. Each line says what, why, and what a user shou
   for 8 transactions; re-registering restores them (ADR 0002).
 - **Hosting exposes the host's node address** to Storage peers, as Logos Storage serves data
   directly (ADR 0005).
-- **LEZ v0.3 only.** The program, SDK write path and probes run on LEZ v0.3 (localnet and the public
-  v0.3 testnet). LEZ 0.4 changes the programming model to actors; the port, and SPEL support for
-  it, are not done (docs/status/lez-04-port.md). v0.3 evidence never counts for the prize.
-- **No Basecamp app or module yet.** They need nix and logos-module-builder.
+- **LEZ 0.4 only on a local rc sequencer.** The actor program passes the probes on a local
+  v0.4.0-rc1 sequencer; testnet 0.4 is not live. SPEL has no 0.4 support, so the 0.4 program is
+  hand-written against LEZ's actor API and there is no 0.4 IDL (docs/status/lez-04-port.md). v0.3
+  evidence never counts for the prize.
+- **Basecamp writes are v0.3 only.** The distribution module signs through `lez_core` 0.5.1, which
+  is built on LEZ v0.3.1. On 0.4 the module reads (discover, resolve, fetch, status) but cannot
+  write until a 0.4 wallet module exists; the CLI writes on 0.4 with `osm-chain-v04`.
+- **Basecamp GUI not run yet.** The modules, app and templates build and package on Linux and
+  macOS, and the core modules load and answer in `logosctl`; the app has not been opened in
+  Basecamp, so its screens, two-profile isolation and Qt number formatting are untested.
+- **The C++ parts are not run under ASan/UBSan.** Only the C ABI is (CI `ffi-sanitizers`); the app
+  backend and the C++ template need a Qt build under the sanitizers.
 - **No public Storage node yet.** CIDs registered from this machine cannot be fetched by others
   until the node runs on a public server, so nothing is registered on the public v0.3 testnet.
 - **Timestamps on v0.3 are client-supplied** but bound to block time: the program declares the

@@ -5,9 +5,11 @@ OpenStreetMap extracts distributed over the Logos stack, built for
 an on-chain registry of map snapshots on the Logos Execution Zone (LEZ), the files themselves in
 Logos Storage, a Rust SDK with a C ABI, and a command line tool.
 
-**Status (alpha).** Runs on LEZ v0.3 (local standalone sequencer and the public v0.3 testnet).
-Testnet 0.4, the network that counts for the prize, is not live yet and the 0.4 port is not done.
-The Basecamp app and modules are not built yet. See [docs/limitations.md](docs/limitations.md).
+**Status (alpha).** Runs on LEZ v0.3 (local standalone sequencer and the public v0.3 testnet)
+and, as an actor program, on a local LEZ v0.4.0-rc1 sequencer (CI job `e2e-v04`). Testnet 0.4,
+the network that counts for the prize, is not live yet. The Basecamp modules, app and templates
+build on Linux and macOS and the core modules load in `logosctl`; they have not been run in the
+Basecamp GUI yet. See [docs/limitations.md](docs/limitations.md).
 
 ## What it does
 
@@ -26,7 +28,8 @@ The Basecamp app and modules are not built yet. See [docs/limitations.md](docs/l
 | Network | Program id | ImageID |
 |---------|------------|---------|
 | LEZ v0.3 public testnet (`https://testnet.lez.logos.co`), rehearsal only | `5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS` | `f329edb220bdaade9d69250bb36969b95b672b4ea9d44c7a0092557762305e85` |
-| Logos testnet 0.4 | not deployed yet | |
+| Logos testnet 0.4 | not deployed yet (not launched) | |
+| local LEZ v0.4.0-rc1 (`scripts/localnet-v04.sh`) | new id each run | CI-built guest `13bda53e3ec2492031b9206d9d29751b51cf966f674849c92187edb935d6c77c` |
 
 Each region lives in its own account derived from the program id and the region id
 (`["osm-region", region]`); there is no global registry account ([ADR 0001](docs/adr/0001-registry-layout.md)).
@@ -92,6 +95,31 @@ China and Russia, in [regions/predefined.json](regions/predefined.json) (`osm re
 Ireland and Malaysia map to Geofabrik's `ireland-and-northern-ireland` and
 `malaysia-singapore-brunei`, the only extracts that contain them without overlapping another
 region in the set.
+
+## LEZ 0.4
+
+The 0.4 program (`programs/osm_registry_v04`) keeps the same account layout, so the SDK, the C ABI
+and every read command work unchanged; writes go through `osm-chain-v04`, which takes the same
+arguments as `osm-chain`:
+
+    osm host --region kenya ... --chain-bin osm-chain-v04
+
+`scripts/localnet-v04.sh` starts a local 0.4-rc chain, deploys the program and runs the probes;
+`scripts/port-testnet.sh` with a 0.4 profile deploys and replays coverage on a new network.
+SPEL does not support 0.4 yet, so there is no 0.4 IDL (docs/status/lez-04-port.md).
+
+## Basecamp
+
+| Module | Folder | What it is |
+|--------|--------|------------|
+| `pramadani_osm_distribution` | `basecamp/osm-distribution` | core module: discover, resolve, fetch, update check, host, bulk host, import, unhost; writes signed by `lez_core` |
+| `pramadani_osm_sdk` | `basecamp/osm-sdk` | read-only core module for other modules |
+| `pramadani_osm_app` | `basecamp/osm-app` | the Basecamp app |
+| `pramadani_osm_consumer_module`, `pramadani_osm_consumer_app` | `examples/` | templates |
+
+Build one with `nix build ./basecamp/osm-distribution#lgx-portable`. `module.json` indexes them.
+Catalog: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`
+(no release published yet).
 
 ## For module developers
 

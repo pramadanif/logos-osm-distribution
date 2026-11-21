@@ -13,8 +13,8 @@ Basecamp modules, and a CLI covering every operation the prize lists. Every writ
 reading the chain back; every download is checked against the registered MD5; coverage is
 verified exactly as the prize describes (Storage bytes against Geofabrik's published MD5).
 
-*Pending:* testnet 0.4 deployment and coverage, the Basecamp app and modules, the catalog
-release, five independent modules, and the video.
+*Pending:* testnet 0.4 deployment and coverage, running the Basecamp app in the Basecamp GUI,
+the first catalog release, five independent modules, and the video.
 
 ## Repository
 
@@ -24,7 +24,7 @@ release, five independent modules, and the video.
 - Program on testnet 0.4: *pending*. Rehearsal on the LEZ v0.3 public testnet:
   `5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS` (ImageID
   `f329edb220bdaade9d69250bb36969b95b672b4ea9d44c7a0092557762305e85`)
-- Catalog `logos-repo.json`: *pending*
+- Catalog `logos-repo.json`: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json` (*pending:* first release)
 - One verification command: `OSM_STORAGE=<storage API> scripts/verify-onchain.sh`
 
 ## Approach
@@ -56,10 +56,19 @@ CID, update check, download and local import.
 
 ### LEZ 0.4
 
-0.4 replaces LEZ's plan/apply model with actors. The registry already runs as an actor program
-on a local v0.4.0-rc1 sequencer with the same data layout (signed host actor → clock-asserted
-timestamp → region actor through a PDA seed). *Pending:* SPEL support for 0.4 and the public
-deployment.
+0.4 replaces LEZ's plan/apply model with actors. The registry runs as an actor program on a
+local v0.4.0-rc1 sequencer with the same data layout (signed host actor → clock-asserted
+timestamp → region actor through a PDA seed), including a batch message; CI builds LEZ from the
+tag and our guest from the commit and passes 18 of 18 probes. `osm-chain-v04` speaks the same
+command line as the v0.3 signer, so the CLI drives either network. *Pending:* SPEL support for
+0.4 (so no 0.4 IDL) and the public deployment.
+
+### Basecamp
+
+`pramadani_osm_distribution` (core module, full API, writes signed by `lez_core`),
+`pramadani_osm_sdk` (read-only module for other modules), the `pramadani_osm_app` app and two
+templates, built with logos-module-builder on Linux and macOS in CI; the core modules install,
+load and answer in `logosctl` on both. *Pending:* a run in the Basecamp GUI.
 
 ### What was tried and did not work
 
@@ -82,8 +91,9 @@ with negative tests on that sequencer (18/18). On the public v0.3 testnet the pr
 but no region is registered yet (no public Storage node). *Pending:* testnet 0.4.
 
 ### Usability
-CLI with JSON output and documented exit codes; SDK guide with a worked example; C ABI.
-*Pending:* the Basecamp app.
+CLI with JSON output and documented exit codes; SDK guide with a worked example; C ABI; a
+Basecamp app with submitting/confirmed/failed states and plain-text errors. *Pending:* the app
+seen running in Basecamp.
 
 ### Reliability
 Upload retries with back-off, typed errors with plain messages, confirmed writes, atomic local
@@ -91,14 +101,17 @@ writes surviving `kill -9` (200 rounds), owner-only data files, bounded decoders
 streaming of multi-GB files (2 GiB at 2.7 MB peak memory).
 
 ### Performance
-Executor cycle counts for `register` (49,970 user cycles) and `register_batch` with 1/5/10/16
-regions in `docs/cycles.md`; fees measured on a real sequencer.
+Executor cycle counts in `docs/cycles.md`: on v0.3 `register` 49,970 user cycles and
+`register_batch` with 1/5/10/16 regions; on 0.4 `Register` 51,386 (host actor, clock, region
+actor), `Unhost` 28,941 and `RegisterBatch` with 1/5/10/16 regions. Fees measured on a real
+v0.3 sequencer.
 
 ### Supportability
 CI on Linux, macOS and Windows; end-to-end job with a real sequencer and Storage nodes; Storage
 retrieval by an independent node; IDL regeneration diff; README cold start; doc-truth check;
-daily liveness, LEZ-release and fuzz jobs; `demo.sh`. *Pending:* nix module builds and the
-catalog.
+daily liveness, LEZ-release and fuzz jobs; `demo.sh`; nix builds of every module on Linux and
+macOS plus a headless load test; 0.4 end to end on a sequencer built from the LEZ tag.
+*Pending:* the first catalog release.
 
 ## Supporting Materials
 
