@@ -69,6 +69,13 @@ jobs:
           unzip -q storage.zip -d storage-bin && chmod +x storage-bin/*
       - name: End to end
         run: BLOCK_GEOFABRIK=1 WORK="$RUNNER_TEMP/e2e" STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" scripts/ci-e2e.sh
+      # The program binary this run deployed and tested; used to deploy the same build elsewhere
+      # (the ImageID is reproducible: docker build).
+      - uses: actions/upload-artifact@v4
+        with:
+          name: osm_registry-v03-guest
+          path: programs/osm_registry/methods/guest/target/riscv32im-risc0-zkvm-elf/docker/osm_registry.bin
+          if-no-files-found: error
       - name: Logs on failure
         if: failure()
         run: tail -50 "$RUNNER_TEMP/e2e/sequencer.log" || true
