@@ -1,7 +1,7 @@
 {
   "name": "pramadani_osm_distribution",
   "display_name": "OSM Distribution (LP-0018)",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "core",
   "interface": "cdylib",
   "category": "maps",
