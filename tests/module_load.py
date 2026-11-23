@@ -14,6 +14,8 @@ import sys
 import tempfile
 
 ctl, drop = sys.argv[1], sys.argv[2]
+# china/henan 261101 on the public v0.3 testnet, file on the project's public Storage node.
+HENAN_CID = "zDvZRwzmA5LrY5Be279q4gpJqxk6v6XrS59rHkKakguRwwFPEMfH"
 session = tempfile.mkdtemp(prefix="osm-logosctl-")
 fails = 0
 
@@ -83,8 +85,18 @@ try:
         # logosctl's 20 s call timeout; discovery then comes from the predefined set (P-R4).
         call(f"{m}.configure geofabrik off", m, "configure", '{"geofabrik": false}', check=lambda d: d["geofabrik"] is False)
         call(f"{m}.discover offline", m, "discover", check=lambda d: len(d["regions"]) + len(d["missing"]) == 72)
-        # A real read from the public v0.3 testnet: kenya is not registered there, so null.
+        # Real reads from the public v0.3 testnet (the modules' default network): kenya is not
+        # registered there, china/henan is (docs/test-traffic.md, 2026-11-23).
         call(f"{m}.resolve kenya", m, "resolve", "kenya", check=lambda d: d is None or "cid" in d)
+        call(f"{m}.resolve china/henan", m, "resolve", "china/henan", check=lambda d: d["cid"] == HENAN_CID)
+    # Registry query by CID through the distribution module (P-F7).
+    call("pramadani_osm_distribution.lookup cid", "pramadani_osm_distribution", "lookup",
+         json.dumps({"cid": HENAN_CID}), check=lambda d: [e["region"] for e in d["entries"]] == ["china/henan"])
+    # The embedding example: a module of its own that reaches the registry only through
+    # pramadani_osm_sdk, with no distribution app involved (prize: SDK usable without it).
+    must("load pramadani_osm_consumer_module", "module", "load", "pramadani_osm_consumer_module")
+    call("pramadani_osm_consumer_module.mapFor china/henan", "pramadani_osm_consumer_module", "mapFor",
+         "china/henan", check=lambda d: d["cid"] == HENAN_CID)
 finally:
     run("daemon", "stop")
 print(f"SUMMARY fails={fails}")

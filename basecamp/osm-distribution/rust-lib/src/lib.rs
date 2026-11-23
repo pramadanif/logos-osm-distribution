@@ -12,8 +12,8 @@ use osm_sdk::SdkError;
 use serde_json::{json, Value};
 
 /// Module API. The consumer part (discover, resolve, fetch, check_updates, hosted_status) is
-/// frozen for the alpha; host, host_batch, import_file, register_entry and unhost are the
-/// distribution app's.
+/// frozen for the alpha; lookup, host, host_batch, register_batch, import_file, register_entry
+/// and unhost are the distribution app's.
 pub trait PramadaniOsmDistributionModule: Send + 'static {
     /// `{"version","api"}`.
     fn version(&mut self) -> String;
@@ -40,6 +40,13 @@ pub trait PramadaniOsmDistributionModule: Send + 'static {
     /// "snapshot"?}`. Each region is downloaded, checked and uploaded like `host`; then one
     /// `register_batch` registers them all, confirmed by reading every region back.
     fn host_batch(&mut self, request: String) -> String;
+    /// Register up to 16 files already in Logos Storage in one transaction (batch-register):
+    /// `{"host", "entries": [{"region", "cid", "source_url", "md5", "snapshot", "size_bytes"}, ...]}`.
+    /// Confirmed by reading every region back, like `register_entry`.
+    fn register_batch(&mut self, request: String) -> String;
+    /// Registry query by region, by parent or by CID: `{"region": …}`, `{"parent": …}` or
+    /// `{"cid": …}`. Every matching entry, sorted by timestamp, and the accounts it could not read.
+    fn lookup(&mut self, query: String) -> String;
     /// Import a local PBF: `{"host", "path", "region", "snapshot"}`. Checks the file against
     /// Geofabrik's published MD5 for that snapshot, uploads it, registers it.
     fn import_file(&mut self, request: String) -> String;
@@ -209,6 +216,54 @@ impl Distribution {
             "snapshot": snap, "size_bytes": size}))
     }
 
+    /// Registers up to 16 files already in Logos Storage in one `register_batch` transaction:
+    /// each entry `{"region", "cid", "source_url", "md5", "snapshot", "size_bytes"}`. Every entry
+    /// is checked with the program's own rules first, and every region is read back after.
+    fn register_many(&self, host: &str, entries: Vec<Value>) -> Result<Value, SdkError> {
+        let regions: Vec<String> = entries.iter().map(|x| str_field(x, "region")).collect::<Result<_, _>>()?;
+        let names: Vec<&str> = regions.iter().map(String::as_str).collect();
+        osm_core::entry::validate_batch_shape(&names, &[]).map_err(|err| invalid("entries", format!("{} {err:?}", err.code())))?;
+        let timestamp = now_ms();
+        let mut defs = Vec::new();
+        for x in &entries {
+            let r = str_field(x, "region")?;
+            let def = osm_core::lookup(&r).ok_or_else(|| invalid("region", format!("{r:?} is not in the predefined set")))?;
+            let version = x["snapshot"].as_u64().and_then(|s| u32::try_from(s).ok()).ok_or_else(|| invalid("snapshot", "not YYMMDD"))?;
+            osm_core::entry::validate_entry(&osm_core::entry::EntryInput {
+                region: def.region,
+                parent: def.parent,
+                level: def.level,
+                cid: &str_field(x, "cid")?,
+                source_url: &str_field(x, "source_url")?,
+                checksum_hex: &str_field(x, "md5")?,
+                version,
+                size_bytes: x["size_bytes"].as_u64().ok_or_else(|| invalid("size_bytes", "missing"))?,
+                timestamp_ms: timestamp,
+            })
+            .map_err(|err| invalid("entry", format!("{r}: {} {err:?}", err.code())))?;
+            defs.push(def);
+        }
+        let s = |k: &str| entries.iter().map(|x| x[k].as_str().unwrap_or("").to_string()).collect::<Vec<_>>();
+        let ix = osm_sdk::instruction::Instruction::RegisterBatch {
+            regions: regions.clone(),
+            parents: defs.iter().map(|d| d.parent.unwrap_or("").to_string()).collect(),
+            levels: defs.iter().map(|d| u8::from(d.level == osm_core::Level::Subregion)).collect(),
+            cids: s("cid"),
+            source_urls: s("source_url"),
+            checksums: s("md5"),
+            versions: entries.iter().map(|x| x["snapshot"].as_u64().unwrap_or(0)).collect(),
+            sizes: entries.iter().map(|x| x["size_bytes"].as_u64().unwrap_or(0)).collect(),
+            timestamp,
+        };
+        let cids: std::collections::HashMap<String, String> =
+            entries.iter().map(|x| (x["region"].as_str().unwrap_or("").to_string(), x["cid"].as_str().unwrap_or("").to_string())).collect();
+        let mut out = write_and_confirm(&self.settings, host, &regions, ix, |r, acc, h| {
+            acc.history.iter().any(|x| Some(&x.cid) == cids.get(r) && x.hosts.contains(h))
+        })?;
+        out["entries"] = json!(entries);
+        Ok(out)
+    }
+
     fn register_value(&self, e: &Value) -> Result<Value, SdkError> {
         let region = str_field(e, "region")?;
         let def = osm_core::lookup(&region).ok_or_else(|| invalid("region", "not in the predefined set"))?;
@@ -322,47 +377,37 @@ impl PramadaniOsmDistributionModule for Distribution {
                 .map(|v| v.as_str().map(str::to_string).ok_or_else(|| invalid("regions", "not a string")))
                 .collect::<Result<_, _>>()?;
             let names: Vec<&str> = regions.iter().map(String::as_str).collect();
+            // Checked before any download, so a bad selection costs nothing.
             osm_core::entry::validate_batch_shape(&names, &[]).map_err(|err| invalid("regions", format!("{} {err:?}", err.code())))?;
-            let timestamp = now_ms();
             let mut entries = Vec::new();
             for r in &regions {
-                let x = self.prepare(r, e["snapshot"].as_u64())?;
-                let def = osm_core::lookup(r).expect("checked by prepare");
-                let version = x["snapshot"].as_u64().expect("set by prepare") as u32;
-                osm_core::entry::validate_entry(&osm_core::entry::EntryInput {
-                    region: r,
-                    parent: def.parent,
-                    level: def.level,
-                    cid: x["cid"].as_str().unwrap_or(""),
-                    source_url: x["source_url"].as_str().unwrap_or(""),
-                    checksum_hex: x["md5"].as_str().unwrap_or(""),
-                    version,
-                    size_bytes: x["size_bytes"].as_u64().unwrap_or(0),
-                    timestamp_ms: timestamp,
-                })
-                .map_err(|err| invalid("entry", format!("{r}: {} {err:?}", err.code())))?;
-                entries.push((def, x));
+                entries.push(self.prepare(r, e["snapshot"].as_u64())?);
             }
-            let s = |k: &str| entries.iter().map(|(_, x)| x[k].as_str().unwrap_or("").to_string()).collect::<Vec<_>>();
-            let ix = osm_sdk::instruction::Instruction::RegisterBatch {
-                regions: regions.clone(),
-                parents: entries.iter().map(|(d, _)| d.parent.unwrap_or("").to_string()).collect(),
-                levels: entries.iter().map(|(d, _)| u8::from(d.level == osm_core::Level::Subregion)).collect(),
-                cids: s("cid"),
-                source_urls: s("source_url"),
-                checksums: s("md5"),
-                versions: entries.iter().map(|(_, x)| x["snapshot"].as_u64().unwrap_or(0)).collect(),
-                sizes: entries.iter().map(|(_, x)| x["size_bytes"].as_u64().unwrap_or(0)).collect(),
-                timestamp,
-            };
-            let cids: std::collections::HashMap<String, String> =
-                entries.iter().map(|(d, x)| (d.region.to_string(), x["cid"].as_str().unwrap_or("").to_string())).collect();
-            let mut out = write_and_confirm(&self.settings, &host, &regions, ix, |r, acc, h| {
-                acc.history.iter().any(|x| Some(&x.cid) == cids.get(r) && x.hosts.contains(h))
-            })?;
-            out["entries"] = json!(entries.iter().map(|(_, x)| x.clone()).collect::<Vec<_>>());
-            Ok(out)
+            self.register_many(&host, entries)
         })();
+        api::envelope(r)
+    }
+
+    fn register_batch(&mut self, request: String) -> String {
+        let r = (|| {
+            let e = api::parse(&request)?;
+            let host = str_field(&e, "host")?;
+            let entries = e["entries"].as_array().ok_or_else(|| invalid("entries", "missing array"))?.clone();
+            self.register_many(&host, entries)
+        })();
+        api::envelope(r)
+    }
+
+    fn lookup(&mut self, query: String) -> String {
+        let r = api::parse(&query).and_then(|q| {
+            let mut v = self.args(json!({}));
+            for k in ["region", "parent", "cid"] {
+                if let Some(s) = q[k].as_str() {
+                    v[k] = json!(s);
+                }
+            }
+            api::lookup(&v)
+        });
         api::envelope(r)
     }
 

@@ -77,10 +77,13 @@ jobs:
           nix build -L 'github:logos-co/logos-logoscore-cli#ctl' -o ctl
           nix flake metadata --json 'github:logos-co/logos-logoscore-cli' | python3 -c 'import json,sys; print("logosctl rev", json.load(sys.stdin)["revision"])'
           mkdir -p drop
-          for m in osm-sdk osm-distribution; do
-            nix build -L "./basecamp/$m#lgx" -o "lgx-$m"
-            cp lgx-$m/*.lgx drop/ && chmod +w drop/*.lgx
-          done
+          nix build -L ./basecamp/osm-sdk#lgx -o lgx-osm-sdk
+          nix build -L ./basecamp/osm-distribution#lgx -o lgx-osm-distribution
+          # The embedding example builds against this checkout's SDK module, not the published one.
+          nix build -L ./examples/consumer-module#lgx -o lgx-consumer-module \
+            --override-input pramadani_osm_sdk "path:$PWD/basecamp/osm-sdk"
+          for o in lgx-osm-sdk lgx-osm-distribution lgx-consumer-module; do cp "$o"/*.lgx drop/; done
+          chmod +w drop/*.lgx
           ls -l drop
       - name: Install, load and call
         run: python3 tests/module_load.py ./ctl/bin/logosctl ./drop

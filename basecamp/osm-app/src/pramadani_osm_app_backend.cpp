@@ -38,6 +38,8 @@ QString PramadaniOsmAppBackend::call(QString method, QString arg)
     else if (method == "fetch") osm.fetchAsync(arg, done, Timeout(kLongMs));
     else if (method == "host") osm.hostAsync(arg, done, Timeout(kLongMs));
     else if (method == "host_batch") osm.host_batchAsync(arg, done, Timeout(kLongMs));
+    else if (method == "register_batch") osm.register_batchAsync(arg, done, Timeout(kWriteMs));
+    else if (method == "lookup") osm.lookupAsync(arg, done, Timeout(kReadMs));
     else if (method == "import_file") osm.import_fileAsync(arg, done, Timeout(kLongMs));
     else if (method == "register_entry") osm.register_entryAsync(arg, done, Timeout(kWriteMs));
     else if (method == "unhost") osm.unhostAsync(arg, done, Timeout(kWriteMs));

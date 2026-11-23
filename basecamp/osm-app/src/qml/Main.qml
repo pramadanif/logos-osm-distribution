@@ -40,6 +40,10 @@ Item {
 
     // 0 all, 1 hosted, 2 not hosted.
     property int filter: 0
+    // A decomposed country to narrow the list to ("" for all), and what the registry holds under it.
+    property string parentFilter: ""
+    property string parentInfo: ""
+    property string searchInfo: ""
 
     Rectangle {
         anchors.fill: parent
@@ -224,6 +228,8 @@ Item {
                 continue;
             if (filter === 2 && r.version)
                 continue;
+            if (parentFilter.length > 0 && r.parent !== parentFilter)
+                continue;
             if (q.length > 0 && r.region.indexOf(q) < 0 && r.name.toLowerCase().indexOf(q) < 0)
                 continue;
             out.push(r);
@@ -264,6 +270,50 @@ Item {
                 root.openEntry = a.data;
             else
                 root.problem = errorText(a);
+        });
+    }
+
+    // Registry query by parent (P-F7): how many entries and hosted regions sit under a country.
+    function setParent(p) {
+        root.parentFilter = p;
+        root.parentInfo = "";
+        if (p.length === 0)
+            return;
+        run("lookup", JSON.stringify({"parent": p}), function (a) {
+            if (root.parentFilter !== p)
+                return;
+            if (!a.ok) {
+                root.problem = errorText(a);
+                return;
+            }
+            var hosted = {};
+            for (var i = 0; i < a.data.entries.length; i++)
+                hosted[a.data.entries[i].region] = true;
+            root.parentInfo = a.data.entries.length + (a.data.entries.length === 1 ? " entry" : " entries")
+                + " registered under " + p + " across " + Object.keys(hosted).length + " of its subregions";
+        });
+    }
+
+    function looksLikeCid(s) {
+        return s.length >= 46 && (s.indexOf("zDv") === 0 || s.indexOf("Qm") === 0);
+    }
+
+    // Registry query by CID (P-F7): which region holds this file.
+    function findCid(cid) {
+        root.searchInfo = "";
+        run("lookup", JSON.stringify({"cid": cid}), function (a) {
+            if (!a.ok) {
+                root.problem = errorText(a);
+                return;
+            }
+            if (a.data.entries.length === 0) {
+                root.searchInfo = "No registered entry has this CID.";
+                return;
+            }
+            var e = a.data.entries[a.data.entries.length - 1];
+            root.searchInfo = "Found in " + regionName(e.region) + " (" + e.region + "), snapshot " + formatSnapshot(e.version) + ".";
+            search.text = "";
+            root.openDetails(e.region);
         });
     }
 
@@ -309,6 +359,7 @@ Item {
         "hosted_status": "Read hosted status", "resolve": "Look up region", "fetch": "Download",
         "check_updates": "Check for updates", "host": "Host region", "host_batch": "Host regions",
         "import_file": "Import file", "register_entry": "Register", "unhost": "Stop hosting",
+        "register_batch": "Register batch", "lookup": "Search registry",
         "version": "Version"
     })
 
@@ -347,7 +398,7 @@ Item {
         return JSON.stringify(d);
     }
 
-    readonly property var routine: ["settings", "discover", "hosted_status", "resolve", "version"]
+    readonly property var routine: ["settings", "discover", "hosted_status", "resolve", "version", "lookup"]
 
     function jobList() {
         var ids = Object.keys(root.jobs);
@@ -573,7 +624,16 @@ Item {
                         LogosSearchBar {
                             id: search
                             Layout.fillWidth: true
-                            placeholderText: "Search regions"
+                            placeholderText: "Search regions, or paste a CID and press Enter"
+                            onSubmitted: function (text) {
+                                if (root.looksLikeCid(text.trim()))
+                                    root.findCid(text.trim());
+                            }
+                        }
+                        LogosComboBox {
+                            Layout.preferredWidth: 150
+                            model: ["All countries", "us", "india", "china", "russia"]
+                            onActivated: function (i) { root.setParent(i === 0 ? "" : model[i]); }
                         }
                         Repeater {
                             model: ["All", "Hosted", "Not hosted"]
@@ -586,6 +646,15 @@ Item {
                                 onClicked: root.filter = index
                             }
                         }
+                    }
+
+                    LogosNotice {
+                        Layout.fillWidth: true
+                        visible: root.parentInfo.length > 0 || root.searchInfo.length > 0
+                        severity: LogosNotice.Info
+                        message: root.searchInfo.length > 0 ? root.searchInfo : root.parentInfo
+                        closable: true
+                        onDismissed: { root.searchInfo = ""; root.parentInfo = ""; }
                     }
 
                     LogosFrame {

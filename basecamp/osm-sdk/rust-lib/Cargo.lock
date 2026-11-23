@@ -347,12 +347,12 @@ checksum = "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
 [[package]]
 name = "osm_core"
 version = "0.0.1"
-source = "git+https://github.com/pramadanif/logos-osm-distribution?rev=c11d866d9bb04207fe782b7259fff409993c6530#c11d866d9bb04207fe782b7259fff409993c6530"
+source = "git+https://github.com/pramadanif/logos-osm-distribution?rev=47b4153d8376dcfbcf65772a9e2aef959194f538#47b4153d8376dcfbcf65772a9e2aef959194f538"
 
 [[package]]
 name = "osm_ffi"
 version = "0.0.1"
-source = "git+https://github.com/pramadanif/logos-osm-distribution?rev=c11d866d9bb04207fe782b7259fff409993c6530#c11d866d9bb04207fe782b7259fff409993c6530"
+source = "git+https://github.com/pramadanif/logos-osm-distribution?rev=47b4153d8376dcfbcf65772a9e2aef959194f538#47b4153d8376dcfbcf65772a9e2aef959194f538"
 dependencies = [
  "osm_core",
  "osm_sdk",
@@ -362,7 +362,7 @@ dependencies = [
 [[package]]
 name = "osm_sdk"
 version = "0.0.1"
-source = "git+https://github.com/pramadanif/logos-osm-distribution?rev=c11d866d9bb04207fe782b7259fff409993c6530#c11d866d9bb04207fe782b7259fff409993c6530"
+source = "git+https://github.com/pramadanif/logos-osm-distribution?rev=47b4153d8376dcfbcf65772a9e2aef959194f538#47b4153d8376dcfbcf65772a9e2aef959194f538"
 dependencies = [
  "borsh",
  "bs58",

@@ -840,6 +840,19 @@
   "resolve": {
    "ok": true,
    "data": null
+  },
+  "lookup": {
+   "ok": true,
+   "data": {
+    "entries": [
+     {
+      "region": "china/henan",
+      "cid": "zDvZRwzmA5LrY5Be279q4gpJqxk6v6XrS59rHkKakguRwwFPEMfH",
+      "version": 261101
+     }
+    ],
+    "errors": []
+   }
   }
  },
  "jobs": {
