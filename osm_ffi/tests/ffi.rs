@@ -71,3 +71,21 @@ fn header_lists_every_exported_function() {
         assert!(h.contains(&format!("{f}(")), "{f} missing from osm_ffi.h");
     }
 }
+
+#[test]
+fn lookup_takes_exactly_one_query_key() {
+    // Port 9 (discard) is never asked: every case fails on its input first.
+    let base =
+        r#""rpc":"http://127.0.0.1:9","program":"9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw""#;
+    for args in [
+        format!("{{{base}}}"),
+        format!(
+            r#"{{{base},"region":"kenya","cid":"zDvZRwzmA5LrY5Be279q4gpJqxk6v6XrS59rHkKakguRwwFPEMfH"}}"#
+        ),
+        format!(r#"{{{base},"region":"planet"}}"#),
+    ] {
+        let r = call(osm_lookup, &args);
+        assert_eq!(r["ok"], false, "{args}");
+        assert_eq!(r["code"], "S160", "{args}");
+    }
+}

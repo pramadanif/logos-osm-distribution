@@ -119,6 +119,57 @@ pub mod api {
         })
     }
 
+    /// Registry query (P-F7): exactly one of `region`, `parent` or `cid`. Every matching entry,
+    /// sorted by timestamp, plus the accounts that could not be read.
+    pub fn lookup(v: &Value) -> Result<Value, SdkError> {
+        let reg = registry(v)?;
+        let keys: Vec<&str> = ["region", "parent", "cid"]
+            .into_iter()
+            .filter(|k| v[*k].is_string())
+            .collect();
+        if keys.len() != 1 {
+            return Err(SdkError::InvalidInput {
+                field: "query",
+                why: "give exactly one of region, parent or cid".into(),
+            });
+        }
+        let (entries, errors) = match keys[0] {
+            "region" => {
+                let region = str_arg(v, "region")?;
+                let def = osm_core::lookup(region).ok_or_else(|| SdkError::InvalidInput {
+                    field: "region",
+                    why: format!("{region:?} is not in the predefined set"),
+                })?;
+                match reg.region(def.region)? {
+                    None => (Vec::new(), Vec::new()),
+                    Some(acc) => {
+                        let mut v: Vec<_> = acc
+                            .history
+                            .into_iter()
+                            .map(|entry| osm_sdk::registry::RegisteredEntry {
+                                region: def.region,
+                                entry,
+                            })
+                            .collect();
+                        osm_sdk::registry::sort_entries(&mut v);
+                        (v, Vec::new())
+                    }
+                }
+            }
+            "parent" => reg.by_parent(str_arg(v, "parent")?),
+            _ => reg.by_cid(str_arg(v, "cid")?),
+        };
+        Ok(json!({
+            "entries": entries.iter().map(|r| {
+                let e = &r.entry;
+                json!({"region": r.region, "cid": e.cid, "source_url": e.source_url, "checksum": to_hex(&e.checksum),
+                    "version": e.version, "size_bytes": e.size_bytes, "hosted": e.hosted, "timestamp_ms": e.timestamp,
+                    "registered_by": e.registered_by_b58(), "hosts": e.hosts_b58()})
+            }).collect::<Vec<_>>(),
+            "errors": errors.iter().map(|e| json!({"code": e.code(), "error": e.to_string()})).collect::<Vec<_>>(),
+        }))
+    }
+
     pub fn fetch(v: &Value) -> Result<Value, SdkError> {
         let reg = registry(v)?;
         let dir = PathBuf::from(str_arg(v, "dir")?);
@@ -224,6 +275,11 @@ pub extern "C" fn osm_discover(args_json: *const c_char) -> *mut c_char {
 #[no_mangle]
 pub extern "C" fn osm_resolve(args_json: *const c_char) -> *mut c_char {
     respond(|| api::resolve(&parse_args(args_json)?))
+}
+
+#[no_mangle]
+pub extern "C" fn osm_lookup(args_json: *const c_char) -> *mut c_char {
+    respond(|| api::lookup(&parse_args(args_json)?))
 }
 
 #[no_mangle]

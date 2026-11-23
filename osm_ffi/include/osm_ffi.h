@@ -18,6 +18,8 @@ char *osm_version(void);
 char *osm_discover(const char *args_json);
 /* {"rpc","program","region"} -> resolved entry or null */
 char *osm_resolve(const char *args_json);
+/* {"rpc","program", one of "region"|"parent"|"cid"} -> {"entries":[...sorted by timestamp], "errors":[...]} */
+char *osm_lookup(const char *args_json);
 /* {"rpc","program","region","storage","dir","geofabrik":bool} -> {"path","source","from","md5","skipped"} */
 char *osm_fetch(const char *args_json);
 /* {"rpc","program"} -> [{"region","version","hosts"}] for all 72 regions */
