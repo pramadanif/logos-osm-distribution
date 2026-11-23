@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QJsonObject>
+#include "job_table.h"
 
 #include "rep_pramadani_osm_app_source.h"
 #include "logos_module_context.h"
@@ -19,6 +19,5 @@ private:
     void finish(const QString& id, const QString& answer);
     void publish();
 
-    QJsonObject m_jobs;
-    quint64 m_next = 0;
+    JobTable m_jobs;
 };

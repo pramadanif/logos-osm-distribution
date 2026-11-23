@@ -21,8 +21,9 @@ Written as found, not at the end. Each line says what, why, and what a user shou
 - **Basecamp GUI not run yet.** The modules, app and templates build and package on Linux and
   macOS, and the core modules load and answer in `logosctl`; the app has not been opened in
   Basecamp, so its screens, two-profile isolation and Qt number formatting are untested.
-- **The C++ parts are not run under ASan/UBSan.** Only the C ABI is (CI `ffi-sanitizers`); the app
-  backend and the C++ template need a Qt build under the sanitizers.
+- **Sanitizers cover the C ABI and the app's job logic, not the whole Basecamp plugin.** CI runs
+  the C ABI and the app backend's job bookkeeping (`job_table.h`) under ASan and UBSan; the
+  plugin glue the module builder generates and the QML are not built with sanitizers.
 - **One public Storage node, on a shared small server.** The project's node
   (`139.190.104.17:8070`, deploy/storage-node/public-node.json) shares a 2 vCPU / 2 GB server with
   other services, so it is capped at 30 GiB of data and 700 MB of memory with low CPU and I/O

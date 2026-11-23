@@ -16,6 +16,7 @@ logos_module(
     NAME ${MODULE_NAME}
     REP_FILE src/pramadani_osm_app.rep
     SOURCES
+        src/job_table.h
         src/pramadani_osm_app_backend.h
         src/pramadani_osm_app_backend.cpp
     INCLUDE_DIRS

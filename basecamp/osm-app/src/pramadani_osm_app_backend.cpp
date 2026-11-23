@@ -1,7 +1,5 @@
 #include "pramadani_osm_app_backend.h"
 
-#include <QJsonDocument>
-
 #include "logos_sdk.h"
 
 namespace {
@@ -12,18 +10,11 @@ constexpr int kLongMs = 6 * 60 * 60 * 1000;
 constexpr int kWriteMs = 12 * 60 * 1000;
 constexpr int kReadMs = 2 * 60 * 1000;
 
-QString failure(const QString& code, const QString& message)
-{
-    QJsonObject o{{"ok", false}, {"code", code}, {"error", message}};
-    return QString::fromUtf8(QJsonDocument(o).toJson(QJsonDocument::Compact));
-}
-
 } // namespace
 
 QString PramadaniOsmAppBackend::call(QString method, QString arg)
 {
-    const QString id = QStringLiteral("%1-%2").arg(method).arg(++m_next);
-    m_jobs.insert(id, QJsonObject{{"method", method}, {"arg", arg}, {"state", "submitting"}});
+    const QString id = m_jobs.start(method, arg);
     publish();
 
     auto done = [this, id](QString answer) { finish(id, answer); };
@@ -44,38 +35,23 @@ QString PramadaniOsmAppBackend::call(QString method, QString arg)
     else if (method == "import_file") osm.import_fileAsync(arg, done, Timeout(kLongMs));
     else if (method == "register_entry") osm.register_entryAsync(arg, done, Timeout(kWriteMs));
     else if (method == "unhost") osm.unhostAsync(arg, done, Timeout(kWriteMs));
-    else finish(id, failure("A002", QStringLiteral("UnknownAction: %1").arg(method)));
+    else finish(id, JobTable::failure("A002", QStringLiteral("UnknownAction: %1").arg(method)));
     return id;
 }
 
 void PramadaniOsmAppBackend::finish(const QString& id, const QString& answer)
 {
-    QJsonObject job = m_jobs.value(id).toObject();
-    if (job.isEmpty())
-        return;
-    // An empty or unparsable answer means the module did not reply (not loaded, timed out).
-    QJsonParseError perr;
-    const QJsonDocument doc = QJsonDocument::fromJson(answer.toUtf8(), &perr);
-    QString text = answer;
-    if (perr.error != QJsonParseError::NoError || !doc.isObject())
-        text = failure("A001", QStringLiteral("ModuleUnavailable: no answer from pramadani_osm_distribution (not loaded, or timed out)"));
-    const bool ok = QJsonDocument::fromJson(text.toUtf8()).object().value("ok").toBool();
-    job.insert("state", ok ? "confirmed" : "failed");
-    job.insert("answer", text);
-    m_jobs.insert(id, job);
+    m_jobs.finish(id, answer);
     publish();
 }
 
 void PramadaniOsmAppBackend::clearFinished()
 {
-    for (const QString& id : m_jobs.keys()) {
-        if (m_jobs.value(id).toObject().value("state").toString() != "submitting")
-            m_jobs.remove(id);
-    }
+    m_jobs.clearFinished();
     publish();
 }
 
 void PramadaniOsmAppBackend::publish()
 {
-    setJobs(QString::fromUtf8(QJsonDocument(m_jobs).toJson(QJsonDocument::Compact)));
+    setJobs(m_jobs.json());
 }
