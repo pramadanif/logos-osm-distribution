@@ -81,6 +81,9 @@ try:
         must(f"load {m}", "module", "load", m)
         call(f"{m}.version", m, "version", check=lambda d: d["api"] == 1)
         call(f"{m}.settings", m, "settings", check=lambda d: d["data_dir"] and m in d["data_dir"])
+        # A real probe of the default sequencer; no Storage node runs in CI, so storage must
+        # report itself unreachable rather than pretend.
+        call(f"{m}.status", m, "status", check=lambda d: d["rpc"]["ok"] and d["rpc"]["block"] > 0 and d["storage"]["ok"] is False)
         # Without Geofabrik, so the test does not depend on download.geofabrik.de answering within
         # logosctl's 20 s call timeout; discovery then comes from the predefined set (P-R4).
         call(f"{m}.configure geofabrik off", m, "configure", '{"geofabrik": false}', check=lambda d: d["geofabrik"] is False)

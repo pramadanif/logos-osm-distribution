@@ -20,6 +20,9 @@ pub trait PramadaniOsmSdkModule: Send + 'static {
     /// Merge and save settings (JSON object with any of `rpc`, `program`, `storage`, `geofabrik`).
     fn configure(&mut self, settings: String) -> String;
     /// The 72 regions with names, level and parent.
+    /// Liveness of the configured services, each from a real request: `{"rpc": {"ok", "block" |
+    /// "error"}, "storage": {"ok", "quota_max_bytes", "quota_used_bytes" | "error"}, "geofabrik"}`.
+    fn status(&mut self) -> String;
     fn discover(&mut self) -> String;
     /// Newest hosted entry of a region: CID, MD5, snapshot, size, hosts.
     fn resolve(&mut self, region: String) -> String;
@@ -100,6 +103,21 @@ impl PramadaniOsmSdkModule for Distribution {
             Ok(self.settings.clone())
         })();
         api::envelope(r)
+    }
+
+    fn status(&mut self) -> String {
+        // Each part is a real request; a failure is reported, never assumed away.
+        let rpc = self.settings["rpc"].as_str().unwrap_or("").to_string();
+        let storage = self.settings["storage"].as_str().unwrap_or("").to_string();
+        let rpc_part = match osm_sdk::registry::rpc_last_block(&rpc) {
+            Ok(b) => json!({"ok": true, "url": rpc, "block": b}),
+            Err(e) => json!({"ok": false, "url": rpc, "code": e.code(), "error": e.to_string()}),
+        };
+        let storage_part = match osm_sdk::rest_storage::RestStorage::new(&storage, std::time::Duration::from_secs(10)).space() {
+            Ok(v) => json!({"ok": true, "url": storage, "quota_max_bytes": v["quotaMaxBytes"], "quota_used_bytes": v["quotaUsedBytes"]}),
+            Err(e) => json!({"ok": false, "url": storage, "code": "S110", "error": format!("S110 StorageUnreachable: {e:?}")}),
+        };
+        api::envelope(Ok(json!({"rpc": rpc_part, "storage": storage_part, "geofabrik": self.settings["geofabrik"].as_bool() != Some(false)})))
     }
 
     fn discover(&mut self) -> String {

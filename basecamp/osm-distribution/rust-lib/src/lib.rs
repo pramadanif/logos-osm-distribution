@@ -23,6 +23,9 @@ pub trait PramadaniOsmDistributionModule: Send + 'static {
     /// `host`: the default host account for writes).
     fn configure(&mut self, settings: String) -> String;
     /// The 72 regions with names, level and parent.
+    /// Liveness of the configured services, each from a real request: `{"rpc": {"ok", "block" |
+    /// "error"}, "storage": {"ok", "quota_max_bytes", "quota_used_bytes" | "error"}, "geofabrik"}`.
+    fn status(&mut self) -> String;
     fn discover(&mut self) -> String;
     /// Newest hosted entry of a region: CID, MD5, snapshot, size, hosts.
     fn resolve(&mut self, region: String) -> String;
@@ -121,6 +124,8 @@ fn write_and_confirm(
         _ => (region_hex.into_iter().chain(std::iter::once(host_hex)).collect(), regions.iter().map(|_| false).chain(std::iter::once(true)).collect()),
     };
     let program_hex = account_hex(program)?;
+    // Default-level log of every write (E82): which regions, which host, then the outcome.
+    eprintln!("pramadani_osm_distribution: sending a registry write for {} as {host_b58}", regions.join(", "));
     let tx = modules()
         .lez_core
         .send_generic_public_transaction(&accounts, &signing, &instruction.to_bytes(), &program_hex, "", &[])
@@ -136,6 +141,7 @@ fn write_and_confirm(
             }
         }
         if all {
+            eprintln!("pramadani_osm_distribution: confirmed on-chain: {}", regions.join(", "));
             return Ok(json!({"confirmed": true, "regions": regions, "wallet_answer": tx}));
         }
         // A public testnet has taken over 2 minutes to include a transaction.
@@ -207,8 +213,11 @@ impl Distribution {
             Some(s) => u32::try_from(s).map_err(|_| invalid("snapshot", "not YYMMDD"))?,
             None => osm_sdk::snapshot::first_of_month(g.latest_snapshot(def)?),
         };
+        eprintln!("pramadani_osm_distribution: downloading {region} snapshot {snap:06} from Geofabrik");
         let (path, md5) = g.download_snapshot(def, snap, &dir, |_, _| {})?;
+        eprintln!("pramadani_osm_distribution: {region}: MD5 matches Geofabrik; uploading to Logos Storage");
         let cid = self.upload(&path)?;
+        eprintln!("pramadani_osm_distribution: {region}: stored as {cid}");
         let size = std::fs::metadata(&path).map_err(|err| invalid("file", err.to_string()))?.len();
         let _ = osm_sdk::datadir::enforce_cache_cap(&dir, 20 << 30, &path);
         let url = osm_sdk::snapshot::snapshot_url(def, snap)?;
@@ -332,6 +341,21 @@ impl PramadaniOsmDistributionModule for Distribution {
         api::envelope(r)
     }
 
+    fn status(&mut self) -> String {
+        // Each part is a real request; a failure is reported, never assumed away.
+        let rpc = self.settings["rpc"].as_str().unwrap_or("").to_string();
+        let storage = self.settings["storage"].as_str().unwrap_or("").to_string();
+        let rpc_part = match osm_sdk::registry::rpc_last_block(&rpc) {
+            Ok(b) => json!({"ok": true, "url": rpc, "block": b}),
+            Err(e) => json!({"ok": false, "url": rpc, "code": e.code(), "error": e.to_string()}),
+        };
+        let storage_part = match osm_sdk::rest_storage::RestStorage::new(&storage, std::time::Duration::from_secs(10)).space() {
+            Ok(v) => json!({"ok": true, "url": storage, "quota_max_bytes": v["quotaMaxBytes"], "quota_used_bytes": v["quotaUsedBytes"]}),
+            Err(e) => json!({"ok": false, "url": storage, "code": "S110", "error": format!("S110 StorageUnreachable: {e:?}")}),
+        };
+        api::envelope(Ok(json!({"rpc": rpc_part, "storage": storage_part, "geofabrik": self.settings["geofabrik"].as_bool() != Some(false)})))
+    }
+
     fn discover(&mut self) -> String {
         api::envelope(api::discover(&self.args(json!({}))))
     }
@@ -341,7 +365,12 @@ impl PramadaniOsmDistributionModule for Distribution {
     }
 
     fn fetch(&mut self, region: String) -> String {
+        eprintln!("pramadani_osm_distribution: fetching {region}");
         let r = self.data_dir("maps").and_then(|dir| api::fetch(&self.args(json!({"region": region, "dir": dir}))));
+        match &r {
+            Ok(v) => eprintln!("pramadani_osm_distribution: {region}: saved {} (MD5 verified)", v["path"]),
+            Err(e) => eprintln!("pramadani_osm_distribution: {region}: {e}"),
+        }
         api::envelope(r)
     }
 

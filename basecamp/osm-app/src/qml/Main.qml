@@ -48,6 +48,9 @@ Item {
     // update check over all regions; empty until the user asks.
     property var available: ({})
     property bool checkingVersions: false
+    // What the configured sequencer and Storage node answered (E77): real probes, not assumptions.
+    property var services: ({})
+    property bool probing: false
 
     Rectangle {
         anchors.fill: parent
@@ -112,10 +115,25 @@ Item {
         return j >= 0 ? u.substring(0, j) : u;
     }
 
-    // "shgMqPgBJpwrXRjhhbjR…" -> "shgMqP…3wDFC": enough to recognise an account at a glance.
-    function shortId(id) {
-        var s = String(id || "");
-        return s.length > 16 ? s.substring(0, 6) + "…" + s.substring(s.length - 5) : s;
+    // Unix ms -> "2026-11-23 10:23 UTC", built from the date's parts (no locale formatting).
+    function formatTime(ms) {
+        if (!ms)
+            return "";
+        var d = new Date(Number(ms));
+        var two = function (n) { return n < 10 ? "0" + n : String(n); };
+        return d.getUTCFullYear() + "-" + two(d.getUTCMonth() + 1) + "-" + two(d.getUTCDate()) + " "
+            + two(d.getUTCHours()) + ":" + two(d.getUTCMinutes()) + " UTC";
+    }
+
+    function probe() {
+        root.probing = true;
+        run("status", "", function (a) {
+            root.probing = false;
+            if (a.ok)
+                root.services = a.data;
+            else
+                root.problem = errorText(a);
+        });
     }
 
     function parse(text) {
@@ -162,6 +180,7 @@ Item {
     }
 
     function refresh() {
+        root.probe();
         run("settings", "", function (a) {
             if (a.ok)
                 root.settings = a.data.settings;
@@ -394,7 +413,7 @@ Item {
         "hosted_status": "Read hosted status", "resolve": "Look up region", "fetch": "Download",
         "check_updates": "Check for updates", "host": "Host region", "host_batch": "Host regions",
         "import_file": "Import file", "register_entry": "Register", "unhost": "Stop hosting",
-        "register_batch": "Register batch", "lookup": "Search registry",
+        "register_batch": "Register batch", "lookup": "Search registry", "status": "Test connection",
         "version": "Version"
     })
 
@@ -433,7 +452,7 @@ Item {
         return JSON.stringify(d);
     }
 
-    readonly property var routine: ["settings", "discover", "hosted_status", "resolve", "version", "lookup"]
+    readonly property var routine: ["settings", "discover", "hosted_status", "resolve", "version", "lookup", "status"]
 
     function jobList() {
         var ids = Object.keys(root.jobs);
@@ -484,6 +503,7 @@ Item {
         spacing: Theme.spacing.tiny
         Layout.fillWidth: true
         LogosText {
+            visible: field.label.length > 0
             text: field.label
             color: Theme.palette.textSecondary
             font.pixelSize: Theme.typography.secondaryText
@@ -540,6 +560,26 @@ Item {
 
     // ---- view -------------------------------------------------------------------------------
 
+    // What a host run will do, before it starts (E66): regions, transactions, fee reserve, disk.
+    LogosDialog {
+        id: confirmHost
+        anchors.centerIn: parent
+        preferredWidth: 480
+        title: "Host " + root.selectedCount + (root.selectedCount === 1 ? " region?" : " regions?")
+        message: "Each region is downloaded from Geofabrik, checked against its MD5 and uploaded to "
+                 + (root.settings.storage || "your Storage node") + ". Then "
+                 + Math.ceil(root.selectedCount / root.maxBatch) + (Math.ceil(root.selectedCount / root.maxBatch) === 1 ? " transaction" : " transactions")
+                 + " signed by " + hostField.text + " register" + (Math.ceil(root.selectedCount / root.maxBatch) === 1 ? "s" : "")
+                 + " them. Each transaction needs 38,400,000 lepta available for the fee reserve; the fee charged is far lower."
+                 + " Country files can be several GB each; the cache keeps at most 20 GiB."
+        leftActions: [ LogosButton { text: "Cancel"; onClicked: confirmHost.close() } ]
+        rightActions: [ LogosButton {
+            text: "Host"
+            variant: LogosButton.Variant.Primary
+            onClicked: { confirmHost.close(); root.hostSelected(); }
+        } ]
+    }
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: Theme.spacing.xlarge
@@ -570,9 +610,23 @@ Item {
             }
             Item { Layout.fillWidth: true }
             LogosBadge {
-                visible: root.settings.rpc !== undefined
-                text: root.hostOf(root.settings.rpc)
-                color: Theme.palette.textSecondary
+                visible: root.services.rpc !== undefined
+                text: root.services.rpc && root.services.rpc.ok ? root.hostOf(root.services.rpc.url) + " · block " + root.services.rpc.block
+                      : "Sequencer unreachable"
+                color: root.services.rpc && root.services.rpc.ok ? Theme.palette.success : Theme.palette.error
+                ToolTip.visible: rpcHover.hovered
+                ToolTip.text: root.services.rpc ? (root.services.rpc.ok ? root.services.rpc.url : root.services.rpc.error) : ""
+                HoverHandler { id: rpcHover }
+            }
+            LogosBadge {
+                visible: root.services.storage !== undefined
+                text: root.services.storage && root.services.storage.ok
+                      ? "Storage · " + root.formatSize(root.services.storage.quota_max_bytes - root.services.storage.quota_used_bytes) + " free"
+                      : "Storage unreachable"
+                color: root.services.storage && root.services.storage.ok ? Theme.palette.success : Theme.palette.warning
+                ToolTip.visible: storageHover.hovered
+                ToolTip.text: root.services.storage ? (root.services.storage.ok ? root.services.storage.url : root.services.storage.error + " — reading still works; hosting needs your node") : ""
+                HoverHandler { id: storageHover }
             }
             LogosBadge {
                 text: !root.ready ? "Connecting" : root.runningCount() > 0 ? root.runningCount() + " running" : "Ready"
@@ -874,9 +928,16 @@ Item {
                             }
                             Field { label: "CID (Logos Storage)"; value: root.openEntry ? root.openEntry.cid : ""; copy: true }
                             Field { label: "MD5 (from Geofabrik)"; value: root.openEntry ? root.openEntry.checksum : ""; copy: true }
-                            Field {
-                                label: root.openEntry && root.openEntry.hosts.length === 1 ? "Host" : "Hosts (" + (root.openEntry ? root.openEntry.hosts.length : 0) + ")"
-                                value: root.openEntry ? root.shortId(root.openEntry.hosts[0]) + (root.openEntry.hosts.length > 1 ? " and " + (root.openEntry.hosts.length - 1) + " more" : "") : ""
+                            Field { label: "Registered"; value: root.openEntry ? root.formatTime(root.openEntry.timestamp_ms) : "" }
+                            Repeater {
+                                model: root.openEntry ? root.openEntry.hosts : []
+                                Field {
+                                    required property string modelData
+                                    required property int index
+                                    label: index === 0 ? (root.openEntry.hosts.length === 1 ? "Host" : "Hosts (" + root.openEntry.hosts.length + ")") : ""
+                                    value: modelData
+                                    copy: true
+                                }
                             }
                             Field { label: "Source"; value: root.openEntry ? root.openEntry.source_url : "" }
                         }
@@ -977,7 +1038,7 @@ Item {
                                       : root.selectedCount > 1 ? "Host " + root.selectedCount + " regions" : "Host region"
                                 variant: LogosButton.Variant.Primary
                                 enabled: root.ready && hostField.text.length > 0 && root.selectedCount > 0 && root.hostQueue.length === 0
-                                onClicked: root.hostSelected()
+                                onClicked: confirmHost.open()
                             }
                             LogosButton {
                                 text: "Stop after current"
@@ -1164,6 +1225,24 @@ Item {
                             color: Theme.palette.textSecondary
                             font.pixelSize: Theme.typography.secondaryText
                             wrapMode: Text.WordWrap
+                        }
+                        LogosNotice {
+                            Layout.fillWidth: true
+                            visible: root.services.rpc !== undefined
+                            severity: root.services.rpc && root.services.rpc.ok && root.services.storage && root.services.storage.ok
+                                      ? LogosNotice.Success : LogosNotice.Warning
+                            title: "Connection"
+                            message: !root.services.rpc ? "" :
+                                     (root.services.rpc.ok ? "Sequencer answered, block " + root.services.rpc.block + "." : root.services.rpc.error)
+                                     + "\n" + (root.services.storage.ok
+                                        ? "Storage node answered: " + root.formatSize(root.services.storage.quota_used_bytes) + " used of "
+                                          + root.formatSize(root.services.storage.quota_max_bytes) + "."
+                                        : root.services.storage.error + " Reading hosted regions still works; hosting needs your node.")
+                        }
+                        LogosButton {
+                            text: root.probing ? "Testing…" : "Test connection"
+                            enabled: root.ready && !root.probing
+                            onClicked: root.probe()
                         }
                         LogosButton {
                             text: "Save"

@@ -833,7 +833,8 @@
     "size_bytes": 50702303,
     "timestamp_ms": 1795406603344,
     "hosts": [
-     "shgMqPgBJpwrXRjhhbjRDrxKFXnbogjyXBooKL3wDFC"
+     "shgMqPgBJpwrXRjhhbjRDrxKFXnbogjyXBooKL3wDFC",
+     "2RHZhw9h534Zr3eq2RGhQete2Hh667foECzXPmSkGni2"
     ]
    }
   },
@@ -1290,6 +1291,23 @@
      "update_available": true
     }
    ]
+  },
+  "status": {
+   "ok": true,
+   "data": {
+    "rpc": {
+     "ok": true,
+     "url": "https://testnet.lez.logos.co",
+     "block": 85419
+    },
+    "storage": {
+     "ok": true,
+     "url": "http://127.0.0.1:8080/api/storage/v1",
+     "quota_max_bytes": 32212254720,
+     "quota_used_bytes": 51750965
+    },
+    "geofabrik": true
+   }
   }
  },
  "jobs": {

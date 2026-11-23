@@ -1,7 +1,7 @@
 {
   "name": "pramadani_osm_sdk",
   "display_name": "OSM Registry SDK (LP-0018)",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "core",
   "interface": "cdylib",
   "category": "maps",
