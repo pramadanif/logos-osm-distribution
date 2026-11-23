@@ -23,6 +23,15 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --locked --all-targets -- -D warnings
       - run: cargo test --locked
+      # The `osm` binary for Linux x86_64, e.g. to stage coverage on a Storage server.
+      - if: matrix.os == 'ubuntu-latest'
+        run: cargo build --locked --release -p osm_cli
+      - if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: osm-linux-x86_64
+          path: target/release/osm
+          if-no-files-found: error
 
   storage-retrieval:
     # H3 / SC-E.2: node B fetches a CID that only node A holds, over the network.
