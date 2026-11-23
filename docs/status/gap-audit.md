@@ -17,7 +17,7 @@ W1–W14, with status and what blocks it. Categories:
 | −1.2 | done | v0.4.0-rc1 standalone sequencer runs |
 | −1.2b | done | docs/status/basecamp-modules.md |
 | −1.3 | done | two local Storage nodes, CID round trip |
-| −1.4 | partial | headless: our core modules install, load and answer in logosctl on Linux + macOS (modules run 43228643018); Basecamp GUI not run |
+| −1.4 | done | our apps and modules load in the Basecamp desktop app (macOS, pre-release 4cea4bb) and in logosctl on Linux + macOS (docs/status/phase-D.md) |
 | −1.5 | done for v0.3; 0.4 route chosen (b) | SPEL 0.4 port is item "0.4" below |
 | −1.5b | done | docs/status/geofabrik.md |
 | −1.5c | human | 0.4 funding: no faucet for 0.4 in any Logos repo; ask Logos |
@@ -38,7 +38,7 @@ W1–W14, with status and what blocks it. Categories:
 | D.3 | built | both templates built in the same run; not loaded in Basecamp |
 | D.4 | done | `module.json` + tests/module_manifests.py in CI |
 | D.5 | code + human | catalog fork (outward-facing; within the human's blanket approval) |
-| D.6 | partial | states, plain text, formatter written in QML; Qt formatter test and two-profile test need a Basecamp run |
+| D.6 | partial | two Basecamp profiles at once keep separate data (phase-D.md); on-screen states and Qt formatting not yet seen |
 | E.1 | done | first green e2e run 42755836260 at 0f9a9f2 |
 | E.2 | done | storage-retrieval job green |
 | E.3 | done | `.github/workflows/modules.yml` green on Linux + macOS (run 42757080576) |

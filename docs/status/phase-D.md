@@ -30,3 +30,20 @@ Prepared locally from `logos-co/logos-modules-release-base` @ `33fb564`: `logos-
 per module pointing at its subfolder, `modules.txt` for "Release all", variants
 `darwin-arm64,linux-amd64`. Not published: creating the public repository needs the owner.
 
+## In the Basecamp app (2026-11-23, macOS arm64)
+
+Logos Basecamp pre-release `pre-release-4cea4bb-1433` (logos-co/logos-basecamp, unsigned macOS
+build), our catalog packages v0.1.0 unpacked into two separate data folders and opened with
+`LogosBasecamp --user-dir <profile> --module <profile>`:
+
+- `pramadani_osm_app` ("OSM Maps (LP-0018)") and `pramadani_osm_consumer_app` load as Basecamp
+  apps ("Successfully loaded UI module", a dock each); their backends
+  (`pramadani_osm_app_backend`, `pramadani_osm_consumer_app_backend`) and
+  `pramadani_osm_distribution` load as modules; `lez_core` absent is reported as an optional
+  dependency and the module loads without it. No QML error from our views in the log.
+- Two profiles at once: each has its own `module_data/pramadani_osm_distribution/<id>/
+  pramadani_osm_distribution` folder (mode 0700) and its own module registry
+  (`…_bcd12232eaf5` vs `…_d300985b7376`); nothing is shared (H38, D.6 two-profile part).
+- Not yet: the screens themselves (no screenshot permission in this session), clicking through
+  the flows, Qt number formatting on screen.
+
