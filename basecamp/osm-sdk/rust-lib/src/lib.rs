@@ -82,7 +82,18 @@ impl PramadaniOsmSdkModule for Distribution {
     }
 
     fn settings(&mut self) -> String {
-        api::envelope(Ok(json!({"settings": self.settings, "data_dir": self.dir})))
+        // Where each effective value comes from (E68): the built-in default, or the user's own.
+        let defaults = default_settings();
+        let sources: serde_json::Map<String, Value> = self
+            .settings
+            .as_object()
+            .map(|o| {
+                o.iter()
+                    .map(|(k, v)| (k.clone(), json!(if defaults.get(k) == Some(v) { "default" } else { "custom" })))
+                    .collect()
+            })
+            .unwrap_or_default();
+        api::envelope(Ok(json!({"settings": self.settings, "sources": sources, "data_dir": self.dir})))
     }
 
     fn configure(&mut self, settings: String) -> String {

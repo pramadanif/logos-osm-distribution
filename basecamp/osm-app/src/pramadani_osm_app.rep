@@ -5,6 +5,9 @@ class PramadaniOsmApp
     // (sent to the distribution module), "confirmed" (answer ok; for writes this means the entry
     // was read back on-chain) or "failed" (answer not ok, or no answer).
     PROP(QString jobs="{}" READONLY)
+    // The latest progress event of pramadani_osm_distribution, as JSON {"region", "stage",
+    // "done", "total"}; "{}" when nothing is running.
+    PROP(QString progress="{}" READONLY)
     // Start a call into pramadani_osm_distribution; returns the job id at once.
     SLOT(QString call(QString method, QString arg))
     // Forget finished jobs.

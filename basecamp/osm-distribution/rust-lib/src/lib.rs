@@ -63,6 +63,13 @@ pub trait PramadaniOsmDistributionModule: Send + 'static {
     fn on_context_ready(&mut self, _ctx: &RustModuleContext) {}
 }
 
+/// Events of this module.
+pub trait PramadaniOsmDistributionModuleEvents {
+    /// Progress of a long operation on `region`: `stage` is "download", "verify", "upload",
+    /// "stored" or "register"; `done` and `total` are bytes (0 when not known).
+    fn progress(&self, region: String, stage: String, done: u64, total: u64);
+}
+
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/generated/provider_gen.rs"));
 
 /// Defaults = networks.json profile `v03-public` at the pinned commit (rehearsal network).
@@ -124,6 +131,9 @@ fn write_and_confirm(
         _ => (region_hex.into_iter().chain(std::iter::once(host_hex)).collect(), regions.iter().map(|_| false).chain(std::iter::once(true)).collect()),
     };
     let program_hex = account_hex(program)?;
+    for r in regions {
+        emit_progress(r, "register", 0, 0);
+    }
     // Default-level log of every write (E82): which regions, which host, then the outcome.
     eprintln!("pramadani_osm_distribution: sending a registry write for {} as {host_b58}", regions.join(", "));
     let tx = modules()
@@ -214,9 +224,20 @@ impl Distribution {
             None => osm_sdk::snapshot::first_of_month(g.latest_snapshot(def)?),
         };
         eprintln!("pramadani_osm_distribution: downloading {region} snapshot {snap:06} from Geofabrik");
-        let (path, md5) = g.download_snapshot(def, snap, &dir, |_, _| {})?;
+        // Byte progress for the app, at most twice a second.
+        let mut last = std::time::Instant::now() - std::time::Duration::from_secs(1);
+        let (path, md5) = g.download_snapshot(def, snap, &dir, |done, total| {
+            if last.elapsed() >= std::time::Duration::from_millis(500) {
+                last = std::time::Instant::now();
+                emit_progress(region, "download", done, total.unwrap_or(0));
+            }
+        })?;
+        let size = std::fs::metadata(&path).map(|m| m.len()).unwrap_or(0);
+        emit_progress(region, "verify", size, size);
         eprintln!("pramadani_osm_distribution: {region}: MD5 matches Geofabrik; uploading to Logos Storage");
+        emit_progress(region, "upload", 0, size);
         let cid = self.upload(&path)?;
+        emit_progress(region, "stored", size, size);
         eprintln!("pramadani_osm_distribution: {region}: stored as {cid}");
         let size = std::fs::metadata(&path).map_err(|err| invalid("file", err.to_string()))?.len();
         let _ = osm_sdk::datadir::enforce_cache_cap(&dir, 20 << 30, &path);
@@ -318,7 +339,18 @@ impl PramadaniOsmDistributionModule for Distribution {
     }
 
     fn settings(&mut self) -> String {
-        api::envelope(Ok(json!({"settings": self.settings, "data_dir": self.dir})))
+        // Where each effective value comes from (E68): the built-in default, or the user's own.
+        let defaults = default_settings();
+        let sources: serde_json::Map<String, Value> = self
+            .settings
+            .as_object()
+            .map(|o| {
+                o.iter()
+                    .map(|(k, v)| (k.clone(), json!(if defaults.get(k) == Some(v) { "default" } else { "custom" })))
+                    .collect()
+            })
+            .unwrap_or_default();
+        api::envelope(Ok(json!({"settings": self.settings, "sources": sources, "data_dir": self.dir})))
     }
 
     fn configure(&mut self, settings: String) -> String {

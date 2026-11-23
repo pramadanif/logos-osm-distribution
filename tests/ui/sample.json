@@ -10,7 +10,14 @@
      "geofabrik": true,
      "host": "Public/shgMqPgBJpwrXRjhhbjRDrxKFXnbogjyXBooKL3wDFC"
     },
-    "data_dir": "/profile/module_data/pramadani_osm_distribution"
+    "data_dir": "/profile/module_data/pramadani_osm_distribution",
+    "sources": {
+     "rpc": "default",
+     "program": "default",
+     "storage": "default",
+     "geofabrik": "default",
+     "host": "custom"
+    }
    }
   },
   "discover": {

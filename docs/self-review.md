@@ -35,8 +35,8 @@ registered on the public v0.3 testnet; the 15/25 coverage must be on testnet 0.4
 
 **L3 (open). No SPEL IDL for 0.4.** Needs SPEL support for LEZ 0.4.
 
-**L5 (open). No progress for long operations in the app.** Host and download show a spinner and a
-running count, not bytes; the module answers once per call (E67).
+**L5 (fixed).** Long operations report progress: the distribution module emits `progress`
+events and the app shows a progress bar on the running job (E67).
 
 ## E.1 rows
 
@@ -108,8 +108,8 @@ running count, not bytes; the module answers once per call (E67).
 | E64 | Silent input changes | PASS | rejected, never trimmed (claim 11) |
 | E65 | Shown fee ≠ charged | PARTIAL | the dialog states the reserve, not a fee estimate; measured fees in docs/cycles.md |
 | E66 | Confirm hides the cost | PARTIAL | dialog: regions, transactions, fee reserve, cache cap; not the total GB (known only after download) |
-| E67 | No progress | PARTIAL | spinner and running count; no byte progress in the app (CLI prints steps) |
-| E68 | Settings hide the effective value | PARTIAL | effective values shown; their source (default or saved) not shown |
+| E67 | No progress | PASS | the module emits `progress` events (download bytes, verify, upload, register); the app shows a progress bar on the running job |
+| E68 | Settings hide the effective value | PASS | Settings show each effective value and whether it is the default or set by the user (`settings().sources`) |
 | E69 | Undeclared runtime dependency | PASS | manifests declare lez_core (optional) and the SDK; Storage is reached over its REST API (ADR 0004) |
 | E70 | Portable library RUNPATH | UNVERIFIABLE | built by logos-module-builder's portable bundler; loads in Basecamp on macOS, not inspected |
 | E71 | Hosting exposes node address | PASS | security.md and limitations.md |

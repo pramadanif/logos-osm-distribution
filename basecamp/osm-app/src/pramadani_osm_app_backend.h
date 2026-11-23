@@ -14,6 +14,7 @@ class PramadaniOsmAppBackend : public PramadaniOsmAppSimpleSource,
 public:
     QString call(QString method, QString arg) override;
     void clearFinished() override;
+    void onContextReady() override;
 
 private:
     void finish(const QString& id, const QString& answer);

@@ -24,6 +24,7 @@ Item {
     property var selected: ({})
     property int selectedCount: 0
     property var settings: ({})
+    property var settingSources: ({})
     property var jobs: ({})
     // Pending job id -> function(answerObject), run once when the job finishes.
     property var handlers: ({})
@@ -51,6 +52,8 @@ Item {
     // What the configured sequencer and Storage node answered (E77): real probes, not assumptions.
     property var services: ({})
     property bool probing: false
+    // Latest progress event from the module: {region, stage, done, total} (E67).
+    property var progress: ({})
 
     Rectangle {
         anchors.fill: parent
@@ -77,6 +80,7 @@ Item {
         target: root.backend
         ignoreUnknownSignals: true
         function onJobsChanged() { root.onJobs(); }
+        function onProgressChanged() { root.progress = root.parse(root.backend.progress || "{}"); }
     }
 
     // ---- helpers ----------------------------------------------------------------------------
@@ -116,6 +120,12 @@ Item {
     }
 
     // Unix ms -> "2026-11-23 10:23 UTC", built from the date's parts (no locale formatting).
+    // "Sequencer RPC · default" / "· set by you" (E68).
+    function settingLabel(name, key) {
+        var s = root.settingSources[key];
+        return s === "default" ? name + " · default" : s === "custom" ? name + " · set by you" : name;
+    }
+
     function formatTime(ms) {
         if (!ms)
             return "";
@@ -180,10 +190,14 @@ Item {
     }
 
     function refresh() {
+        // A run may already be going when the view opens.
+        root.progress = root.parse(root.backend.progress || "{}");
         root.probe();
         run("settings", "", function (a) {
-            if (a.ok)
+            if (a.ok) {
                 root.settings = a.data.settings;
+                root.settingSources = a.data.sources || {};
+            }
         });
         root.loadingRegions = true;
         run("discover", "", function (a) {
@@ -481,6 +495,29 @@ Item {
         } catch (e) {
             return "";
         }
+    }
+
+    readonly property var stageNames: ({"download": "Downloading from Geofabrik", "verify": "Checking MD5",
+        "upload": "Uploading to Logos Storage", "stored": "Stored in Logos Storage", "register": "Waiting for the registry"})
+
+    // "Downloading from Geofabrik · 120.0 MiB of 1.2 GiB" for a job whose subject names the region.
+    function progressText(j) {
+        var p = root.progress;
+        if (!p.region || jobSubject(j).indexOf(p.region) < 0)
+            return "";
+        var s = (stageNames[p.stage] || p.stage) + " · " + p.region;
+        if (p.total > 0 && p.stage === "download")
+            s += " · " + formatSize(p.done) + " of " + formatSize(p.total);
+        else if (p.total > 0)
+            s += " · " + formatSize(p.total);
+        return s;
+    }
+
+    function progressValue(j) {
+        var p = root.progress;
+        if (!p.region || jobSubject(j).indexOf(p.region) < 0 || !(p.total > 0))
+            return -1;
+        return p.stage === "download" ? p.done / p.total : 1;
     }
 
     function runningCount() {
@@ -1177,6 +1214,18 @@ Item {
                                 }
                                 LogosText {
                                     Layout.fillWidth: true
+                                    visible: jobRow.modelData.state === "submitting" && text.length > 0
+                                    text: root.progressText(jobRow.modelData)
+                                    color: Theme.palette.textSecondary
+                                    font.pixelSize: Theme.typography.secondaryText
+                                }
+                                LogosProgressBar {
+                                    Layout.fillWidth: true
+                                    visible: jobRow.modelData.state === "submitting" && root.progressValue(jobRow.modelData) >= 0
+                                    value: Math.max(0, root.progressValue(jobRow.modelData))
+                                }
+                                LogosText {
+                                    Layout.fillWidth: true
                                     visible: jobRow.modelData.state !== "submitting"
                                     text: root.describe(jobRow.modelData.method, root.parse(jobRow.modelData.answer || "{}"))
                                     color: jobRow.modelData.state === "failed" ? Theme.palette.error : Theme.palette.textSecondary
@@ -1213,13 +1262,13 @@ Item {
                         title: "Network and storage"
                         subtitle: "Where the registry lives and which Logos Storage node your files go to. Saved per Basecamp profile."
 
-                        LogosText { text: "Sequencer RPC"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosText { text: root.settingLabel("Sequencer RPC", "rpc"); color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
                         LogosTextField { id: setRpc; Layout.fillWidth: true; text: root.settings.rpc || "" }
-                        LogosText { text: "Registry program"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosText { text: root.settingLabel("Registry program", "program"); color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
                         LogosTextField { id: setProgram; Layout.fillWidth: true; text: root.settings.program || "" }
-                        LogosText { text: "Storage API"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosText { text: root.settingLabel("Storage API", "storage"); color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
                         LogosTextField { id: setStorage; Layout.fillWidth: true; text: root.settings.storage || "" }
-                        LogosText { text: "Host account"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosText { text: root.settingLabel("Host account", "host"); color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
                         LogosTextField { id: setHost; Layout.fillWidth: true; text: root.settings.host || ""; placeholderText: "Public/…" }
                         LogosSwitch {
                             id: setGeofabrik

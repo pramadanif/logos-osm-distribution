@@ -36,6 +36,7 @@ Window {
     QtObject {
         id: backend
         property string jobs: JSON.stringify(win.sample.jobs)
+        property string progress: JSON.stringify({"region": "germany", "stage": "download", "done": 2254857830, "total": 4402341478})
         property int n: 0
         function call(method, arg) {
             var id = method + "-" + (++n);

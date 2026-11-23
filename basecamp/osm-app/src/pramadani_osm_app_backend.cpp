@@ -1,5 +1,8 @@
 #include "pramadani_osm_app_backend.h"
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 #include "logos_sdk.h"
 
 namespace {
@@ -43,7 +46,22 @@ QString PramadaniOsmAppBackend::call(QString method, QString arg)
 void PramadaniOsmAppBackend::finish(const QString& id, const QString& answer)
 {
     m_jobs.finish(id, answer);
+    if (m_jobs.runningCount() == 0)
+        setProgress(QStringLiteral("{}"));
     publish();
+}
+
+void PramadaniOsmAppBackend::onContextReady()
+{
+    // Byte progress of downloads and uploads, forwarded to the view as one JSON PROP.
+    PramadaniOsmDistribution::EventCallback cb = [this](const QVariantList& a) {
+        if (a.size() < 4)
+            return;
+        QJsonObject o{{"region", a[0].toString()}, {"stage", a[1].toString()},
+                      {"done", a[2].toDouble()}, {"total", a[3].toDouble()}};
+        setProgress(QString::fromUtf8(QJsonDocument(o).toJson(QJsonDocument::Compact)));
+    };
+    modules().pramadani_osm_distribution.on(QStringLiteral("progress"), cb);
 }
 
 void PramadaniOsmAppBackend::clearFinished()

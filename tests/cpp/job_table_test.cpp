@@ -64,6 +64,7 @@ int main()
 
     // clearFinished keeps running jobs only.
     const QString running = t.start("host", R"({"region":"kenya"})");
+    CHECK(t.runningCount() == 1);
     t.clearFinished();
     CHECK(t.size() == 1);
     CHECK(t.state(running) == "submitting");

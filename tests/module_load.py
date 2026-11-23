@@ -80,7 +80,7 @@ try:
     for m in ("pramadani_osm_sdk", "pramadani_osm_distribution"):
         must(f"load {m}", "module", "load", m)
         call(f"{m}.version", m, "version", check=lambda d: d["api"] == 1)
-        call(f"{m}.settings", m, "settings", check=lambda d: d["data_dir"] and m in d["data_dir"])
+        call(f"{m}.settings", m, "settings", check=lambda d: d["data_dir"] and m in d["data_dir"] and d["sources"]["rpc"] == "default")
         # A real probe of the default sequencer; no Storage node runs in CI, so storage must
         # report itself unreachable rather than pretend.
         call(f"{m}.status", m, "status", check=lambda d: d["rpc"]["ok"] and d["rpc"]["block"] > 0 and d["storage"]["ok"] is False)

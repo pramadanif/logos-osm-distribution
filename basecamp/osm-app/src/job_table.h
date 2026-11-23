@@ -67,6 +67,14 @@ public:
 
     QString state(const QString& id) const { return m_jobs.value(id).toObject().value("state").toString(); }
     int size() const { return m_order.size(); }
+    int runningCount() const
+    {
+        int n = 0;
+        for (const QString& id : m_order)
+            if (state(id) == "submitting")
+                n++;
+        return n;
+    }
 
     QString json() const { return QString::fromUtf8(QJsonDocument(m_jobs).toJson(QJsonDocument::Compact)); }
 
