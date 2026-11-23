@@ -1,9 +1,9 @@
 {
-  "note": "The project's public Logos Storage node (deploy/storage-node/setup.sh, v0.5.3, network logos.test). Only the libp2p port is public; the REST API listens on 127.0.0.1. test_cid is a 1 MiB random file uploaded to check retrieval from outside.",
+  "note": "The project's public Logos Storage node (deploy/storage-node/setup.sh, v0.5.3, network logos.test). Only the libp2p port is public; the REST API listens on 127.0.0.1. test_cid is a 1 MiB random file uploaded to check retrieval from outside. Peer limit at the default 160 since 2026-11-23 (at 40 the node filled with network peers and refused new ones).",
   "deployed": "2026-11-21",
   "address": "/ip4/139.190.104.17/tcp/8070",
   "peer_id": "16Uiu2HAkyozngZUCrQ9ZS7j8RJXFWnPaG4QRogPsd15tbD5NSJZ7",
-  "spr": "spr:CiUIAhIhAkEmytJmYG-mNGMWA-eNULKzroatFt6eCL9JeCjHjghiEgIDARo7CicAJQgCEiECQSbK0mZgb6Y0YxYD541QsrOuhq0W3p4Iv0l4KMeOCGIQ45WF2AYaCgoIBIu-aBEGH4YqRzBFAiEAmVQyCyegKaqDrdtQKc5YHgWuUGfqWmPcXxKgm0QEjfcCIHt062dHpHm_IAnZ9E3g9yka57_BP_62yIKus_h_CY4i",
+  "spr": "spr:CiUIAhIhAkEmytJmYG-mNGMWA-eNULKzroatFt6eCL9JeCjHjghiEgIDARo7CicAJQgCEiECQSbK0mZgb6Y0YxYD541QsrOuhq0W3p4Iv0l4KMeOCGIQh9-O2AYaCgoIBIu-aBEGH4YqRzBFAiEA1NSgfz9k0zPj3DjzDd2duQ7pe52bMYBqnBLuo9pfzHsCIFkZ6S5WkEMGnyQoTYhSuB3KwTvqqoA_w9bP6Jvh2BQA",
   "test_cid": "zDvZRwzm5R1mLaFHkPqqFqSJFMUJKvAXzTCSGJWEQaZuGvCyvaEG",
   "test_md5": "5024829b6f9173ee1f22aa886e821122"
 }

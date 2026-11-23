@@ -9,7 +9,8 @@
 # - joins the Logos Storage testnet preset; restarts on failure and on boot
 # - prints the node's peer id and SPR at the end
 # - safe beside other services on a small server: disk quota (QUOTA_GIB, default 30 GiB), memory
-#   cap (MEMORY_MAX, default 700M), low CPU and I/O priority, at most 40 peers
+#   cap (MEMORY_MAX, default 700M), low CPU and I/O priority. The peer limit stays at the node's
+#   default (160): at 40 a public node filled up with network peers and refused new ones.
 set -euo pipefail
 [ "$(id -u)" = 0 ] || { echo "run with sudo" >&2; exit 2; }
 ip="${1:?usage: setup.sh <public-ip> [listen-port]}"; port="${2:-8070}"
@@ -48,7 +49,7 @@ Group=osmstorage
 UMask=0077
 ExecStart=/opt/osm-storage/logos-storage --network=logos.test --data-dir=/var/lib/osm-storage/data \
   --api-bindaddr=127.0.0.1 --api-port=8080 --listen-port=$port --nat=extip:$ip --log-level=info \
-  --storage-quota=$((quota_gib * 1024 * 1024 * 1024)) --max-peers=40
+  --storage-quota=$((quota_gib * 1024 * 1024 * 1024))
 Restart=always
 RestartSec=5
 NoNewPrivileges=true
