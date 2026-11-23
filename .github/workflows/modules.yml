@@ -55,6 +55,45 @@ jobs:
           path: out/*/*.lgx
           if-no-files-found: error
 
+
+  build-more-platforms:
+    # Basecamp also ships for Windows (x86_64) and Linux arm64. The module builder cross-compiles
+    # the Windows package with mingw on Linux; arm64 builds natively on GitHub's arm runner.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { variant: windows-x86_64, system: x86_64-windows, runner: ubuntu-latest }
+          - { variant: linux-arm64, system: aarch64-linux, runner: ubuntu-24.04-arm }
+    name: build (${{ matrix.variant }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: Build modules and templates
+        run: |
+          set -eu
+          D="--override-input pramadani_osm_distribution path:$PWD/basecamp/osm-distribution"
+          S="--override-input pramadani_osm_sdk path:$PWD/basecamp/osm-sdk"
+          sys=${{ matrix.system }}
+          mkdir -p out
+          build() { echo "::group::$1"; nix build -L "$1" "${@:2}" --out-link "out/$(echo "$1" | tr '/#.' '___')"; echo "::endgroup::"; }
+          build "./basecamp/osm-sdk#packages.$sys.lgx-portable"
+          build "./basecamp/osm-distribution#packages.$sys.lgx-portable"
+          build "./basecamp/osm-app#packages.$sys.lgx-portable" $D
+          build "./examples/consumer-module#packages.$sys.lgx-portable" $S
+          build "./examples/distribution-consumer-app#packages.$sys.lgx-portable" $D
+          find -L out -name '*.lgx' -exec sha256sum {} +
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lgx-${{ matrix.variant }}
+          path: out/*/*.lgx
+          if-no-files-found: error
+
   load:
     # SC--1.4 (headless part): install the core modules from their .lgx into a logosctl session,
     # load them and call their methods; a call that does not answer with {"ok":true} fails.
