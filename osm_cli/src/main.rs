@@ -89,6 +89,34 @@ enum Cmd {
         #[arg(long, env = "OSM_CHAIN", default_value = "osm-chain")]
         chain_bin: PathBuf,
     },
+    /// Stage regions for a later registration: download each dated snapshot, check its MD5,
+    /// upload it to Storage, and record it in a coverage manifest (no transaction). CIDs do not
+    /// depend on the chain, so `bulk-register --manifest` can register the same files on any
+    /// network, e.g. testnet 0.4 on launch day.
+    Stage {
+        /// Region to stage; repeat for several (one at a time, any number).
+        #[arg(long = "region", required = true)]
+        regions: Vec<String>,
+        /// Snapshot date YYMMDD; default: first of the current month.
+        #[arg(long)]
+        snapshot: Option<u32>,
+        /// Storage node REST API root.
+        #[arg(
+            long,
+            env = "OSM_STORAGE",
+            default_value = "http://127.0.0.1:8080/api/storage/v1"
+        )]
+        storage: String,
+        /// Folder for downloaded PBFs (created owner-only).
+        #[arg(long, env = "OSM_CACHE_DIR")]
+        cache_dir: PathBuf,
+        /// Cache size limit in GiB; oldest PBFs are deleted first (H39).
+        #[arg(long, env = "OSM_CACHE_CAP_GIB", default_value_t = 20)]
+        cache_cap_gib: u64,
+        /// Manifest to update (created if missing); one entry per region, replaced when restaged.
+        #[arg(long)]
+        manifest: PathBuf,
+    },
     /// Import a local PBF: check it against Geofabrik's published MD5 for its snapshot (import
     /// time only), store it in Logos Storage, and register it.
     Import {
@@ -303,6 +331,66 @@ fn chain_register(
     Ok(v)
 }
 
+/// Downloads `def`'s dated snapshot (first of the current month unless `snapshot`), checks it
+/// against Geofabrik's MD5, uploads it to Storage with retries, and returns the manifest row
+/// `{"region", "cid", "source_url", "md5", "snapshot", "size_bytes"}`. Shared by `host` and
+/// `stage`.
+fn stage_region(
+    g: &Geofabrik,
+    store: &mut RestStorage,
+    def: &'static RegionDef,
+    snapshot: Option<u32>,
+    cache_dir: &Path,
+    cache_cap_gib: u64,
+) -> Result<serde_json::Value, SdkError> {
+    let snap = match snapshot {
+        Some(s) => s,
+        None => first_of_month(g.latest_snapshot(def)?),
+    };
+    let url = snapshot_url(def, snap)?;
+    eprintln!("{}: downloading {url}", def.region);
+    // One progress line per 64 MiB step and one at the end.
+    let mut next_report = 0u64;
+    let (path, md5) = g.download_snapshot(def, snap, cache_dir, |done, total| {
+        if done >= next_report || Some(done) == total {
+            let of = total
+                .map(|t| format!(" of {} MiB", t >> 20))
+                .unwrap_or_default();
+            eprintln!("  {} MiB{of}", done >> 20);
+            next_report = (done / (64 << 20) + 1) * (64 << 20);
+        }
+    })?;
+    let size = std::fs::metadata(&path)
+        .map_err(|e| SdkError::Io {
+            path: path.clone(),
+            source: e,
+        })?
+        .len();
+    eprintln!(
+        "{}: MD5 {} matches Geofabrik; uploading to Storage",
+        def.region,
+        to_hex(&md5)
+    );
+    let cid = upload_with_retry(
+        store,
+        &path,
+        &RetryPolicy::default(),
+        &mut XorShift::seeded(),
+        std::thread::sleep,
+    )?;
+    eprintln!("{}: stored as {cid}", def.region);
+    for p in osm_sdk::datadir::enforce_cache_cap(
+        cache_dir,
+        cache_cap_gib.saturating_mul(1 << 30),
+        &path,
+    )? {
+        eprintln!("cache limit: removed {}", p.display());
+    }
+    Ok(
+        json!({"region": def.region, "cid": cid, "source_url": url, "md5": to_hex(&md5), "snapshot": snap, "size_bytes": size}),
+    )
+}
+
 fn entry_json(r: &RegisteredEntry) -> serde_json::Value {
     let e = &r.entry;
     json!({
@@ -468,59 +556,17 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
             let mut entries = Vec::new();
             let mut rows = Vec::new();
             for def in defs {
-                let snap = match snapshot {
-                    Some(s) => *s,
-                    None => first_of_month(g.latest_snapshot(def)?),
-                };
-                let url = snapshot_url(def, snap)?;
-                eprintln!("{}: downloading {url}", def.region);
-                // One progress line per 64 MiB step and one at the end.
-                let mut next_report = 0u64;
-                let (path, md5) = g.download_snapshot(def, snap, cache_dir, |done, total| {
-                    if done >= next_report || Some(done) == total {
-                        let of = total
-                            .map(|t| format!(" of {} MiB", t >> 20))
-                            .unwrap_or_default();
-                        eprintln!("  {} MiB{of}", done >> 20);
-                        next_report = (done / (64 << 20) + 1) * (64 << 20);
-                    }
-                })?;
-                let size = std::fs::metadata(&path)
-                    .map_err(|e| SdkError::Io {
-                        path: path.clone(),
-                        source: e,
-                    })?
-                    .len();
-                eprintln!(
-                    "{}: MD5 {} matches Geofabrik; uploading to Storage",
-                    def.region,
-                    to_hex(&md5)
-                );
-                let cid = upload_with_retry(
-                    &mut store,
-                    &path,
-                    &RetryPolicy::default(),
-                    &mut XorShift::seeded(),
-                    std::thread::sleep,
-                )?;
-                eprintln!("{}: stored as {cid}", def.region);
-                for p in osm_sdk::datadir::enforce_cache_cap(
-                    cache_dir,
-                    cache_cap_gib.saturating_mul(1 << 30),
-                    &path,
-                )? {
-                    eprintln!("cache limit: removed {}", p.display());
-                }
+                let row = stage_region(&g, &mut store, def, *snapshot, cache_dir, *cache_cap_gib)?;
                 entries.push(format!(
                     "{}|{}|{}|{}|{:06}|{}",
                     def.region,
-                    cid,
-                    url,
-                    to_hex(&md5),
-                    snap,
-                    size
+                    row["cid"].as_str().unwrap_or(""),
+                    row["source_url"].as_str().unwrap_or(""),
+                    row["md5"].as_str().unwrap_or(""),
+                    row["snapshot"].as_u64().unwrap_or(0),
+                    row["size_bytes"].as_u64().unwrap_or(0)
                 ));
-                rows.push(json!({"region": def.region, "cid": cid, "source_url": url, "md5": to_hex(&md5), "snapshot": snap, "size_bytes": size}));
+                rows.push(row);
             }
             let res = chain_register(chain_bin, rpc, program, host, &entries)?;
             let ok = res["ok"].as_bool() == Some(true);
@@ -539,6 +585,63 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
             if !ok {
                 // Upload succeeded but registration did not: never report success (H33).
                 std::process::exit(4);
+            }
+        }
+        Cmd::Stage {
+            regions,
+            snapshot,
+            storage,
+            cache_dir,
+            cache_cap_gib,
+            manifest,
+        } => {
+            let defs: Vec<_> = regions
+                .iter()
+                .map(|r| region(r))
+                .collect::<Result<_, _>>()?;
+            let g = geofabrik(cli)?;
+            osm_sdk::datadir::ensure_private_dir(cache_dir)?;
+            let mut store = RestStorage::new(storage, std::time::Duration::from_secs(120));
+            if let Some(dir) = manifest.parent().filter(|d| !d.as_os_str().is_empty()) {
+                std::fs::create_dir_all(dir).map_err(|e| SdkError::Io {
+                    path: dir.to_path_buf(),
+                    source: e,
+                })?;
+            }
+            let mut doc: serde_json::Value = match std::fs::read(manifest) {
+                Ok(raw) => serde_json::from_slice(&raw).map_err(|e| SdkError::InvalidInput {
+                    field: "--manifest",
+                    why: e.to_string(),
+                })?,
+                Err(_) => json!({"entries": []}),
+            };
+            for def in defs {
+                let row = stage_region(&g, &mut store, def, *snapshot, cache_dir, *cache_cap_gib)?;
+                let entries =
+                    doc["entries"]
+                        .as_array_mut()
+                        .ok_or_else(|| SdkError::InvalidInput {
+                            field: "--manifest",
+                            why: "missing \"entries\" array".into(),
+                        })?;
+                entries.retain(|e| e["region"].as_str() != Some(def.region));
+                entries.push(row.clone());
+                entries.sort_by(|a, b| a["region"].as_str().cmp(&b["region"].as_str()));
+                // Written after every region, so an interrupted run keeps what it staged.
+                let bytes = serde_json::to_vec_pretty(&doc).expect("manifest serializes");
+                osm_sdk::datadir::atomic_write(manifest, &bytes, |b| {
+                    serde_json::from_slice::<serde_json::Value>(b).is_ok()
+                })?;
+                if cli.json {
+                    println!("{row}");
+                } else {
+                    println!(
+                        "{}: staged {} ({} bytes)",
+                        def.region,
+                        row["cid"].as_str().unwrap_or(""),
+                        row["size_bytes"]
+                    );
+                }
             }
         }
         Cmd::Import {
