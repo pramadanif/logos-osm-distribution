@@ -49,6 +49,10 @@ enum Cmd {
         rpc: Option<String>,
         #[arg(long, env = "OSM_PROGRAM")]
         program: Option<String>,
+        /// Also show Geofabrik's current snapshot date of every region (one HEAD request per
+        /// region, 0.3 s apart).
+        #[arg(long)]
+        versions: bool,
     },
     /// Show today's dated snapshot of a region and Geofabrik's MD5 for it.
     Snapshot { region: String },
@@ -328,9 +332,29 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                 }
             }
         }
-        Cmd::Discover { rpc, program } => {
+        Cmd::Discover {
+            rpc,
+            program,
+            versions,
+        } => {
             let g = (!cli.no_geofabrik).then(|| make_geofabrik(cli));
             let (d, src) = discover(g.as_ref());
+            // Geofabrik's current snapshot per region, read from each `-latest` redirect.
+            let mut latest: std::collections::HashMap<&str, u32> = Default::default();
+            if *versions {
+                let g = geofabrik(cli)?;
+                for (i, r) in d.regions.iter().enumerate() {
+                    if i > 0 {
+                        std::thread::sleep(std::time::Duration::from_millis(300));
+                    }
+                    match g.latest_snapshot(r.def) {
+                        Ok(v) => {
+                            latest.insert(r.def.region, v);
+                        }
+                        Err(e) => eprintln!("warning: {}: {e}", r.def.region),
+                    }
+                }
+            }
             // Registry status is optional; an unreachable registry is reported, never hidden.
             let mut hosted: std::collections::HashMap<&str, (Option<u32>, usize)> =
                 Default::default();
@@ -362,7 +386,8 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                     .map(|r| {
                         let (version, hosts) = status_of(r.def.region).unwrap_or((None, 0));
                         json!({"region": r.def.region, "name": r.name, "parent": r.def.parent, "level": r.def.level.as_str(),
-                            "hosted": version.is_some(), "hosted_version": version, "hosts": hosts})
+                            "hosted": version.is_some(), "hosted_version": version, "hosts": hosts,
+                            "geofabrik_version": latest.get(r.def.region)})
                     })
                     .collect();
                 let missing: Vec<_> = d.missing.iter().map(|r| r.region).collect();
@@ -383,11 +408,16 @@ fn run(cli: &Cli) -> Result<(), SdkError> {
                         Some((None, _)) => "not hosted".to_string(),
                         None => String::new(),
                     };
+                    let gv = latest
+                        .get(r.def.region)
+                        .map(|v| format!("geofabrik {v:06}"))
+                        .unwrap_or_default();
                     println!(
-                        "{:<34} {:<9} {:<28} {}",
+                        "{:<34} {:<9} {:<28} {:<17} {}",
                         r.def.region,
                         r.def.level.as_str(),
                         st,
+                        gv,
                         r.name
                     );
                 }

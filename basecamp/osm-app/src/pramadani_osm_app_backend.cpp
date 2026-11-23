@@ -34,7 +34,8 @@ QString PramadaniOsmAppBackend::call(QString method, QString arg)
     else if (method == "discover") osm.discoverAsync(done, Timeout(kReadMs));
     else if (method == "resolve") osm.resolveAsync(arg, done, Timeout(kReadMs));
     else if (method == "hosted_status") osm.hosted_statusAsync(done, Timeout(kReadMs));
-    else if (method == "check_updates") osm.check_updatesAsync(arg, done, Timeout(kReadMs));
+    // One HEAD request per region to Geofabrik: all 72 can take minutes on a slow day.
+    else if (method == "check_updates") osm.check_updatesAsync(arg, done, Timeout(kLongMs));
     else if (method == "fetch") osm.fetchAsync(arg, done, Timeout(kLongMs));
     else if (method == "host") osm.hostAsync(arg, done, Timeout(kLongMs));
     else if (method == "host_batch") osm.host_batchAsync(arg, done, Timeout(kLongMs));

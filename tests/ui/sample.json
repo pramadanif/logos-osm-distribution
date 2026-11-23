@@ -853,6 +853,443 @@
     ],
     "errors": []
    }
+  },
+  "check_updates": {
+   "ok": true,
+   "data": [
+    {
+     "region": "germany",
+     "registered": 261101,
+     "available": 261101,
+     "update_available": false
+    },
+    {
+     "region": "france",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "great-britain",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "italy",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "spain",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "poland",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "netherlands",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "belgium",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "switzerland",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "austria",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "czech-republic",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "sweden",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "norway",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "denmark",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "finland",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "portugal",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "greece",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "ireland-and-northern-ireland",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "hungary",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "romania",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "bulgaria",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "ukraine",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "belarus",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "turkey",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "canada",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "mexico",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "japan",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "south-korea",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "indonesia",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "thailand",
+     "registered": 261101,
+     "available": 261101,
+     "update_available": false
+    },
+    {
+     "region": "vietnam",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "malaysia-singapore-brunei",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "philippines",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "pakistan",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "bangladesh",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "iran",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "australia",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "brazil",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "argentina",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "colombia",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "peru",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "chile",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "south-africa",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "egypt",
+     "registered": 261001,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "nigeria",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "kenya",
+     "registered": 261101,
+     "available": 261101,
+     "update_available": false
+    },
+    {
+     "region": "morocco",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "ethiopia",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/california",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/texas",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/florida",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/new-york",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/washington",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/illinois",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/georgia",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "us/pennsylvania",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "india/central-zone",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "india/eastern-zone",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "india/north-eastern-zone",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "india/northern-zone",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "india/southern-zone",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "india/western-zone",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "china/guangdong",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "china/jiangsu",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "china/shandong",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "china/zhejiang",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "china/sichuan",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "china/henan",
+     "registered": 261101,
+     "available": 261101,
+     "update_available": false
+    },
+    {
+     "region": "russia/central-fed-district",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "russia/northwestern-fed-district",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "russia/volga-fed-district",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    },
+    {
+     "region": "russia/siberian-fed-district",
+     "registered": null,
+     "available": 261101,
+     "update_available": true
+    }
+   ]
   }
  },
  "jobs": {

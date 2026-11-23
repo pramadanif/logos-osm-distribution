@@ -44,6 +44,10 @@ Item {
     property string parentFilter: ""
     property string parentInfo: ""
     property string searchInfo: ""
+    // Geofabrik's current snapshot per region and whether the registered one is older, from one
+    // update check over all regions; empty until the user asks.
+    property var available: ({})
+    property bool checkingVersions: false
 
     Rectangle {
         anchors.fill: parent
@@ -292,6 +296,37 @@ Item {
             root.parentInfo = a.data.entries.length + (a.data.entries.length === 1 ? " entry" : " entries")
                 + " registered under " + p + " across " + Object.keys(hosted).length + " of its subregions";
         });
+    }
+
+    // Version info for every region (P-F1, P-F6): Geofabrik's current snapshot beside the
+    // registered one, one HEAD request per region in the module.
+    function checkVersions() {
+        var ids = [];
+        for (var i = 0; i < regions.length; i++)
+            ids.push(regions[i].region);
+        root.checkingVersions = true;
+        run("check_updates", JSON.stringify(ids), function (a) {
+            root.checkingVersions = false;
+            if (!a.ok) {
+                root.problem = errorText(a);
+                return;
+            }
+            var m = {};
+            for (var k = 0; k < a.data.length; k++)
+                // The SDK calls a region with no entry "update available"; here an update means
+                // a hosted region whose registered snapshot is older than Geofabrik's.
+                m[a.data[k].region] = {"version": a.data[k].available,
+                                       "update": a.data[k].registered !== null && a.data[k].registered !== undefined && a.data[k].update_available};
+            root.available = m;
+        });
+    }
+
+    function updatesCount() {
+        var n = 0;
+        for (var k in root.available)
+            if (root.available[k].update)
+                n++;
+        return n;
     }
 
     function looksLikeCid(s) {
@@ -618,18 +653,19 @@ Item {
                     Layout.fillHeight: true
                     spacing: Theme.spacing.medium
 
+                    LogosSearchBar {
+                        id: search
+                        Layout.fillWidth: true
+                        placeholderText: "Search regions, or paste a CID and press Enter"
+                        onSubmitted: function (text) {
+                            if (root.looksLikeCid(text.trim()))
+                                root.findCid(text.trim());
+                        }
+                    }
+
                     RowLayout {
                         Layout.fillWidth: true
                         spacing: Theme.spacing.small
-                        LogosSearchBar {
-                            id: search
-                            Layout.fillWidth: true
-                            placeholderText: "Search regions, or paste a CID and press Enter"
-                            onSubmitted: function (text) {
-                                if (root.looksLikeCid(text.trim()))
-                                    root.findCid(text.trim());
-                            }
-                        }
                         LogosComboBox {
                             Layout.preferredWidth: 150
                             model: ["All countries", "us", "india", "china", "russia"]
@@ -646,6 +682,22 @@ Item {
                                 onClicked: root.filter = index
                             }
                         }
+                        Item { Layout.fillWidth: true }
+                        LogosButton {
+                            text: root.checkingVersions ? "Checking…" : "Geofabrik versions"
+                            compact: true
+                            enabled: root.ready && !root.checkingVersions && root.regions.length > 0
+                            leadingIcon.source: LogosIcons.refresh
+                            onClicked: root.checkVersions()
+                        }
+                    }
+
+                    LogosNotice {
+                        Layout.fillWidth: true
+                        visible: Object.keys(root.available).length > 0 && root.updatesCount() > 0
+                        severity: LogosNotice.Warning
+                        message: root.updatesCount() + (root.updatesCount() === 1 ? " hosted region has" : " hosted regions have")
+                                 + " a newer snapshot on Geofabrik. Host it again to register the new version."
                     }
 
                     LogosNotice {
@@ -723,6 +775,20 @@ Item {
                                             font.pixelSize: Theme.typography.secondaryText
                                             elide: Text.ElideRight
                                         }
+                                    }
+                                    LogosText {
+                                        visible: root.available[row.modelData.region] !== undefined
+                                        text: root.available[row.modelData.region] ? "Geofabrik " + root.formatSnapshot(root.available[row.modelData.region].version) : ""
+                                        ToolTip.visible: versionHover.hovered
+                                        ToolTip.text: "Geofabrik's current first-of-month snapshot"
+                                        HoverHandler { id: versionHover }
+                                        color: Theme.palette.textSecondary
+                                        font.pixelSize: Theme.typography.secondaryText
+                                    }
+                                    LogosBadge {
+                                        visible: root.available[row.modelData.region] !== undefined && root.available[row.modelData.region].update === true
+                                        text: "Update"
+                                        color: Theme.palette.warning
                                     }
                                     LogosText {
                                         visible: row.modelData.hosts > 0

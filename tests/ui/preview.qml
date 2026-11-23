@@ -75,8 +75,10 @@ Window {
         onTriggered: {
             var v = loader.item;
             ["china/henan", "kenya", "egypt"].forEach(function (r) { v.toggle(r, true); });
-            if (win.tab === 0)
+            if (win.tab === 0) {
                 v.openDetails("china/henan");
+                v.checkVersions();
+            }
             find(v, "tabs").currentIndex = win.tab;
             shot.start();
         }

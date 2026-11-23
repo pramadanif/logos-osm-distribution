@@ -56,6 +56,7 @@ need no wallet:
 
     osm regions                                   # the 72 predefined regions
     osm discover --rpc <rpc> --program <id>       # names, levels, hosted status
+    osm discover --versions --rpc <rpc> --program <id>   # plus Geofabrik's current snapshot of each region
     osm snapshot indonesia                        # today's dated snapshot and Geofabrik's MD5
     osm lookup --region china/henan --rpc <rpc> --program <id>
     osm lookup --parent india   --rpc <rpc> --program <id>
