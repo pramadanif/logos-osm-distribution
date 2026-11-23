@@ -38,8 +38,14 @@ fi
 if [ -n "${COVERAGE:-}" ]; then
   n=0
   while read -r region ccid cmd5; do
-    curl -fsS --max-time 900 "$api/data/$ccid/network/stream" -o "$work/cov" \
-      || { echo "FAIL $region: $ccid not retrieved through $addr"; exit 1; }
+    # The node runs at low CPU and IO priority beside other services, so a transfer can stall;
+    # three tries of up to 10 minutes each.
+    rm -f "$work/cov"
+    for try in 1 2 3; do
+      curl -fsS --max-time 600 "$api/data/$ccid/network/stream" -o "$work/cov" && break
+      echo "$region: try $try did not complete" >&2; rm -f "$work/cov"; sleep 30
+    done
+    [ -f "$work/cov" ] || { echo "FAIL $region: $ccid not retrieved through $addr"; exit 1; }
     got="$(python3 -I -c 'import hashlib,sys
 h=hashlib.md5()
 with open(sys.argv[1],"rb") as f:
