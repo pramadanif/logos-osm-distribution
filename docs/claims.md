@@ -21,6 +21,7 @@ cannot prove, are marked as policy.
 | 12 | Existing error codes never change meaning | error-codes.md | policy (new codes are appended) |
 | 13 | v0.3 evidence never counts for the prize | limitations.md | policy (plan rule 5) |
 | 14 | No regular expression in the Basecamp apps' QML or C++ (Qt's regex JIT fails in Basecamp's hardened runtime, E57; sizes are formatted with arithmetic) | README, self-review | grep over basecamp/ and examples/ sources |
+| 15 | The Basecamp modules, the app and the templates never decode registry accounts themselves; they go through `osm_sdk`/`osm_ffi` (P-F9) | criteria-checklist.md | no borsh, decode_region or RegionAccount parsing outside osm_sdk |
 
 ## Proof commands
 
@@ -36,3 +37,4 @@ proof: grep -q "download.geofabrik.de" docs/adr/0006-external-services.md && gre
 proof: ! grep -E '^(lee|lee_core|nssa|nssa_core|wallet|spel)' osm_sdk/Cargo.toml && ! grep -rnE 'Transaction|send_transaction' osm_sdk/src
 proof: test "$(grep -cE 'history\.remove\(|hosts\.retain\(' programs/osm_registry/methods/guest/src/bin/osm_registry.rs)" = 2
 proof: ! grep -rnE 'QRegularExpression|QRegExp|RegExp\(|\.replace\(/' basecamp/osm-app/src examples/distribution-consumer-app/src examples/consumer-module/src
+proof: ! grep -rnE 'borsh|decode_region|BorshDeserialize|RegionAccount *\{' basecamp/osm-distribution/rust-lib/src basecamp/osm-sdk/rust-lib/src basecamp/osm-app/src examples/consumer-module/src examples/distribution-consumer-app/src

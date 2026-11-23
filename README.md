@@ -125,6 +125,12 @@ SPEL does not support 0.4 yet, so there is no 0.4 IDL (docs/status/lez-04-port.m
 Build one with `nix build ./basecamp/osm-distribution#lgx-portable`. `module.json` indexes them.
 The catalog's packages are not signed (`signing_mode: none` in the catalog's release workflow), so
 the package manager installs them as unsigned packages; their sha256 is in the catalog index.
+If the package manager refuses an unsigned package, install the downloaded file directly:
+
+    lgpm --allow-unsigned install --file pramadani_osm_app-<version>.lgx
+
+Funding a LEZ account for hosting: `PROFILE=v03-public ACCOUNT=<your account> scripts/fund-testnet.sh`
+(the profile's faucet; one claim per account per day).
 
 ![OSM Maps, Regions tab](docs/images/app-regions.png)
 
