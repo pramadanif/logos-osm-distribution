@@ -162,6 +162,20 @@ jobs:
           name: basecamp-gui
           path: shots/
 
+
+  side-by-side:
+    # SC-D.2b / H19: our released catalog and another LP-0018 catalog in one session.
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - run: nix build -L 'github:logos-co/logos-logoscore-cli#ctl-bundle-dir' -o ctl-portable
+      - run: python3 tests/side_by_side.py ./ctl-portable/bin/logosctl
+
   load:
     # SC--1.4 (headless part): install the core modules from their .lgx into a logosctl session,
     # load them and call their methods; a call that does not answer with {"ok":true} fails.
