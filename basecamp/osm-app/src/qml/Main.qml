@@ -926,6 +926,13 @@ Item {
                                     color: Theme.palette.textSecondary
                                 }
                             }
+                            LogosText {
+                                Layout.fillWidth: true
+                                text: "As registered on-chain. Download checks the file against this MD5 before keeping it."
+                                color: Theme.palette.textSecondary
+                                font.pixelSize: Theme.typography.secondaryText
+                                wrapMode: Text.WordWrap
+                            }
                             Field { label: "CID (Logos Storage)"; value: root.openEntry ? root.openEntry.cid : ""; copy: true }
                             Field { label: "MD5 (from Geofabrik)"; value: root.openEntry ? root.openEntry.checksum : ""; copy: true }
                             Field { label: "Registered"; value: root.openEntry ? root.formatTime(root.openEntry.timestamp_ms) : "" }

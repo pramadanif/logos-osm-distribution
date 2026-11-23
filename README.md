@@ -123,6 +123,8 @@ SPEL does not support 0.4 yet, so there is no 0.4 IDL (docs/status/lez-04-port.m
 | `pramadani_osm_consumer_module`, `pramadani_osm_consumer_app` | `examples/` | templates |
 
 Build one with `nix build ./basecamp/osm-distribution#lgx-portable`. `module.json` indexes them.
+The catalog's packages are not signed (`signing_mode: none` in the catalog's release workflow), so
+the package manager installs them as unsigned packages; their sha256 is in the catalog index.
 
 ![OSM Maps, Regions tab](docs/images/app-regions.png)
 

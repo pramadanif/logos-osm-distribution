@@ -20,6 +20,7 @@ cannot prove, are marked as policy.
 | 11 | Nothing in a region account is deleted except by ring rotation or a host removing itself | ADR 0002 | the program's only removals are `history.remove(0)` after a push and `hosts.retain` in unhost |
 | 12 | Existing error codes never change meaning | error-codes.md | policy (new codes are appended) |
 | 13 | v0.3 evidence never counts for the prize | limitations.md | policy (plan rule 5) |
+| 14 | No regular expression in the Basecamp apps' QML or C++ (Qt's regex JIT fails in Basecamp's hardened runtime, E57; sizes are formatted with arithmetic) | README, self-review | grep over basecamp/ and examples/ sources |
 
 ## Proof commands
 
@@ -34,3 +35,4 @@ proof: cargo test --locked -q -p osm_core --test entry rejects_bad_checksums_wit
 proof: grep -q "download.geofabrik.de" docs/adr/0006-external-services.md && grep -q "check(9" scripts/preflight_submission.py
 proof: ! grep -E '^(lee|lee_core|nssa|nssa_core|wallet|spel)' osm_sdk/Cargo.toml && ! grep -rnE 'Transaction|send_transaction' osm_sdk/src
 proof: test "$(grep -cE 'history\.remove\(|hosts\.retain\(' programs/osm_registry/methods/guest/src/bin/osm_registry.rs)" = 2
+proof: ! grep -rnE 'QRegularExpression|QRegExp|RegExp\(|\.replace\(/' basecamp/osm-app/src examples/distribution-consumer-app/src examples/consumer-module/src
