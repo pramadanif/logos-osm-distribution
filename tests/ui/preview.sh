@@ -9,7 +9,7 @@ mkdir -p "$OUT"; OUT="$(cd "$OUT" && pwd)"
 stage="$(mktemp -d)"; trap 'rm -rf "$stage"' EXIT
 # The view's layout inside an .lgx: qml/Main.qml beside src/icons/.
 mkdir -p "$stage/qml" "$stage/src"
-cp "$root/basecamp/osm-app/src/qml/Main.qml" "$stage/qml/"
+cp "$root/basecamp/osm-app/src/qml/"*.qml "$root/basecamp/osm-app/src/qml/"*.js "$stage/qml/"
 cp -R "$root/basecamp/osm-app/src/icons" "$stage/src/"
 cp "$here/preview.qml" "$here/sample.json" "$stage/"
 # The offscreen renderer cannot run LogosIcon's MultiEffect (a GPU shader), so the preview uses a

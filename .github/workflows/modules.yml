@@ -94,6 +94,74 @@ jobs:
           path: out/*/*.lgx
           if-no-files-found: error
 
+
+  basecamp-gui:
+    # Appendix E step 6, as the evaluator does it: the released Basecamp (Linux x86_64 AppImage,
+    # extracted) under Xvfb with a fresh --user-dir, our app opened in standalone mode with the
+    # distribution module beside it. Screenshots are kept as an artifact; a QML warning or error
+    # from our files in Basecamp's log fails the job (E58).
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      BASECAMP_RELEASE: pre-release-4cea4bb-1433
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - name: X server, software OpenGL, screenshot tools
+        run: |
+          for i in 1 2 3 4 5; do sudo apt-get update -qq -o Acquire::Retries=3 && break; sleep 30; done
+          sudo apt-get install -y -qq xvfb imagemagick xdotool libgl1 libegl1 libxkbcommon-x11-0 \
+            libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
+            libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libfontconfig1 libdbus-1-3 >/dev/null
+      - name: Basecamp (released AppImage)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          gh release download "$BASECAMP_RELEASE" -R logos-co/logos-basecamp -p 'logos-basecamp-x86_64.AppImage'
+          chmod +x logos-basecamp-x86_64.AppImage
+          ./logos-basecamp-x86_64.AppImage --appimage-extract >/dev/null
+          ls squashfs-root | head
+      - name: Build the app and the distribution module (portable install roots)
+        run: |
+          set -eu
+          nix build -L ./basecamp/osm-distribution#install-portable -o dist-install
+          nix build -L ./basecamp/osm-app#install-portable -o app-install \
+            --override-input pramadani_osm_distribution "path:$PWD/basecamp/osm-distribution"
+          ls -R dist-install | head -20; ls -R app-install | head -20
+      - name: Open the app in Basecamp and take screenshots
+        run: |
+          set -u
+          mkdir -p shots profile
+          Xvfb :99 -screen 0 1440x900x24 >/dev/null 2>&1 &
+          export DISPLAY=:99 LIBGL_ALWAYS_SOFTWARE=1 QT_QUICK_BACKEND=
+          sleep 2
+          ./squashfs-root/AppRun --user-dir "$PWD/profile" --module "$PWD/app-install" \
+            --modules-dir "$PWD/dist-install" > basecamp.out 2>&1 &
+          for t in 45 30 30; do sleep $t; import -window root "shots/shot-$(date +%s).png"; done
+          pkill -f squashfs-root || true
+          sleep 3
+          cp profile/logs/basecamp.log shots/ 2>/dev/null || true
+          cp basecamp.out shots/
+          ls -l shots
+      - name: Our views loaded without QML warnings
+        run: |
+          set -eu
+          log=shots/basecamp.log
+          [ -f "$log" ] || log=shots/basecamp.out
+          grep -E 'Successfully loaded UI module: "pramadani_osm_app"' "$log"
+          if grep -nE '(Main\.qml|format\.js)[^ ]*:[0-9]+' "$log"; then
+            echo "QML warnings or errors from our view (above)"; exit 1
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: basecamp-gui
+          path: shots/
+
   load:
     # SC--1.4 (headless part): install the core modules from their .lgx into a logosctl session,
     # load them and call their methods; a call that does not answer with {"ok":true} fails.

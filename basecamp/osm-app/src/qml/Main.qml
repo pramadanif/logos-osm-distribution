@@ -5,6 +5,8 @@ import Logos.Theme
 import Logos.Controls
 import Logos.Icons
 
+import "format.js" as Format
+
 // OSM Maps (LP-0018), built on the Logos Design System so it looks like the rest of Basecamp.
 //
 // Every action is a job in the backend, which calls the pramadani_osm_distribution module; the
@@ -85,39 +87,8 @@ Item {
 
     // ---- helpers ----------------------------------------------------------------------------
 
-    // 1536 -> "1.5 KiB". Plain arithmetic, no regular expressions.
-    function formatSize(n) {
-        if (n === undefined || n === null || isNaN(n))
-            return "";
-        var units = ["B", "KiB", "MiB", "GiB", "TiB"];
-        var i = 0;
-        var v = Number(n);
-        while (v >= 1024 && i < units.length - 1) {
-            v = v / 1024;
-            i++;
-        }
-        return (i === 0 ? String(v) : v.toFixed(1)) + " " + units[i];
-    }
 
-    // 261101 -> "2026-11-01".
-    function formatSnapshot(s) {
-        if (!s)
-            return "";
-        var t = String(s);
-        while (t.length < 6)
-            t = "0" + t;
-        return "20" + t.substring(0, 2) + "-" + t.substring(2, 4) + "-" + t.substring(4, 6);
-    }
 
-    // "https://testnet.lez.logos.co" -> "testnet.lez.logos.co".
-    function hostOf(url) {
-        var u = String(url || "");
-        var i = u.indexOf("://");
-        if (i >= 0)
-            u = u.substring(i + 3);
-        var j = u.indexOf("/");
-        return j >= 0 ? u.substring(0, j) : u;
-    }
 
     // Unix ms -> "2026-11-23 10:23 UTC", built from the date's parts (no locale formatting).
     // "Sequencer RPC · default" / "· set by you" (E68).
@@ -126,14 +97,6 @@ Item {
         return s === "default" ? name + " · default" : s === "custom" ? name + " · set by you" : name;
     }
 
-    function formatTime(ms) {
-        if (!ms)
-            return "";
-        var d = new Date(Number(ms));
-        var two = function (n) { return n < 10 ? "0" + n : String(n); };
-        return d.getUTCFullYear() + "-" + two(d.getUTCMonth() + 1) + "-" + two(d.getUTCDate()) + " "
-            + two(d.getUTCHours()) + ":" + two(d.getUTCMinutes()) + " UTC";
-    }
 
     function probe() {
         root.probing = true;
@@ -145,6 +108,12 @@ Item {
                 root.problem = errorText(a);
         });
     }
+
+    // Formatting lives in format.js (tested in the Basecamp Qt, H36).
+    function formatSize(n) { return Format.size(n); }
+    function formatSnapshot(s) { return Format.snapshot(s); }
+    function formatTime(ms) { return Format.time(ms); }
+    function hostOf(url) { return Format.host(url); }
 
     function parse(text) {
         try {
@@ -607,7 +576,7 @@ Item {
                  + (root.settings.storage || "your Storage node") + ". Then "
                  + Math.ceil(root.selectedCount / root.maxBatch) + (Math.ceil(root.selectedCount / root.maxBatch) === 1 ? " transaction" : " transactions")
                  + " signed by " + hostField.text + " register" + (Math.ceil(root.selectedCount / root.maxBatch) === 1 ? "s" : "")
-                 + " them. Each transaction needs 38,400,000 lepta available for the fee reserve; the fee charged is far lower."
+                 + " them. Each transaction needs " + Format.grouped(38400000) + " lepta available for the fee reserve; the fee charged is far lower."
                  + " Country files can be several GB each; the cache keeps at most 20 GiB."
         leftActions: [ LogosButton { text: "Cancel"; onClicked: confirmHost.close() } ]
         rightActions: [ LogosButton {

@@ -100,6 +100,19 @@ jobs:
       - name: App backend C++ with ASan + UBSan
         run: tests/cpp/run.sh
 
+
+  qml-format:
+    # H36: the app's number and date formatting in the Qt that Basecamp is built with
+    # (qtdeclarative of logos-module-builder's nixpkgs, e9f00bd8).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - run: QT_QPA_PLATFORM=offscreen nix shell github:NixOS/nixpkgs/e9f00bd893984bc8ce46c895c3bf7cac95331127#qt6.qtdeclarative --command qmltestrunner -input tests/qml
+
   scripts:
     # H35: scripts are strict and fail loudly without their inputs.
     runs-on: ubuntu-latest
