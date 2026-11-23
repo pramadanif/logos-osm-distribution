@@ -120,7 +120,15 @@ jobs:
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
-      - run: QT_QPA_PLATFORM=offscreen nix shell github:NixOS/nixpkgs/e9f00bd893984bc8ce46c895c3bf7cac95331127#qt6.qtdeclarative --command qmltestrunner -input tests/qml
+      - name: qmltestrunner from that nixpkgs
+        run: |
+          set -eu
+          np=github:NixOS/nixpkgs/e9f00bd893984bc8ce46c895c3bf7cac95331127
+          qtd=$(nix build --no-link --print-out-paths "$np#qt6.qtdeclarative" | head -1)
+          qtb=$(nix build --no-link --print-out-paths "$np#qt6.qtbase" | head -1)
+          # nix's Qt finds its QML modules and plugins through wrappers; give the paths directly.
+          QT_QPA_PLATFORM=offscreen QT_PLUGIN_PATH="$qtb/lib/qt-6/plugins:$qtd/lib/qt-6/plugins" \
+            QML_IMPORT_PATH="$qtd/lib/qt-6/qml" "$qtd/bin/qmltestrunner" -import "$qtd/lib/qt-6/qml" -input tests/qml
 
   scripts:
     # H35: scripts are strict and fail loudly without their inputs.
