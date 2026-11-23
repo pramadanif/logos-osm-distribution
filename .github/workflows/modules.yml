@@ -113,7 +113,7 @@ jobs:
       - name: X server, software OpenGL, screenshot tools
         run: |
           for i in 1 2 3 4 5; do sudo apt-get update -qq -o Acquire::Retries=3 && break; sleep 30; done
-          sudo apt-get install -y -qq xvfb imagemagick xdotool libgl1 libegl1 libxkbcommon-x11-0 \
+          sudo apt-get install -y -qq xvfb imagemagick xdotool libgl1 libegl1 libopengl0 libglx0 libxkbcommon-x11-0 \
             libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
             libxcb-shape0 libxcb-xinerama0 libxcb-xkb1 libfontconfig1 libdbus-1-3 >/dev/null
       - name: Basecamp (released AppImage)
@@ -139,6 +139,8 @@ jobs:
           Xvfb :99 -screen 0 1440x900x24 >/dev/null 2>&1 &
           export DISPLAY=:99 LIBGL_ALWAYS_SOFTWARE=1 QT_QUICK_BACKEND=
           sleep 2
+          # Shared libraries the AppImage expects from the host; print any the runner lacks.
+          ldd squashfs-root/usr/bin/LogosBasecamp | grep 'not found' || true
           ./squashfs-root/AppRun --user-dir "$PWD/profile" --module "$PWD/app-install" \
             --modules-dir "$PWD/dist-install" > basecamp.out 2>&1 &
           for t in 45 30 30; do sleep $t; import -window root "shots/shot-$(date +%s).png"; done
