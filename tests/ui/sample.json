@@ -1,0 +1,871 @@
+{
+ "answers": {
+  "settings": {
+   "ok": true,
+   "data": {
+    "settings": {
+     "rpc": "https://testnet.lez.logos.co",
+     "program": "9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw",
+     "storage": "http://127.0.0.1:8080/api/storage/v1",
+     "geofabrik": true,
+     "host": "Public/shgMqPgBJpwrXRjhhbjRDrxKFXnbogjyXBooKL3wDFC"
+    },
+    "data_dir": "/profile/module_data/pramadani_osm_distribution"
+   }
+  },
+  "discover": {
+   "ok": true,
+   "data": {
+    "source": "geofabrik",
+    "regions": [
+     {
+      "region": "germany",
+      "name": "Germany",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "france",
+      "name": "France",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "great-britain",
+      "name": "Great Britain",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "italy",
+      "name": "Italy",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "spain",
+      "name": "Spain",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "poland",
+      "name": "Poland",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "netherlands",
+      "name": "Netherlands",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "belgium",
+      "name": "Belgium",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "switzerland",
+      "name": "Switzerland",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "austria",
+      "name": "Austria",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "czech-republic",
+      "name": "Czech Republic",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "sweden",
+      "name": "Sweden",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "norway",
+      "name": "Norway",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "denmark",
+      "name": "Denmark",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "finland",
+      "name": "Finland",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "portugal",
+      "name": "Portugal",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "greece",
+      "name": "Greece",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "ireland-and-northern-ireland",
+      "name": "Ireland and Northern Ireland",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "hungary",
+      "name": "Hungary",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "romania",
+      "name": "Romania",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "bulgaria",
+      "name": "Bulgaria",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "ukraine",
+      "name": "Ukraine",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "belarus",
+      "name": "Belarus",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "turkey",
+      "name": "Turkey",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "canada",
+      "name": "Canada",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "mexico",
+      "name": "Mexico",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "japan",
+      "name": "Japan",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "south-korea",
+      "name": "South Korea",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "indonesia",
+      "name": "Indonesia (with East Timor)",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "thailand",
+      "name": "Thailand",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "vietnam",
+      "name": "Vietnam",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "malaysia-singapore-brunei",
+      "name": "Malaysia, Singapore, and Brunei",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "philippines",
+      "name": "Philippines",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "pakistan",
+      "name": "Pakistan",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "bangladesh",
+      "name": "Bangladesh",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "iran",
+      "name": "Iran",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "australia",
+      "name": "Australia",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "brazil",
+      "name": "Brazil",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "argentina",
+      "name": "Argentina",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "colombia",
+      "name": "Colombia",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "peru",
+      "name": "Peru",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "chile",
+      "name": "Chile",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "south-africa",
+      "name": "South Africa",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "egypt",
+      "name": "Egypt",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "nigeria",
+      "name": "Nigeria",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "kenya",
+      "name": "Kenya",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "morocco",
+      "name": "Morocco",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "ethiopia",
+      "name": "Ethiopia",
+      "level": "country",
+      "parent": null
+     },
+     {
+      "region": "us/california",
+      "name": "California",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "us/texas",
+      "name": "Texas",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "us/florida",
+      "name": "Florida",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "us/new-york",
+      "name": "New York",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "us/washington",
+      "name": "Washington",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "us/illinois",
+      "name": "Illinois",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "us/georgia",
+      "name": "Georgia",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "us/pennsylvania",
+      "name": "Pennsylvania",
+      "level": "subregion",
+      "parent": "us"
+     },
+     {
+      "region": "india/central-zone",
+      "name": "Central Zone",
+      "level": "subregion",
+      "parent": "india"
+     },
+     {
+      "region": "india/eastern-zone",
+      "name": "Eastern Zone",
+      "level": "subregion",
+      "parent": "india"
+     },
+     {
+      "region": "india/north-eastern-zone",
+      "name": "North-Eastern Zone",
+      "level": "subregion",
+      "parent": "india"
+     },
+     {
+      "region": "india/northern-zone",
+      "name": "Northern Zone",
+      "level": "subregion",
+      "parent": "india"
+     },
+     {
+      "region": "india/southern-zone",
+      "name": "Southern Zone",
+      "level": "subregion",
+      "parent": "india"
+     },
+     {
+      "region": "india/western-zone",
+      "name": "Western Zone",
+      "level": "subregion",
+      "parent": "india"
+     },
+     {
+      "region": "china/guangdong",
+      "name": "Guangdong (with Hong Kong and Macau)",
+      "level": "subregion",
+      "parent": "china"
+     },
+     {
+      "region": "china/jiangsu",
+      "name": "Jiangsu",
+      "level": "subregion",
+      "parent": "china"
+     },
+     {
+      "region": "china/shandong",
+      "name": "Shandong",
+      "level": "subregion",
+      "parent": "china"
+     },
+     {
+      "region": "china/zhejiang",
+      "name": "Zhejiang",
+      "level": "subregion",
+      "parent": "china"
+     },
+     {
+      "region": "china/sichuan",
+      "name": "Sichuan",
+      "level": "subregion",
+      "parent": "china"
+     },
+     {
+      "region": "china/henan",
+      "name": "Henan",
+      "level": "subregion",
+      "parent": "china"
+     },
+     {
+      "region": "russia/central-fed-district",
+      "name": "Central Federal District",
+      "level": "subregion",
+      "parent": "russia"
+     },
+     {
+      "region": "russia/northwestern-fed-district",
+      "name": "Northwestern Federal District",
+      "level": "subregion",
+      "parent": "russia"
+     },
+     {
+      "region": "russia/volga-fed-district",
+      "name": "Volga Federal District",
+      "level": "subregion",
+      "parent": "russia"
+     },
+     {
+      "region": "russia/siberian-fed-district",
+      "name": "Siberian Federal District",
+      "level": "subregion",
+      "parent": "russia"
+     }
+    ],
+    "missing": []
+   }
+  },
+  "hosted_status": {
+   "ok": true,
+   "data": {
+    "regions": [
+     {
+      "region": "germany",
+      "version": 261101,
+      "hosts": 2
+     },
+     {
+      "region": "france",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "great-britain",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "italy",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "spain",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "poland",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "netherlands",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "belgium",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "switzerland",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "austria",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "czech-republic",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "sweden",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "norway",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "denmark",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "finland",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "portugal",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "greece",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "ireland-and-northern-ireland",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "hungary",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "romania",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "bulgaria",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "ukraine",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "belarus",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "turkey",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "canada",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "mexico",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "japan",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "south-korea",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "indonesia",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "thailand",
+      "version": 261101,
+      "hosts": 1
+     },
+     {
+      "region": "vietnam",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "malaysia-singapore-brunei",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "philippines",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "pakistan",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "bangladesh",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "iran",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "australia",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "brazil",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "argentina",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "colombia",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "peru",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "chile",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "south-africa",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "egypt",
+      "version": 261001,
+      "hosts": 1
+     },
+     {
+      "region": "nigeria",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "kenya",
+      "version": 261101,
+      "hosts": 3
+     },
+     {
+      "region": "morocco",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "ethiopia",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/california",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/texas",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/florida",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/new-york",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/washington",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/illinois",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/georgia",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "us/pennsylvania",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "india/central-zone",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "india/eastern-zone",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "india/north-eastern-zone",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "india/northern-zone",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "india/southern-zone",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "india/western-zone",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "china/guangdong",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "china/jiangsu",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "china/shandong",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "china/zhejiang",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "china/sichuan",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "china/henan",
+      "version": 261101,
+      "hosts": 1
+     },
+     {
+      "region": "russia/central-fed-district",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "russia/northwestern-fed-district",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "russia/volga-fed-district",
+      "version": null,
+      "hosts": 0
+     },
+     {
+      "region": "russia/siberian-fed-district",
+      "version": null,
+      "hosts": 0
+     }
+    ],
+    "errors": []
+   }
+  },
+  "resolve:china/henan": {
+   "ok": true,
+   "data": {
+    "region": "china/henan",
+    "cid": "zDvZRwzmA5LrY5Be279q4gpJqxk6v6XrS59rHkKakguRwwFPEMfH",
+    "checksum": "5f3c041353b4886c9984cf6e7724fd10",
+    "version": 261101,
+    "source_url": "https://download.geofabrik.de/asia/china/henan/henan-261101.osm.pbf",
+    "size_bytes": 50702303,
+    "timestamp_ms": 1795406603344,
+    "hosts": [
+     "shgMqPgBJpwrXRjhhbjRDrxKFXnbogjyXBooKL3wDFC"
+    ]
+   }
+  },
+  "resolve": {
+   "ok": true,
+   "data": null
+  }
+ },
+ "jobs": {
+  "fetch-1": {
+   "method": "fetch",
+   "arg": "china/henan",
+   "state": "confirmed",
+   "answer": "{\"ok\": true, \"data\": {\"path\": \"/profile/maps/henan-261101.osm.pbf\", \"source\": \"storage\", \"from\": \"zDvZRwzmA5Lr\\u2026\", \"md5\": \"5f3c041353b4886c9984cf6e7724fd10\", \"skipped\": []}}"
+  },
+  "host_batch-2": {
+   "method": "host_batch",
+   "arg": "{\"regions\": [\"kenya\", \"egypt\"]}",
+   "state": "confirmed",
+   "answer": "{\"ok\": true, \"data\": {\"confirmed\": true, \"regions\": [\"kenya\", \"egypt\"]}}"
+  },
+  "host-3": {
+   "method": "host",
+   "arg": "{\"region\": \"thailand\"}",
+   "state": "failed",
+   "answer": "{\"ok\": false, \"code\": \"S160\", \"error\": \"S160 InvalidInput: host: S105 InsufficientFunds: 1200000 lepta available, 38400000 needed for the fee reserve\"}"
+  },
+  "host-4": {
+   "method": "host",
+   "arg": "{\"region\": \"germany\"}",
+   "state": "submitting",
+   "answer": ""
+  }
+ }
+}

@@ -8,6 +8,7 @@
   "description": "Read-only OSM registry SDK for other Basecamp modules: discover regions, resolve a region to its CID and metadata, download and verify it. No wallet, no writes (LP-0018 consumer subset).",
   "author": "pramadanif",
   "main": "pramadani_osm_sdk_plugin",
+  "icon": "icons/pramadani_osm_sdk.png",
   "dependencies": [],
   "codegen": {
     "rust": {

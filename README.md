@@ -123,6 +123,11 @@ SPEL does not support 0.4 yet, so there is no 0.4 IDL (docs/status/lez-04-port.m
 
 Build one with `nix build ./basecamp/osm-distribution#lgx-portable`. `module.json` indexes them.
 
+![OSM Maps, Regions tab](docs/images/app-regions.png)
+
+The app uses the Logos Design System (`Logos.Theme`, `Logos.Controls`), as Basecamp's own apps
+do. The pictures in `docs/images/` are offscreen renders with sample data (`tests/ui/preview.sh`).
+
 Using the app: open **OSM Maps**, set the sequencer RPC, registry program, Storage API and your
 LEZ account under **Settings** (defaults: the v0.3 rehearsal deployment above). **Regions** lists
 the 72 regions with their hosted snapshot and host count; **Details** shows CID, MD5, snapshot and

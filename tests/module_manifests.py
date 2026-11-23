@@ -65,10 +65,12 @@ for name, (rel, meta) in found.items():
     for d in deps:
         if not re.search(rf"^\s*{re.escape(d)}\.url\s*=", flake, re.M):
             fail(f"{name}: dependency {d} has no flake input {d}.url")
+    # Every module carries an icon (Basecamp shows it in the sidebar and the package manager);
+    # LGX packaging takes only a 256x256 PNG.
+    icon = ROOT / rel / (meta.get("icon") or "")
+    if not meta.get("icon") or not icon.is_file() or png_size(icon) != (256, 256):
+        fail(f"{name}: icon must be a 256x256 PNG ({meta.get('icon')})")
     if meta.get("type") == "ui_qml":
-        icon = ROOT / rel / meta.get("icon", "")
-        if not icon.is_file() or png_size(icon) != (256, 256):
-            fail(f"{name}: ui_qml icon must be a 256x256 PNG ({meta.get('icon')})")
         if not (ROOT / rel / "src" / meta.get("view", "")).is_file():
             fail(f"{name}: view {meta.get('view')} not found under src/")
         rep = meta.get("codegen", {}).get("rep")

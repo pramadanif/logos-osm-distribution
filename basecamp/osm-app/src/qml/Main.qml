@@ -1,10 +1,16 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Logos.Theme
+import Logos.Controls
+import Logos.Icons
 
-// OSM Maps (LP-0018). Every action is a job in the backend, which calls the
-// pramadani_osm_distribution module. Text from the chain or from Storage is shown as plain text
-// only (textFormat: Text.PlainText), never as rich text.
+// OSM Maps (LP-0018), built on the Logos Design System so it looks like the rest of Basecamp.
+//
+// Every action is a job in the backend, which calls the pramadani_osm_distribution module; the
+// view only renders job states (submitting / confirmed / failed). Text that comes from the chain,
+// from Storage or from Geofabrik is shown as plain text only: LogosText and LogosCopyableText
+// default to Text.PlainText, and nothing here opts into StyledText.
 Item {
     id: root
 
@@ -13,21 +19,32 @@ Item {
 
     // Region rows: {region, name, level, parent, version, hosts}.
     property var regions: []
-    // Region ids ticked for bulk hosting.
+    property bool loadingRegions: false
+    // Region ids ticked for hosting.
     property var selected: ({})
+    property int selectedCount: 0
     property var settings: ({})
     property var jobs: ({})
-    // Pending job id -> function(answerObject) run once when the job finishes.
+    // Pending job id -> function(answerObject), run once when the job finishes.
     property var handlers: ({})
-    // Region ids waiting to be hosted one after another (bulk host).
+    // Region ids still to be hosted (bulk host).
     property var hostQueue: []
-    property string detail: ""
+    property string problem: ""
 
-    readonly property color fg: "#e6edf3"
-    readonly property color muted: "#8b949e"
-    readonly property color good: "#56d364"
-    readonly property color warn: "#f0883e"
-    readonly property color bad: "#f85149"
+    // The region open in the detail panel, and what the registry says about it.
+    property string openRegion: ""
+    property var openEntry: null
+    property bool openLoading: false
+    property string openResult: ""
+    property bool openResultOk: true
+
+    // 0 all, 1 hosted, 2 not hosted.
+    property int filter: 0
+
+    Rectangle {
+        anchors.fill: parent
+        color: Theme.palette.background
+    }
 
     Connections {
         target: logos
@@ -70,11 +87,27 @@ Item {
     // 261101 -> "2026-11-01".
     function formatSnapshot(s) {
         if (!s)
-            return "not hosted";
+            return "";
         var t = String(s);
         while (t.length < 6)
             t = "0" + t;
         return "20" + t.substring(0, 2) + "-" + t.substring(2, 4) + "-" + t.substring(4, 6);
+    }
+
+    // "https://testnet.lez.logos.co" -> "testnet.lez.logos.co".
+    function hostOf(url) {
+        var u = String(url || "");
+        var i = u.indexOf("://");
+        if (i >= 0)
+            u = u.substring(i + 3);
+        var j = u.indexOf("/");
+        return j >= 0 ? u.substring(0, j) : u;
+    }
+
+    // "shgMqPgBJpwrXRjhhbjR…" -> "shgMqP…3wDFC": enough to recognise an account at a glance.
+    function shortId(id) {
+        var s = String(id || "");
+        return s.length > 16 ? s.substring(0, 6) + "…" + s.substring(s.length - 5) : s;
     }
 
     function parse(text) {
@@ -86,10 +119,11 @@ Item {
     }
 
     function errorText(a) {
-        return (a.code ? a.code + " " : "") + (a.error || "failed");
+        var e = a.error || "failed";
+        return a.code && e.indexOf(a.code) !== 0 ? a.code + " " + e : e;
     }
 
-    // Start a backend job; `then` gets the parsed answer when it is no longer submitting.
+    // Start a backend job; `then` gets the parsed answer once it is no longer submitting.
     function run(method, arg, then) {
         if (!root.ready)
             return;
@@ -101,7 +135,7 @@ Item {
             }
             root.onJobs();
         }, function (error) {
-            root.detail = "A001 the app backend did not answer: " + error;
+            root.problem = "A001 the app backend did not answer: " + error;
         });
     }
 
@@ -124,9 +158,11 @@ Item {
             if (a.ok)
                 root.settings = a.data.settings;
         });
+        root.loadingRegions = true;
         run("discover", "", function (a) {
             if (!a.ok) {
-                root.detail = errorText(a);
+                root.loadingRegions = false;
+                root.problem = errorText(a);
                 return;
             }
             var rows = [];
@@ -142,8 +178,9 @@ Item {
 
     function loadHosted() {
         run("hosted_status", "", function (a) {
+            root.loadingRegions = false;
             if (!a.ok) {
-                root.detail = errorText(a);
+                root.problem = errorText(a);
                 return;
             }
             var by = {};
@@ -158,9 +195,40 @@ Item {
             }
             root.regions = rows;
             if (a.data.errors.length > 0)
-                root.detail = a.data.errors.length + " region accounts could not be read; first: "
+                root.problem = a.data.errors.length + " region accounts could not be read; first: "
                     + a.data.errors[0].code + " " + a.data.errors[0].error;
         });
+    }
+
+    function hostedCount() {
+        var n = 0;
+        for (var i = 0; i < regions.length; i++)
+            if (regions[i].version)
+                n++;
+        return n;
+    }
+
+    function hostTotal() {
+        var n = 0;
+        for (var i = 0; i < regions.length; i++)
+            n += regions[i].hosts;
+        return n;
+    }
+
+    function visibleRegions() {
+        var q = search.text.toLowerCase();
+        var out = [];
+        for (var i = 0; i < regions.length; i++) {
+            var r = regions[i];
+            if (filter === 1 && !r.version)
+                continue;
+            if (filter === 2 && r.version)
+                continue;
+            if (q.length > 0 && r.region.indexOf(q) < 0 && r.name.toLowerCase().indexOf(q) < 0)
+                continue;
+            out.push(r);
+        }
+        return out;
     }
 
     function selectedIds() {
@@ -175,7 +243,35 @@ Item {
         var s = root.selected;
         s[region] = on;
         root.selected = s;
-        root.selectedChanged();
+        root.selectedCount = selectedIds().length;
+    }
+
+    function clearSelection() {
+        root.selected = ({});
+        root.selectedCount = 0;
+    }
+
+    function openDetails(region) {
+        root.openRegion = region;
+        root.openEntry = null;
+        root.openResult = "";
+        root.openLoading = true;
+        run("resolve", region, function (a) {
+            if (root.openRegion !== region)
+                return;
+            root.openLoading = false;
+            if (a.ok)
+                root.openEntry = a.data;
+            else
+                root.problem = errorText(a);
+        });
+    }
+
+    function regionName(id) {
+        for (var i = 0; i < regions.length; i++)
+            if (regions[i].region === id)
+                return regions[i].name;
+        return id;
     }
 
     // Bulk host: the module downloads and uploads the regions one by one, then registers each
@@ -184,6 +280,7 @@ Item {
 
     function hostSelected() {
         root.hostQueue = selectedIds();
+        tabs.currentIndex = 3;
         hostNext();
     }
 
@@ -207,71 +304,253 @@ Item {
         }
     }
 
+    readonly property var actionNames: ({
+        "settings": "Read settings", "configure": "Save settings", "discover": "List regions",
+        "hosted_status": "Read hosted status", "resolve": "Look up region", "fetch": "Download",
+        "check_updates": "Check for updates", "host": "Host region", "host_batch": "Host regions",
+        "import_file": "Import file", "register_entry": "Register", "unhost": "Stop hosting",
+        "version": "Version"
+    })
+
     function describe(method, a) {
         if (!a.ok)
             return errorText(a);
         var d = a.data;
         if (method === "resolve")
-            return d === null ? "not hosted"
-                : "CID " + d.cid + "\nMD5 " + d.checksum + "\nsnapshot " + formatSnapshot(d.version)
-                  + "\nsize " + formatSize(d.size_bytes) + "\nhosts " + d.hosts.length + "\nsource " + d.source_url;
+            return d === null ? "Not hosted yet" : "Snapshot " + formatSnapshot(d.version) + " · " + formatSize(d.size_bytes)
+                  + " · " + d.hosts.length + (d.hosts.length === 1 ? " host" : " hosts");
         if (method === "fetch")
-            return "saved " + d.path + "\nMD5 " + d.md5 + " (matches the registry)\nfrom " + d.from
-                   + (d.skipped.length > 0 ? "\nskipped " + d.skipped.length + " entries that did not verify" : "");
+            return "Saved to " + d.path + "\nMD5 " + d.md5 + " matches the registry · from " + d.from
+                   + (d.skipped.length > 0 ? "\nSkipped " + d.skipped.length + " entries that did not verify" : "");
         if (method === "check_updates") {
             var lines = [];
             for (var i = 0; i < d.length; i++)
-                lines.push(d[i].region + ": registered " + formatSnapshot(d[i].registered) + ", Geofabrik "
-                           + formatSnapshot(d[i].available) + (d[i].update_available ? "  update available" : ""));
+                lines.push(d[i].region + ": registered " + (formatSnapshot(d[i].registered) || "never") + ", Geofabrik "
+                           + formatSnapshot(d[i].available) + (d[i].update_available ? " — update available" : " — up to date"));
             return lines.join("\n");
         }
         if (method === "host_batch")
-            return "confirmed on-chain in one transaction: " + d.regions.join(", ");
+            return "Confirmed on-chain in one transaction: " + d.regions.join(", ");
         if (method === "host" || method === "import_file" || method === "register_entry" || method === "unhost")
-            return "confirmed on-chain" + (d.cid ? "\nCID " + d.cid : "");
-        return JSON.stringify(d, null, 2);
+            return "Confirmed on-chain" + (d.cid ? " · CID " + d.cid : "");
+        if (method === "discover")
+            return d.regions.length + " regions (" + d.source + ")";
+        if (method === "hosted_status") {
+            var hosted = 0;
+            for (var k = 0; k < d.regions.length; k++)
+                if (d.regions[k].version)
+                    hosted++;
+            return hosted + " of " + d.regions.length + " regions hosted";
+        }
+        if (method === "settings" || method === "configure")
+            return "Done";
+        return JSON.stringify(d);
+    }
+
+    readonly property var routine: ["settings", "discover", "hosted_status", "resolve", "version"]
+
+    function jobList() {
+        var ids = Object.keys(root.jobs);
+        var out = [];
+        for (var i = ids.length - 1; i >= 0; i--) {
+            var j = root.jobs[ids[i]];
+            if (routine.indexOf(j.method) >= 0 && j.state !== "failed")
+                continue;
+            out.push({"id": ids[i], "method": j.method, "arg": j.arg, "state": j.state, "answer": j.answer || ""});
+        }
+        return out;
+    }
+
+    // What a job acted on: the region(s) in its request, or its plain argument.
+    function jobSubject(j) {
+        var a = String(j.arg || "");
+        if (a.charAt(0) !== "{" && a.charAt(0) !== "[")
+            return a;
+        try {
+            var v = JSON.parse(a);
+            if (Array.isArray(v))
+                return v.join(", ");
+            if (v.regions)
+                return v.regions.join(", ");
+            return v.region || "";
+        } catch (e) {
+            return "";
+        }
+    }
+
+    function runningCount() {
+        var n = 0;
+        for (var k in root.jobs)
+            if (root.jobs[k].state === "submitting")
+                n++;
+        return n;
+    }
+
+    // ---- reusable pieces --------------------------------------------------------------------
+
+    // A label above a value, for the detail panel. `copy` adds a copy button for ids and hashes.
+    component Field: ColumnLayout {
+        id: field
+        property string label: ""
+        property string value: ""
+        property bool copy: false
+        property bool mono: false
+        spacing: Theme.spacing.tiny
+        Layout.fillWidth: true
+        LogosText {
+            text: field.label
+            color: Theme.palette.textSecondary
+            font.pixelSize: Theme.typography.secondaryText
+        }
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Theme.spacing.small
+            LogosText {
+                Layout.fillWidth: true
+                text: field.value
+                wrapMode: Text.WrapAnywhere
+                font.family: field.mono ? Theme.typography.mono : Theme.typography.publicSans
+            }
+            LogosCopyButton {
+                visible: field.copy
+                Layout.alignment: Qt.AlignTop
+                value: field.value
+            }
+        }
+    }
+
+    // A form card, at most 720 px wide, as the design system's forms are.
+    component Card: LogosFrame {
+        id: card
+        default property alias content: body.data
+        property string title: ""
+        property string subtitle: ""
+        Layout.fillWidth: true
+        Layout.maximumWidth: 720
+        Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+        padding: Theme.spacing.xlarge
+        backgroundColor: Theme.palette.surfaceRaised
+        borderColor: Theme.palette.borderHairline
+        radius: Theme.spacing.radiusLarge
+        ColumnLayout {
+            id: body
+            width: card.availableWidth
+            spacing: Theme.spacing.medium
+            LogosText {
+                text: card.title
+                font.pixelSize: Theme.typography.subtitleText
+                font.weight: Theme.typography.weightMedium
+            }
+            LogosText {
+                visible: text.length > 0
+                Layout.fillWidth: true
+                Layout.bottomMargin: Theme.spacing.small
+                text: card.subtitle
+                color: Theme.palette.textSecondary
+                wrapMode: Text.WordWrap
+            }
+        }
     }
 
     // ---- view -------------------------------------------------------------------------------
 
-    Rectangle {
-        anchors.fill: parent
-        color: "#0d1117"
-    }
-
     ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 16
-        spacing: 10
+        anchors.margins: Theme.spacing.xlarge
+        spacing: Theme.spacing.large
 
+        // Header: app identity, network, connection, refresh.
         RowLayout {
             Layout.fillWidth: true
-            Text {
-                text: "OSM Maps"
-                color: root.fg
-                font.pixelSize: 20
+            spacing: Theme.spacing.medium
+            Image {
+                source: "../src/icons/pramadani_osm_app.png"
+                sourceSize: Qt.size(40, 40)
+                Layout.preferredWidth: 40
+                Layout.preferredHeight: 40
+            }
+            ColumnLayout {
+                spacing: 2
+                LogosText {
+                    text: "OSM Maps"
+                    font.pixelSize: Theme.typography.panelTitleText
+                    font.weight: Theme.typography.weightBold
+                }
+                LogosText {
+                    text: "OpenStreetMap snapshots registered on Logos, stored in Logos Storage"
+                    color: Theme.palette.textSecondary
+                    font.pixelSize: Theme.typography.secondaryText
+                }
             }
             Item { Layout.fillWidth: true }
-            Text {
-                text: root.ready ? "connected" : "connecting to the backend..."
-                color: root.ready ? root.good : root.warn
-                font.pixelSize: 12
+            LogosBadge {
+                visible: root.settings.rpc !== undefined
+                text: root.hostOf(root.settings.rpc)
+                color: Theme.palette.textSecondary
             }
-            Button {
-                text: "Refresh"
+            LogosBadge {
+                text: !root.ready ? "Connecting" : root.runningCount() > 0 ? root.runningCount() + " running" : "Ready"
+                color: !root.ready ? Theme.palette.warning : root.runningCount() > 0 ? Theme.palette.accentOrange : Theme.palette.success
+            }
+            LogosIconButton {
+                iconSource: LogosIcons.refresh
                 enabled: root.ready
                 onClicked: root.refresh()
+                ToolTip.visible: hovered
+                ToolTip.text: "Refresh"
             }
         }
 
-        TabBar {
-            id: tabs
+        // At a glance.
+        RowLayout {
             Layout.fillWidth: true
-            TabButton { text: "Regions" }
-            TabButton { text: "Host" }
-            TabButton { text: "Import" }
-            TabButton { text: "Activity (" + Object.keys(root.jobs).length + ")" }
-            TabButton { text: "Settings" }
+            spacing: Theme.spacing.medium
+            LogosStatCard {
+                Layout.fillWidth: true
+                label: "Regions"
+                value: root.regions.length > 0 ? String(root.regions.length) : "—"
+                caption: "48 countries · 24 subregions"
+            }
+            LogosStatCard {
+                Layout.fillWidth: true
+                label: "Hosted"
+                value: root.loadingRegions ? "…" : String(root.hostedCount())
+                caption: "regions on Logos Storage"
+                severity: root.hostedCount() > 0 ? LogosStatCard.Success : LogosStatCard.None
+            }
+            LogosStatCard {
+                Layout.fillWidth: true
+                label: "Hosts"
+                value: root.loadingRegions ? "…" : String(root.hostTotal())
+                caption: "copies registered"
+            }
+            LogosStatCard {
+                Layout.fillWidth: true
+                label: "Selected"
+                value: String(root.selectedCount)
+                caption: root.selectedCount > 0 ? "ready to host" : "tick regions to host"
+            }
+        }
+
+        LogosNotice {
+            Layout.fillWidth: true
+            visible: root.problem.length > 0
+            severity: LogosNotice.Error
+            title: "Something went wrong"
+            message: root.problem
+            closable: true
+            onDismissed: root.problem = ""
+        }
+
+        LogosTabBar {
+            id: tabs
+            objectName: "tabs"
+            Layout.fillWidth: true
+            LogosTabButton { text: "Regions" }
+            LogosTabButton { text: root.selectedCount > 0 ? "Host (" + root.selectedCount + ")" : "Host" }
+            LogosTabButton { text: "Import" }
+            LogosTabButton { text: root.runningCount() > 0 ? "Activity (" + root.runningCount() + ")" : "Activity" }
+            LogosTabButton { text: "Settings" }
         }
 
         StackLayout {
@@ -279,251 +558,495 @@ Item {
             Layout.fillHeight: true
             currentIndex: tabs.currentIndex
 
-            // Regions: hosted status, resolve, download, update check.
-            ColumnLayout {
-                spacing: 6
-                RowLayout {
-                    TextField {
-                        id: filter
-                        placeholderText: "filter regions"
-                        Layout.preferredWidth: 220
-                    }
-                    Button {
-                        text: "Check updates for ticked"
-                        enabled: root.ready && root.selectedIds().length > 0
-                        onClicked: root.run("check_updates", JSON.stringify(root.selectedIds()), function (a) {
-                            root.detail = root.describe("check_updates", a);
-                        })
-                    }
-                    Text {
-                        text: root.regions.length + " regions"
-                        color: root.muted
-                    }
-                }
-                ListView {
+            // ── Regions ──────────────────────────────────────────────────────────────────
+            RowLayout {
+                spacing: Theme.spacing.large
+
+                ColumnLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    clip: true
-                    model: root.regions
-                    delegate: RowLayout {
-                        required property var modelData
-                        visible: filter.text.length === 0 || modelData.region.indexOf(filter.text) >= 0
-                                 || modelData.name.toLowerCase().indexOf(filter.text.toLowerCase()) >= 0
-                        height: visible ? implicitHeight : 0
-                        width: ListView.view.width
-                        CheckBox {
-                            checked: root.selected[modelData.region] === true
-                            onToggled: root.toggle(modelData.region, checked)
+                    spacing: Theme.spacing.medium
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Theme.spacing.small
+                        LogosSearchBar {
+                            id: search
+                            Layout.fillWidth: true
+                            placeholderText: "Search regions"
                         }
-                        Text {
-                            text: modelData.name + "  (" + modelData.region + ", " + modelData.level + ")"
-                            textFormat: Text.PlainText
-                            color: root.fg
-                            Layout.preferredWidth: 360
-                            elide: Text.ElideRight
+                        Repeater {
+                            model: ["All", "Hosted", "Not hosted"]
+                            LogosButton {
+                                required property int index
+                                required property string modelData
+                                text: modelData
+                                compact: true
+                                variant: root.filter === index ? LogosButton.Variant.Primary : LogosButton.Variant.Secondary
+                                onClicked: root.filter = index
+                            }
                         }
-                        Text {
-                            text: root.formatSnapshot(modelData.version)
-                                  + (modelData.hosts > 0 ? ", " + modelData.hosts + " hosts" : "")
-                            color: modelData.version ? root.good : root.muted
-                            Layout.preferredWidth: 180
+                    }
+
+                    LogosFrame {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        backgroundColor: Theme.palette.surfaceRaised
+                        borderColor: Theme.palette.borderHairline
+                        radius: Theme.spacing.radiusLarge
+                        clip: true
+
+                        LogosStateView {
+                            anchors.fill: parent
+                            visible: root.loadingRegions && root.regions.length === 0
+                            kind: LogosStateView.Loading
+                            title: "Loading regions"
+                            message: "Reading the predefined set and the registry."
                         }
-                        Button {
-                            text: "Details"
-                            enabled: root.ready
-                            onClicked: root.run("resolve", modelData.region, function (a) {
-                                root.detail = modelData.region + "\n" + root.describe("resolve", a);
-                            })
+                        LogosStateView {
+                            anchors.fill: parent
+                            visible: !root.loadingRegions && regionList.count === 0
+                            kind: LogosStateView.Empty
+                            title: root.regions.length === 0 ? "No regions yet" : "No region matches"
+                            message: root.regions.length === 0 ? "Refresh to read the registry." : "Try another search or filter."
                         }
-                        Button {
-                            text: "Download"
-                            enabled: root.ready && modelData.version > 0
-                            onClicked: root.run("fetch", modelData.region, function (a) {
-                                root.detail = modelData.region + "\n" + root.describe("fetch", a);
-                            })
+
+                        LogosListView {
+                            id: regionList
+                            anchors.fill: parent
+                            anchors.margins: Theme.spacing.tiny
+                            clip: true
+                            model: root.visibleRegions()
+                            delegate: Rectangle {
+                                id: row
+                                required property var modelData
+                                width: ListView.view.width
+                                height: 60
+                                radius: Theme.spacing.radiusSmall
+                                color: root.openRegion === modelData.region ? Theme.palette.primarySoft
+                                       : hover.hovered ? Theme.palette.surfaceInteractiveHover : "transparent"
+
+                                HoverHandler { id: hover }
+                                TapHandler { onTapped: root.openDetails(row.modelData.region) }
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: Theme.spacing.small
+                                    anchors.rightMargin: Theme.spacing.medium
+                                    spacing: Theme.spacing.medium
+                                    LogosCheckbox {
+                                        checked: root.selected[row.modelData.region] === true
+                                        onToggled: root.toggle(row.modelData.region, checked)
+                                    }
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 2
+                                        LogosText {
+                                            Layout.fillWidth: true
+                                            text: row.modelData.name
+                                            font.weight: Theme.typography.weightMedium
+                                            elide: Text.ElideRight
+                                        }
+                                        LogosText {
+                                            Layout.fillWidth: true
+                                            text: row.modelData.region + (row.modelData.level === "subregion" ? " · subregion" : " · country")
+                                            color: Theme.palette.textSecondary
+                                            font.pixelSize: Theme.typography.secondaryText
+                                            elide: Text.ElideRight
+                                        }
+                                    }
+                                    LogosText {
+                                        visible: row.modelData.hosts > 0
+                                        text: row.modelData.hosts + (row.modelData.hosts === 1 ? " host" : " hosts")
+                                        color: Theme.palette.textSecondary
+                                        font.pixelSize: Theme.typography.secondaryText
+                                    }
+                                    LogosBadge {
+                                        text: row.modelData.version ? root.formatSnapshot(row.modelData.version) : "Not hosted"
+                                        color: row.modelData.version ? Theme.palette.success : Theme.palette.textTertiary
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Detail of the open region.
+                LogosFrame {
+                    visible: root.openRegion.length > 0
+                    Layout.preferredWidth: 372
+                    Layout.fillHeight: true
+                    backgroundColor: Theme.palette.surfaceRaised
+                    borderColor: Theme.palette.borderHairline
+                    radius: Theme.spacing.radiusLarge
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: Theme.spacing.large
+                        spacing: Theme.spacing.medium
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 2
+                                LogosText {
+                                    Layout.fillWidth: true
+                                    text: root.regionName(root.openRegion)
+                                    font.pixelSize: Theme.typography.subtitleText
+                                    font.weight: Theme.typography.weightMedium
+                                    elide: Text.ElideRight
+                                }
+                                LogosText {
+                                    text: root.openRegion
+                                    color: Theme.palette.textSecondary
+                                    font.pixelSize: Theme.typography.secondaryText
+                                }
+                            }
+                            LogosIconButton {
+                                iconSource: LogosIcons.close
+                                onClicked: root.openRegion = ""
+                            }
+                        }
+
+                        LogosSpinner {
+                            visible: root.openLoading
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        LogosNotice {
+                            Layout.fillWidth: true
+                            visible: !root.openLoading && root.openEntry === null
+                            severity: LogosNotice.Info
+                            title: "Not hosted yet"
+                            message: "Nobody has registered this region. Tick it and host it from Geofabrik's dated snapshot."
+                        }
+
+                        ColumnLayout {
+                            visible: !root.openLoading && root.openEntry !== null
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing.medium
+                            RowLayout {
+                                spacing: Theme.spacing.small
+                                LogosBadge {
+                                    text: root.openEntry ? "Snapshot " + root.formatSnapshot(root.openEntry.version) : ""
+                                    color: Theme.palette.success
+                                }
+                                LogosBadge {
+                                    text: root.openEntry ? root.formatSize(root.openEntry.size_bytes) : ""
+                                    color: Theme.palette.textSecondary
+                                }
+                            }
+                            Field { label: "CID (Logos Storage)"; value: root.openEntry ? root.openEntry.cid : ""; copy: true }
+                            Field { label: "MD5 (from Geofabrik)"; value: root.openEntry ? root.openEntry.checksum : ""; copy: true }
+                            Field {
+                                label: root.openEntry && root.openEntry.hosts.length === 1 ? "Host" : "Hosts (" + (root.openEntry ? root.openEntry.hosts.length : 0) + ")"
+                                value: root.openEntry ? root.shortId(root.openEntry.hosts[0]) + (root.openEntry.hosts.length > 1 ? " and " + (root.openEntry.hosts.length - 1) + " more" : "") : ""
+                            }
+                            Field { label: "Source"; value: root.openEntry ? root.openEntry.source_url : "" }
+                        }
+
+                        LogosNotice {
+                            Layout.fillWidth: true
+                            visible: root.openResult.length > 0
+                            severity: root.openResultOk ? LogosNotice.Success : LogosNotice.Error
+                            message: root.openResult
+                            closable: true
+                            onDismissed: root.openResult = ""
+                        }
+
+                        Item { Layout.fillHeight: true }
+
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing.small
+                            LogosButton {
+                                Layout.fillWidth: true
+                                text: "Download"
+                                variant: LogosButton.Variant.Primary
+                                enabled: root.ready && root.openEntry !== null
+                                leadingIcon.source: LogosIcons.install
+                                onClicked: {
+                                    var region = root.openRegion;
+                                    root.openResult = "";
+                                    root.run("fetch", region, function (a) {
+                                        root.openResultOk = a.ok;
+                                        root.openResult = root.describe("fetch", a);
+                                    });
+                                }
+                            }
+                            LogosButton {
+                                Layout.fillWidth: true
+                                text: "Check update"
+                                enabled: root.ready
+                                onClicked: root.run("check_updates", JSON.stringify([root.openRegion]), function (a) {
+                                    root.openResultOk = a.ok;
+                                    root.openResult = root.describe("check_updates", a);
+                                })
+                            }
                         }
                     }
                 }
             }
 
-            // Host: one or many regions from Geofabrik's dated snapshot.
-            ColumnLayout {
-                spacing: 8
-                Text {
-                    text: "Downloads the dated Geofabrik snapshot, checks its MD5, uploads it to your Storage node, "
-                          + "then registers it signed by your wallet. Each region is confirmed by reading the "
-                          + "registry back."
-                    color: root.muted
-                    wrapMode: Text.WordWrap
-                    Layout.fillWidth: true
-                }
-                RowLayout {
-                    Text { text: "Host account"; color: root.fg }
-                    TextField {
-                        id: hostField
-                        text: root.settings.host || ""
-                        placeholderText: "Public/... (your LEZ account)"
-                        Layout.preferredWidth: 420
+            // ── Host ─────────────────────────────────────────────────────────────────────
+            Flickable {
+                contentHeight: hostCol.implicitHeight
+                clip: true
+                ColumnLayout {
+                    id: hostCol
+                    width: parent.width
+                    spacing: Theme.spacing.large
+
+                    Card {
+                        title: "Host regions"
+                        subtitle: "Downloads Geofabrik's dated snapshot of each ticked region, checks its MD5, uploads it to your Storage node and registers it signed by your wallet. Up to 16 regions share one transaction; each is confirmed by reading the registry back."
+
+                        LogosText { text: "Host account"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosTextField {
+                            id: hostField
+                            Layout.fillWidth: true
+                            text: root.settings.host || ""
+                            placeholderText: "Public/… your LEZ account"
+                        }
+                        LogosText { text: "Snapshot (optional)"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosTextField {
+                            id: snapshotField
+                            Layout.preferredWidth: 200
+                            placeholderText: "YYMMDD · first of this month"
+                            validator: IntValidator { bottom: 0; top: 999999 }
+                        }
+
+                        LogosText {
+                            text: root.selectedCount === 0 ? "No region ticked yet — tick them on the Regions tab."
+                                  : root.selectedCount + (root.selectedCount === 1 ? " region ticked" : " regions ticked")
+                            color: root.selectedCount === 0 ? Theme.palette.textSecondary : Theme.palette.text
+                        }
+                        Flow {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing.small
+                            Repeater {
+                                model: root.selectedCount > 0 ? root.selectedIds() : []
+                                LogosBadge {
+                                    required property string modelData
+                                    text: root.regionName(modelData)
+                                    color: Theme.palette.accentOrange
+                                }
+                            }
+                        }
+
+                        RowLayout {
+                            spacing: Theme.spacing.small
+                            LogosButton {
+                                text: root.hostQueue.length > 0 ? "Hosting… " + root.hostQueue.length + " left"
+                                      : root.selectedCount > 1 ? "Host " + root.selectedCount + " regions" : "Host region"
+                                variant: LogosButton.Variant.Primary
+                                enabled: root.ready && hostField.text.length > 0 && root.selectedCount > 0 && root.hostQueue.length === 0
+                                onClicked: root.hostSelected()
+                            }
+                            LogosButton {
+                                text: "Stop after current"
+                                visible: root.hostQueue.length > 0
+                                onClicked: root.hostQueue = []
+                            }
+                            LogosButton {
+                                text: "Clear selection"
+                                visible: root.selectedCount > 0 && root.hostQueue.length === 0
+                                onClicked: root.clearSelection()
+                            }
+                        }
                     }
                 }
-                RowLayout {
-                    Text { text: "Snapshot (YYMMDD, optional)"; color: root.fg }
-                    TextField {
-                        id: snapshotField
-                        placeholderText: "first of this month"
-                        validator: IntValidator { bottom: 0; top: 999999 }
-                        Layout.preferredWidth: 160
-                    }
-                }
-                Text {
-                    text: "Ticked on the Regions tab: " + (root.selectedIds().length === 0 ? "none"
-                          : root.selectedIds().join(", "))
-                    textFormat: Text.PlainText
-                    color: root.fg
-                    wrapMode: Text.WordWrap
-                    Layout.fillWidth: true
-                }
-                RowLayout {
-                    Button {
-                        text: root.hostQueue.length > 0 ? "Hosting... (" + root.hostQueue.length + " left)"
-                              : "Host ticked regions"
-                        enabled: root.ready && hostField.text.length > 0 && root.selectedIds().length > 0
-                                 && root.hostQueue.length === 0
-                        onClicked: root.hostSelected()
-                    }
-                    Button {
-                        text: "Stop after current"
-                        enabled: root.hostQueue.length > 0
-                        onClicked: root.hostQueue = []
-                    }
-                }
-                Item { Layout.fillHeight: true }
             }
 
-            // Import a local file (e.g. one downloaded from another host).
-            ColumnLayout {
-                spacing: 8
-                Text {
-                    text: "Checks a local .osm.pbf against Geofabrik's published MD5 for the snapshot, uploads it "
-                          + "to your Storage node (same file, same CID) and registers you as a host."
-                    color: root.muted
-                    wrapMode: Text.WordWrap
-                    Layout.fillWidth: true
+            // ── Import ───────────────────────────────────────────────────────────────────
+            Flickable {
+                contentHeight: importCol.implicitHeight
+                clip: true
+                ColumnLayout {
+                    id: importCol
+                    width: parent.width
+                    spacing: Theme.spacing.large
+
+                    Card {
+                        title: "Import a local file"
+                        subtitle: "Checks a .osm.pbf you already have against Geofabrik's published MD5 for its snapshot, uploads it to your Storage node — the same file gives the same CID — and registers you as a host."
+
+                        LogosText { text: "File"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosTextField { id: importPath; Layout.fillWidth: true; placeholderText: "/path/to/region-261101.osm.pbf" }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacing.medium
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                LogosText { text: "Region"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                                LogosTextField { id: importRegion; Layout.fillWidth: true; placeholderText: "e.g. kenya" }
+                            }
+                            ColumnLayout {
+                                LogosText { text: "Snapshot"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                                LogosTextField {
+                                    id: importSnapshot
+                                    Layout.preferredWidth: 160
+                                    placeholderText: "YYMMDD"
+                                    validator: IntValidator { bottom: 0; top: 999999 }
+                                }
+                            }
+                        }
+                        LogosNotice {
+                            Layout.fillWidth: true
+                            visible: hostField.text.length === 0
+                            severity: LogosNotice.Warning
+                            message: "Set your host account on the Host tab first."
+                        }
+                        LogosButton {
+                            text: "Import and register"
+                            variant: LogosButton.Variant.Primary
+                            enabled: root.ready && hostField.text.length > 0 && importPath.text.length > 0
+                                     && importRegion.text.length > 0 && importSnapshot.text.length === 6
+                            onClicked: {
+                                tabs.currentIndex = 3;
+                                root.run("import_file", JSON.stringify({
+                                    "host": hostField.text, "path": importPath.text, "region": importRegion.text,
+                                    "snapshot": Number(importSnapshot.text)}), function (a) { root.loadHosted(); });
+                            }
+                        }
+                    }
                 }
-                TextField { id: importPath; placeholderText: "/path/to/region-261101.osm.pbf"; Layout.fillWidth: true }
-                TextField { id: importRegion; placeholderText: "region id, e.g. kenya"; Layout.preferredWidth: 260 }
-                TextField {
-                    id: importSnapshot
-                    placeholderText: "snapshot YYMMDD"
-                    validator: IntValidator { bottom: 0; top: 999999 }
-                    Layout.preferredWidth: 160
-                }
-                Button {
-                    text: "Import and register"
-                    enabled: root.ready && hostField.text.length > 0 && importPath.text.length > 0
-                             && importRegion.text.length > 0 && importSnapshot.text.length === 6
-                    onClicked: root.run("import_file", JSON.stringify({
-                        "host": hostField.text, "path": importPath.text, "region": importRegion.text,
-                        "snapshot": Number(importSnapshot.text)}), function (a) {
-                        root.detail = root.describe("import_file", a);
-                        root.loadHosted();
-                    })
-                }
-                Text {
-                    text: hostField.text.length === 0 ? "Set the host account on the Host tab first." : ""
-                    color: root.warn
-                }
-                Item { Layout.fillHeight: true }
             }
 
-            // Activity: every job and its state.
+            // ── Activity ─────────────────────────────────────────────────────────────────
             ColumnLayout {
+                spacing: Theme.spacing.medium
+
                 RowLayout {
-                    Button {
+                    Layout.fillWidth: true
+                    LogosText {
+                        Layout.fillWidth: true
+                        text: "Every action and its result. A write shows Confirmed only after the registry was read back."
+                        color: Theme.palette.textSecondary
+                        wrapMode: Text.WordWrap
+                    }
+                    LogosButton {
                         text: "Clear finished"
-                        enabled: root.ready
+                        compact: true
+                        enabled: root.ready && Object.keys(root.jobs).length > root.runningCount()
                         onClicked: backend.clearFinished()
                     }
                 }
-                ListView {
+
+                LogosStateView {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    visible: activityList.count === 0
+                    kind: LogosStateView.Empty
+                    title: "No activity yet"
+                    message: "Downloads, hosting and imports appear here with their result."
+                }
+
+                LogosListView {
+                    id: activityList
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    visible: count > 0
                     clip: true
-                    model: Object.keys(root.jobs)
-                    delegate: ColumnLayout {
+                    spacing: Theme.spacing.small
+                    model: root.jobList()
+                    delegate: LogosFrame {
+                        id: jobRow
                         required property var modelData
-                        readonly property var job: root.jobs[modelData] || ({})
                         width: ListView.view.width
-                        Text {
-                            text: job.method + "  " + (job.arg || "") + "  " + job.state
-                            textFormat: Text.PlainText
-                            color: job.state === "confirmed" ? root.good : job.state === "failed" ? root.bad : root.warn
-                            elide: Text.ElideRight
-                            Layout.fillWidth: true
-                        }
-                        Text {
-                            text: job.state === "submitting" ? "" : root.describe(job.method, root.parse(job.answer || "{}"))
-                            textFormat: Text.PlainText
-                            color: root.muted
-                            wrapMode: Text.WrapAnywhere
-                            Layout.fillWidth: true
+                        backgroundColor: Theme.palette.surfaceRaised
+                        borderColor: Theme.palette.borderHairline
+                        radius: Theme.spacing.radiusMedium
+                        RowLayout {
+                            width: jobRow.availableWidth
+                            spacing: Theme.spacing.medium
+                            ColumnLayout {
+                                id: jobCol
+                                Layout.fillWidth: true
+                                spacing: Theme.spacing.tiny
+                                LogosText {
+                                    Layout.fillWidth: true
+                                    text: (root.actionNames[jobRow.modelData.method] || jobRow.modelData.method)
+                                          + (root.jobSubject(jobRow.modelData) ? " · " + root.jobSubject(jobRow.modelData) : "")
+                                    font.weight: Theme.typography.weightMedium
+                                    elide: Text.ElideRight
+                                }
+                                LogosText {
+                                    Layout.fillWidth: true
+                                    visible: jobRow.modelData.state !== "submitting"
+                                    text: root.describe(jobRow.modelData.method, root.parse(jobRow.modelData.answer || "{}"))
+                                    color: jobRow.modelData.state === "failed" ? Theme.palette.error : Theme.palette.textSecondary
+                                    font.pixelSize: Theme.typography.secondaryText
+                                    wrapMode: Text.WrapAnywhere
+                                }
+                            }
+                            LogosSpinner {
+                                visible: jobRow.modelData.state === "submitting"
+                                Layout.preferredWidth: 16
+                                Layout.preferredHeight: 16
+                            }
+                            LogosBadge {
+                                text: jobRow.modelData.state === "submitting" ? "Submitting"
+                                      : jobRow.modelData.state === "confirmed" ? "Confirmed" : "Failed"
+                                color: jobRow.modelData.state === "submitting" ? Theme.palette.warning
+                                       : jobRow.modelData.state === "confirmed" ? Theme.palette.success : Theme.palette.error
+                            }
                         }
                     }
                 }
             }
 
-            // Settings: network, registry program, Storage node, Geofabrik use, host account.
-            ColumnLayout {
-                spacing: 8
-                GridLayout {
-                    columns: 2
-                    Text { text: "Sequencer RPC"; color: root.fg }
-                    TextField { id: setRpc; text: root.settings.rpc || ""; Layout.preferredWidth: 420 }
-                    Text { text: "Registry program"; color: root.fg }
-                    TextField { id: setProgram; text: root.settings.program || ""; Layout.preferredWidth: 420 }
-                    Text { text: "Storage API"; color: root.fg }
-                    TextField { id: setStorage; text: root.settings.storage || ""; Layout.preferredWidth: 420 }
-                    Text { text: "Host account"; color: root.fg }
-                    TextField { id: setHost; text: root.settings.host || ""; Layout.preferredWidth: 420 }
-                    Text { text: "Use Geofabrik"; color: root.fg }
-                    CheckBox { id: setGeofabrik; checked: root.settings.geofabrik !== false }
-                }
-                Button {
-                    text: "Save"
-                    enabled: root.ready
-                    onClicked: root.run("configure", JSON.stringify({
-                        "rpc": setRpc.text, "program": setProgram.text, "storage": setStorage.text,
-                        "host": setHost.text, "geofabrik": setGeofabrik.checked}), function (a) {
-                        if (a.ok) {
-                            root.settings = a.data;
-                            root.refresh();
-                        } else {
-                            root.detail = root.errorText(a);
-                        }
-                    })
-                }
-                Text {
-                    text: "Without Geofabrik the app still lists, downloads and verifies hosted regions; hosting "
-                          + "a new snapshot needs it."
-                    color: root.muted
-                    wrapMode: Text.WordWrap
-                    Layout.fillWidth: true
-                }
-                Item { Layout.fillHeight: true }
-            }
-        }
+            // ── Settings ─────────────────────────────────────────────────────────────────
+            Flickable {
+                contentHeight: settingsCol.implicitHeight
+                clip: true
+                ColumnLayout {
+                    id: settingsCol
+                    width: parent.width
+                    spacing: Theme.spacing.large
 
-        // Last result, always plain text.
-        ScrollView {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 120
-            visible: root.detail.length > 0
-            TextArea {
-                text: root.detail
-                textFormat: TextEdit.PlainText
-                readOnly: true
-                wrapMode: TextEdit.WrapAnywhere
-                color: root.fg
+                    Card {
+                        title: "Network and storage"
+                        subtitle: "Where the registry lives and which Logos Storage node your files go to. Saved per Basecamp profile."
+
+                        LogosText { text: "Sequencer RPC"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosTextField { id: setRpc; Layout.fillWidth: true; text: root.settings.rpc || "" }
+                        LogosText { text: "Registry program"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosTextField { id: setProgram; Layout.fillWidth: true; text: root.settings.program || "" }
+                        LogosText { text: "Storage API"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosTextField { id: setStorage; Layout.fillWidth: true; text: root.settings.storage || "" }
+                        LogosText { text: "Host account"; color: Theme.palette.textSecondary; font.pixelSize: Theme.typography.secondaryText }
+                        LogosTextField { id: setHost; Layout.fillWidth: true; text: root.settings.host || ""; placeholderText: "Public/…" }
+                        LogosSwitch {
+                            id: setGeofabrik
+                            text: "Use Geofabrik"
+                            checked: root.settings.geofabrik !== false
+                        }
+                        LogosText {
+                            Layout.fillWidth: true
+                            text: "Without Geofabrik the app still lists, downloads and verifies hosted regions; hosting a new snapshot needs it."
+                            color: Theme.palette.textSecondary
+                            font.pixelSize: Theme.typography.secondaryText
+                            wrapMode: Text.WordWrap
+                        }
+                        LogosButton {
+                            text: "Save"
+                            variant: LogosButton.Variant.Primary
+                            enabled: root.ready
+                            onClicked: root.run("configure", JSON.stringify({
+                                "rpc": setRpc.text, "program": setProgram.text, "storage": setStorage.text,
+                                "host": setHost.text, "geofabrik": setGeofabrik.checked}), function (a) {
+                                if (a.ok) {
+                                    root.settings = a.data;
+                                    root.refresh();
+                                } else {
+                                    root.problem = root.errorText(a);
+                                }
+                            })
+                        }
+                    }
+                }
             }
         }
     }
