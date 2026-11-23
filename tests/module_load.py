@@ -78,8 +78,11 @@ try:
     for m in ("pramadani_osm_sdk", "pramadani_osm_distribution"):
         must(f"load {m}", "module", "load", m)
         call(f"{m}.version", m, "version", check=lambda d: d["api"] == 1)
-        call(f"{m}.discover", m, "discover", check=lambda d: len(d["regions"]) + len(d["missing"]) == 72)
         call(f"{m}.settings", m, "settings", check=lambda d: d["data_dir"] and m in d["data_dir"])
+        # Without Geofabrik, so the test does not depend on download.geofabrik.de answering within
+        # logosctl's 20 s call timeout; discovery then comes from the predefined set (P-R4).
+        call(f"{m}.configure geofabrik off", m, "configure", '{"geofabrik": false}', check=lambda d: d["geofabrik"] is False)
+        call(f"{m}.discover offline", m, "discover", check=lambda d: len(d["regions"]) + len(d["missing"]) == 72)
         # A real read from the public v0.3 testnet: kenya is not registered there, so null.
         call(f"{m}.resolve kenya", m, "resolve", "kenya", check=lambda d: d is None or "cid" in d)
 finally:
