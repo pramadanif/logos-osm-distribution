@@ -54,6 +54,8 @@ Window {
         id: loader
         anchors.fill: parent
         source: win.viewFile
+        // A view that does not compile ends the preview with an error instead of a hang.
+        onStatusChanged: if (status === Loader.Error) Qt.exit(1)
     }
 
     function find(item, name) {

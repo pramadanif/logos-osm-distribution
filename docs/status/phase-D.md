@@ -2,13 +2,13 @@
 
 | SC | Status | Evidence / missing |
 |----|--------|--------------------|
-| SC-D.1 core module (mkLogosModule) exposing the SDK | NOT LOCKED | `basecamp/osm-distribution` built with `nix build ./basecamp/osm-distribution` on macOS arm64, 2026-11-09 (logos-module-builder rev 5f74cdb3, rustc 1.89 from nixpkgs): `lib/pramadani_osm_distribution_plugin.dylib` (8,967,768 bytes) and generated consumer API `include/pramadani_osm_distribution_api.h` with sync and async calls for `version`, `settings`, `configure`, `discover`, `resolve`, `fetch`, `hosted_status`, `check_updates`. Since then: `host`, `import_file`, `register_entry`, `unhost` added; writes go through `lez_core.send_generic_public_transaction` (flake input locked at lez_core fdd6a75) and are confirmed by read-back. Built with `lez_core` in CI: modules run 42757080576 at `05b1389`, Linux amd64 and macOS, `.lgx` sha256 `d1339c81…` (Linux) / `0484e959…` (macOS). Missing: loading it in Basecamp (SC-−1.4) |
-| SC-D.2 QML app | NOT LOCKED | `basecamp/osm-app` (`pramadani_osm_app`, ui_qml, C++ backend as module, `.rep` view contract): regions with hosted status, details (CID, MD5, snapshot, size, hosts), download, update check, single and bulk host (one region at a time), import, settings, activity list with submitting/confirmed/failed; all chain and Storage text rendered as plain text; size formatter without regular expressions. QML passes `qmllint`; C++ backend compiled and packaged in CI run 42757080576 (Linux + macOS); not yet opened in Basecamp. Bulk host: the module's `host_batch` downloads and uploads each region, then registers up to 16 in one `register_batch` transaction (accounts in IDL order: host, then region accounts) and reads every region back |
-| SC-D.2b unique names, side-by-side with rival catalogs | NOT LOCKED | names chosen (ADR 0008); install test missing |
-| SC-D.3 both templates inside Basecamp | NOT LOCKED | `examples/consumer-module` (`pramadani_osm_consumer_module`, C++ core module on `pramadani_osm_sdk`) and `examples/distribution-consumer-app` (`pramadani_osm_consumer_app`, app on `pramadani_osm_distribution`); both compiled and packaged in CI run 42757080576 (Linux + macOS); not loaded in Basecamp yet |
-| SC-D.4 root module.json | NOT LOCKED | `module.json` indexes the 5 manifests; `tests/module_manifests.py` checks paths, names (prefix, rival list), versions, `main`, dependencies vs flake inputs, ui_qml icon 256x256/view/rep, per-module data folder; passes locally (5 manifests, 0 failures), runs in CI `scripts` and `modules` |
-| SC-D.5 catalog fork + release | NOT LOCKED | not started |
-| SC-D.6 UI states, formatter in Basecamp Qt, two profiles | NOT LOCKED | per-instance data folder in the module (`instance_persistence_path`); UI missing |
+| SC-D.1 core module (mkLogosModule) exposing the SDK | done | `pramadani_osm_distribution` (16 methods, `progress` event) and `pramadani_osm_sdk`, built in CI (`modules.yml`) for Linux amd64, macOS arm64, Linux arm64 and Windows x86_64 (cross); loaded in Basecamp (below) and in logosctl (`load` job) |
+| SC-D.2 QML app | done | `pramadani_osm_app` on the Logos Design System: regions with hosted status, search, CID and parent lookup, details, download, update check (one or all), single and bulk host with a confirm dialog, import, activity with progress, settings with effective values and a connection test; plain text only, no regex (claims 8, 14). Loaded in Basecamp at v0.1.0; the 0.1.3 screens are rendered offscreen (`tests/ui/preview.sh`) and, from `32246de`, opened in the released Basecamp AppImage under Xvfb by the `basecamp-gui` job |
+| SC-D.2b unique names, side-by-side with rival catalogs | written, first CI result pending | `tests/module_manifests.py` (prefix, rival names) and `tests/side_by_side.py`: our catalog and another LP-0018 catalog installed and loaded in one logosctl session (`side-by-side` job) |
+| SC-D.3 both templates inside Basecamp | done | `pramadani_osm_consumer_app` loads as a Basecamp app (below); `pramadani_osm_consumer_module` loads and answers `mapFor` in logosctl (`tests/module_load.py`) |
+| SC-D.4 root module.json | done | `module.json` indexes the 5 manifests; `tests/module_manifests.py` checks paths, names, versions, `main`, dependencies vs flake inputs, icons, per-module data folder; runs in CI `scripts` and `modules` |
+| SC-D.5 catalog fork + release | done | `pramadanif/pramadani-osm-modules`: releases 0.1.0–0.1.2 of sdk, distribution and app, 0.1.1 of both templates; preflight 11 and 16 pass at the released pin; a re-release at the final pin is due before submission |
+| SC-D.6 UI states, formatter in Basecamp Qt, two profiles | done | two profiles keep separate data (below); formatters tested with the Qt of the Basecamp build (`qml-format` job); Submitting/Confirmed/Failed job states in `job_table.h`, tested under ASan |
 
 Toolchain check: the unmodified `rust-with-external-lib` template also built
 (`rust_external_lib_plugin.dylib`), so the nix setup on this Mac works.
@@ -28,7 +28,7 @@ write methods (which need `lez_core` and a wallet) were not exercised.
 Prepared locally from `logos-co/logos-modules-release-base` @ `33fb564`: `logos-repo.json` for
 `pramadanif/pramadani-osm-modules`, one submodule pinned to this repository, a release workflow
 per module pointing at its subfolder, `modules.txt` for "Release all", variants
-`darwin-arm64,linux-amd64`. Not published: creating the public repository needs the owner.
+`darwin-arm64,linux-amd64`. Published by the owner on 2026-11-23; releases are listed in the SC-D.5 row.
 
 ## In the Basecamp app (2026-11-23, macOS arm64)
 

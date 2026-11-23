@@ -570,7 +570,7 @@ Item {
     LogosDialog {
         id: confirmHost
         anchors.centerIn: parent
-        preferredWidth: 480
+        width: 480
         title: "Host " + root.selectedCount + (root.selectedCount === 1 ? " region?" : " regions?")
         message: "Each region is downloaded from Geofabrik, checked against its MD5 and uploaded to "
                  + (root.settings.storage || "your Storage node") + ". Then "
@@ -777,17 +777,17 @@ Item {
                         radius: Theme.spacing.radiusLarge
                         clip: true
 
-                        LogosStateView {
+                        StateView {
                             anchors.fill: parent
                             visible: root.loadingRegions && root.regions.length === 0
-                            kind: LogosStateView.Loading
+                            kind: StateView.Loading
                             title: "Loading regions"
                             message: "Reading the predefined set and the registry."
                         }
-                        LogosStateView {
+                        StateView {
                             anchors.fill: parent
                             visible: !root.loadingRegions && regionList.count === 0
-                            kind: LogosStateView.Empty
+                            kind: StateView.Empty
                             title: root.regions.length === 0 ? "No regions yet" : "No region matches"
                             message: root.regions.length === 0 ? "Refresh to read the registry." : "Try another search or filter."
                         }
@@ -1143,11 +1143,11 @@ Item {
                     }
                 }
 
-                LogosStateView {
+                StateView {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     visible: activityList.count === 0
-                    kind: LogosStateView.Empty
+                    kind: StateView.Empty
                     title: "No activity yet"
                     message: "Downloads, hosting and imports appear here with their result."
                 }

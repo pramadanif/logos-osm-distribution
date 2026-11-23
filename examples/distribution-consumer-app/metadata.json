@@ -1,7 +1,7 @@
 {
   "name": "pramadani_osm_consumer_app",
   "display_name": "OSM consumer app (template)",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "ui_qml",
   "interface": "universal",
   "category": "example",

@@ -1,6 +1,6 @@
 # ADR 0008: Basecamp modules, names and wiring
 
-Status: Accepted for names and structure; modules not built yet.
+Status: Accepted. The five modules are built in CI (`.github/workflows/modules.yml`), released through our catalog and loaded in Basecamp and logosctl (docs/status/phase-D.md).
 
 ## Context
 

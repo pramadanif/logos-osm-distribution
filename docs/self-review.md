@@ -90,7 +90,7 @@ events and the app shows a progress bar on the running job (E67).
 | 46 | Several names, unstyled widgets | PASS | "OSM Maps (LP-0018)" everywhere; Logos Design System controls |
 | 47 | Script exits 0 on failure | PASS | `tests/scripts.sh` strictness test |
 | 48 | Unsigned packages | PASS | README says the catalog's packages are unsigned |
-| 49 | Empty board after restart | PASS | LogosStateView Loading while regions load |
+| 49 | Empty board after restart | PASS | StateView (spinner) while regions load |
 | 50 | Untested list | PASS | "Not tested" below |
 | 51 | Video, subtitles | FAIL | not recorded yet (human) |
 | 52 | Unencrypted keys | PASS | no wallet in the repo; 0.4 wallet encrypted |

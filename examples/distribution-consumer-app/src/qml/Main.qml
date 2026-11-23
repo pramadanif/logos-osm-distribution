@@ -102,11 +102,11 @@ Item {
             }
         }
 
-        LogosStateView {
+        StateView {
             Layout.fillWidth: true
             Layout.fillHeight: true
             visible: root.answer === null || root.busy
-            kind: root.busy ? LogosStateView.Loading : LogosStateView.Empty
+            kind: root.busy ? StateView.Loading : StateView.Empty
             title: root.busy ? "Asking the registry" : "Nothing asked yet"
             message: root.busy ? "Downloads of large regions can take a while." : "Type a region id and press Resolve."
         }

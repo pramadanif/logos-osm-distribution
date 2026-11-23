@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Screenshots of the OSM Maps view, one PNG per tab, rendered offscreen with sample data.
-# Needs Qt 6 (`qml`) and a checkout of logos-co/logos-design-system.
+# Needs Qt 6 (`qml`) and a checkout of logos-co/logos-design-system at the revision the released
+# Basecamp ships (its --version lists it; 493a243 for pre-release-4cea4bb-1433), so the view is
+# compiled against the same controls as in Basecamp.
 #   DESIGN_SYSTEM=<logos-design-system checkout> OUT=<dir> tests/ui/preview.sh
 set -euo pipefail
 : "${DESIGN_SYSTEM:?}" "${OUT:?}"
