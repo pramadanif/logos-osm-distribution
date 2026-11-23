@@ -6,9 +6,9 @@ name: modules
 on:
   push:
     branches: [main]
-    paths: ["basecamp/**", "examples/**", "osm_core/**", "osm_sdk/**", "osm_ffi/**", "module.json", "tests/module_load.py", "tests/module_manifests.py", ".github/workflows/modules.yml"]
+    paths: ["basecamp/**", "examples/**", "osm_core/**", "osm_sdk/**", "osm_ffi/**", "module.json", "tests/module_load.py", "tests/module_manifests.py", "tests/side_by_side.py", ".github/workflows/modules.yml"]
   pull_request:
-    paths: ["basecamp/**", "examples/**", "osm_core/**", "osm_sdk/**", "osm_ffi/**", "module.json", "tests/module_load.py", "tests/module_manifests.py", ".github/workflows/modules.yml"]
+    paths: ["basecamp/**", "examples/**", "osm_core/**", "osm_sdk/**", "osm_ffi/**", "module.json", "tests/module_load.py", "tests/module_manifests.py", "tests/side_by_side.py", ".github/workflows/modules.yml"]
   workflow_dispatch:
 
 concurrency:

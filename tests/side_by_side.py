@@ -54,10 +54,16 @@ try:
             fails += 1
     for name in OUR_CORE + OTHER_CORE:
         step(f"load {name}", "module", "load", name)
-    # Ours still answers, from its own data folder.
+    # Ours still answers, from a data folder of its own: the host names the folder after the module
+    # (`module_data/<name>/…` in Basecamp, `data/<name>/…` in logosctl), never after the other's.
     for name in OUR_CORE:
         code, out = run("call", name, "settings")
-        good = code == 0 and f"/{name}" in out and "module_data" in out
+        try:
+            data_dir = json.loads(json.loads(out)["result"])["data"]["data_dir"]
+        except (ValueError, KeyError, TypeError):
+            data_dir = ""
+        parts = data_dir.split("/")
+        good = code == 0 and parts.count(name) >= 1 and parts[-1] == name and not any(o in parts for o in OTHER_CORE)
         print(("PASS " if good else "FAIL ") + f"{name} answers from its own data folder"
               + ("" if good else f"\n{out[-800:]}"))
         fails += 0 if good else 1
