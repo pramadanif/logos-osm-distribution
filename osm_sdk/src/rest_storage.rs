@@ -30,6 +30,27 @@ impl RestStorage {
         }
     }
 
+    /// `GET /space`: `{"totalBlocks", "quotaMaxBytes", "quotaUsedBytes", "quotaReservedBytes"}`.
+    /// A liveness probe that also tells a host how much room the node has.
+    pub fn space(&self) -> Result<serde_json::Value, StorageFault> {
+        let resp = self
+            .agent
+            .get(&format!("{}/space", self.base))
+            .call()
+            .map_err(classify)?;
+        let mut body = Vec::new();
+        resp.into_reader()
+            .take(4096)
+            .read_to_end(&mut body)
+            .map_err(|e| io_fault("reading space", e))?;
+        let v: serde_json::Value = serde_json::from_slice(&body)
+            .map_err(|e| StorageFault::Permanent(format!("bad space response: {e}")))?;
+        if v["quotaMaxBytes"].as_u64().is_none() || v["quotaUsedBytes"].as_u64().is_none() {
+            return Err(StorageFault::Permanent(format!("bad space response: {v}")));
+        }
+        Ok(v)
+    }
+
     fn url(&self, cid: &str, tail: &str) -> Result<String, StorageFault> {
         osm_core::entry::validate_cid(cid)
             .map_err(|_| StorageFault::Permanent(format!("invalid CID {cid:?}")))?;

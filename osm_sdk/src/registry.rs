@@ -393,3 +393,32 @@ pub fn account_balance(rpc: &str, account_b58: &str) -> Result<u128, SdkError> {
         .parse()
         .map_err(|_| unreachable(format!("no balance in answer: {raw}")))
 }
+
+/// The sequencer's newest block id, as a liveness probe for settings and status screens: a
+/// real answer from `rpc`, not an assumption.
+pub fn rpc_last_block(rpc: &str) -> Result<u64, SdkError> {
+    let unreachable = |cause: String| SdkError::RpcUnreachable {
+        url: rpc.to_string(),
+        cause,
+    };
+    let body =
+        serde_json::json!({"jsonrpc": "2.0", "id": 1, "method": "getLastBlockId", "params": []});
+    let resp = ureq::AgentBuilder::new()
+        .timeout_connect(Duration::from_secs(10))
+        .timeout_read(Duration::from_secs(30))
+        .build()
+        .post(rpc)
+        .set("content-type", "application/json")
+        .send_string(&body.to_string())
+        .map_err(|e| unreachable(e.to_string()))?;
+    let mut raw = Vec::new();
+    resp.into_reader()
+        .take(4096)
+        .read_to_end(&mut raw)
+        .map_err(|e| unreachable(e.to_string()))?;
+    let v: serde_json::Value = serde_json::from_slice(&raw)
+        .map_err(|e| unreachable(format!("answer is not JSON: {e}")))?;
+    v["result"]
+        .as_u64()
+        .ok_or_else(|| unreachable(format!("no block id in answer: {v}")))
+}
