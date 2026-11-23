@@ -37,7 +37,7 @@ W1–W14, with status and what blocks it. Categories:
 | D.2b | partial | names checked by tests/module_manifests.py; side-by-side install with rival catalogs needs Basecamp (human/desktop) |
 | D.3 | built | both templates built in the same run; not loaded in Basecamp |
 | D.4 | done | `module.json` + tests/module_manifests.py in CI |
-| D.5 | code + human | catalog fork (outward-facing; within the human's blanket approval) |
+| D.5 | done | catalog `pramadanif/pramadani-osm-modules`, modules 0.1.1 released from the pin; preflight 11 + 16 pass |
 | D.6 | partial | two Basecamp profiles at once keep separate data (phase-D.md); on-screen states and Qt formatting not yet seen |
 | E.1 | done | first green e2e run 42755836260 at 0f9a9f2 |
 | E.2 | done | storage-retrieval job green |

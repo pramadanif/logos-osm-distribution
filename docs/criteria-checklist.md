@@ -22,7 +22,7 @@ Testnet 0.4 is the only network that counts; v0.3 evidence is rehearsal and is l
 
 | ID | Criterion | Status | Evidence |
 |----|-----------|--------|----------|
-| P-U1 | Basecamp app GUI, build docs, downloadable assets | partial | `basecamp/osm-app` built on Linux + macOS (CI artifacts `lgx-*`); README "Basecamp"; catalog created, first release pending; GUI not yet opened |
+| P-U1 | Basecamp app GUI, build docs, downloadable assets | done | `pramadani_osm_app` on the Logos Design System, loaded in the Basecamp desktop app (macOS); downloadable from the catalog (0.1.1); README "Basecamp" |
 | P-U2 | SDK/module + API docs + embedding example running as a Basecamp module | partial | docs/sdk.md; `examples/consumer-module` built in CI; core modules load and answer in logosctl; not yet in the Basecamp GUI |
 | P-U3 | CLI: host, batch-register, lookup region/parent/CID, update check, download, import | done | README "Command line"; docs/status/phase-C.md SC-C.7 |
 | P-U4 | UX shows hosted status, versions, verification results | partial | CLI shows all three; app shows hosted snapshot + host count, details (CID, MD5, snapshot, size), download verification and update check (QML in `basecamp/osm-app`); not yet seen running |
@@ -49,7 +49,7 @@ Testnet 0.4 is the only network that counts; v0.3 evidence is rehearsal and is l
 | P-S1 | Deployed and tested on testnet 0.4 | open | v0.3 public testnet deployment in README is rehearsal |
 | P-S2 | Linux, macOS (and Windows) | partial | Rust crates on Linux, macOS, Windows; modules + app built and core modules loaded on Linux and macOS; GUI use on macOS not yet shown |
 | P-S3 | Modules built with logos-module-builder | done | `.github/workflows/modules.yml`: 5 modules, Linux + macOS |
-| P-S4 | Catalog fork + release action + logos-repo.json | partial | `pramadanif/pramadani-osm-modules` from logos-modules-release-base, validate job green; first "Release all modules" run pending |
+| P-S4 | Catalog fork + release action + logos-repo.json | done | `pramadanif/pramadani-osm-modules` (logos-modules-release-base); modules 0.1.1 released from `eb5c950`, preflight 11 and 16 pass (index lists all five; .lgx sha256 = index; built from the pin) |
 | P-S5 | IDL generated via SPEL | done for v0.3 | `idl/osm_registry.json`; CI `idl` job regenerates and diffs |
 | P-S6 | E2E host → query → download against a standalone sequencer in CI | done | `.github/workflows/e2e.yml` `e2e-sequencer` (first green run 42755836260) and `e2e-v04` |
 | P-S7 | README: setup, program id, region list, CLI and app usage | done | README sections Build and test, Deployments, Regions, Command line, Basecamp (app usage) |

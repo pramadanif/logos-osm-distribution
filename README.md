@@ -136,7 +136,7 @@ with Geofabrik. **Host** hosts the ticked regions (one transaction per 16); **Im
 local file after the MD5 check. **Activity** shows each action as submitting, confirmed (read back
 from the chain) or failed with its error code ([docs/error-codes.md](docs/error-codes.md)).
 Catalog: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`
-(no release published yet).
+(modules 0.1.1, built from `eb5c950` on Linux and macOS).
 
 ## For module developers
 

@@ -13,8 +13,7 @@ Basecamp modules, and a CLI covering every operation the prize lists. Every writ
 reading the chain back; every download is checked against the registered MD5; coverage is
 verified exactly as the prize describes (Storage bytes against Geofabrik's published MD5).
 
-*Pending:* testnet 0.4 deployment and coverage, running the Basecamp app in the Basecamp GUI,
-the first catalog release, five independent modules, and the video.
+*Pending:* testnet 0.4 deployment and coverage, five independent modules, and the video.
 
 ## Repository
 
@@ -24,7 +23,7 @@ the first catalog release, five independent modules, and the video.
 - Program on testnet 0.4: *pending*. Rehearsal on the LEZ v0.3 public testnet:
   `9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw` (ImageID
   `60bb8c60c0517e6226b2af1ab302c19293fdeeb73038775039b768b298c3e770`)
-- Catalog `logos-repo.json`: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json` (*pending:* first release)
+- Catalog `logos-repo.json`: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json` (modules 0.1.1 built from the pinned source)
 - One verification command: `OSM_STORAGE=<storage API> scripts/verify-onchain.sh`
 
 ## Approach
@@ -113,7 +112,7 @@ CI on Linux, macOS and Windows; end-to-end job with a real sequencer and Storage
 retrieval by an independent node; IDL regeneration diff; README cold start; doc-truth check;
 daily liveness, LEZ-release and fuzz jobs; `demo.sh`; nix builds of every module on Linux and
 macOS plus a headless load test; 0.4 end to end on a sequencer built from the LEZ tag.
-*Pending:* the first catalog release.
+Catalog releases built by `logos-modules-release-action` from the pinned commit.
 
 ## Supporting Materials
 
