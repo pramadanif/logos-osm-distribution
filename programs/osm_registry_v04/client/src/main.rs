@@ -61,7 +61,8 @@ struct NewEntry {
 }
 
 /// How long to wait for the change to show up in the region accounts.
-const CONFIRM_TIMEOUT: Duration = Duration::from_secs(120);
+/// How long to wait by default; a public testnet has taken over 2 minutes (OSM_CONFIRM_SECS).
+const CONFIRM_TIMEOUT_SECS: u64 = 600;
 
 struct Failure {
     exit: i32,
@@ -157,11 +158,12 @@ fn confirm(reg: &Registry<RpcRegistry>, regions: &[String], tx: &str, done: impl
         if all {
             return Ok(());
         }
-        if start.elapsed() > CONFIRM_TIMEOUT {
+        let limit = Duration::from_secs(std::env::var("OSM_CONFIRM_SECS").ok().and_then(|s| s.parse().ok()).unwrap_or(CONFIRM_TIMEOUT_SECS));
+        if start.elapsed() > limit {
             return Err(Failure {
                 exit: 4,
                 code: "S103",
-                message: format!("TxNotIncluded: sent {tx} but the registry shows no change after {} s", CONFIRM_TIMEOUT.as_secs()),
+                message: format!("TxNotIncluded: sent {tx} but the registry shows no change after {} s. It may still be included later: check with `osm lookup` before sending again.", limit.as_secs()),
             });
         }
         std::thread::sleep(Duration::from_secs(2));

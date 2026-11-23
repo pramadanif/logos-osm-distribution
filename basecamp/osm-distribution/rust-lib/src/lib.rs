@@ -131,8 +131,9 @@ fn write_and_confirm(
         if all {
             return Ok(json!({"confirmed": true, "regions": regions, "wallet_answer": tx}));
         }
-        if start.elapsed() > std::time::Duration::from_secs(120) {
-            return Err(invalid("transaction", format!("S103 TxNotIncluded: sent ({tx}) but the registry shows no change after 120 s")));
+        // A public testnet has taken over 2 minutes to include a transaction.
+        if start.elapsed() > std::time::Duration::from_secs(600) {
+            return Err(invalid("transaction", format!("S103 TxNotIncluded: sent ({tx}) but the registry shows no change after 600 s. It may still be included later: check the region before sending again.")));
         }
         std::thread::sleep(std::time::Duration::from_secs(2));
     }

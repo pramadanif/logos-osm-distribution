@@ -2,7 +2,10 @@
 # H27 / F.2: our public Logos Storage node serves data to a node it has never seen. A fresh local
 # node bootstraps only from the public node's SPR (deploy/storage-node/public-node.json) and
 # fetches the test CID over libp2p; the bytes must hash to the recorded MD5.
-#   STORAGE_BIN=<logos-storage binary> scripts/check-public-node.sh
+#   STORAGE_BIN=<logos-storage binary> [OSM_BIN=<osm> REGION=<region>] scripts/check-public-node.sh
+# With OSM_BIN, also downloads REGION (default china/henan) the way a user does: resolve it in the
+# registry of networks.json's default profile, fetch its CID through the same outside node with
+# Geofabrik disabled, and check the MD5 the registry holds.
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 : "${STORAGE_BIN:?}"
@@ -23,3 +26,11 @@ done
 got="$(python3 -I -c 'import hashlib,sys; print(hashlib.md5(open(sys.argv[1],"rb").read()).hexdigest())' "$work/got")"
 [ "$got" = "$want" ] || { echo "FAIL $addr: md5 $got, recorded $want"; exit 1; }
 echo "PASS $addr served $cid ($(wc -c < "$work/got" | tr -d ' ') bytes, md5 $got)"
+if [ -n "${OSM_BIN:-}" ]; then
+  region="${REGION:-china/henan}"
+  read -r rpc program < <(python3 -I -c 'import json,sys; d=json.load(open(sys.argv[1])); p=d["profiles"][d["default"]]; print(p["rpc"], p["program"])' "$root/networks.json")
+  "$OSM_BIN" --no-geofabrik download --region "$region" --dir "$work/maps" --storage "$api" --rpc "$rpc" --program "$program" \
+    || { echo "FAIL $region: not downloaded from the registry through $addr"; exit 1; }
+  echo "PASS $region resolved on $rpc ($program), fetched by CID through $addr, MD5 equals the registry"
+fi
+

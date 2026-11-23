@@ -72,7 +72,7 @@ impl std::fmt::Display for AdapterError {
         match self {
             AdapterError::TxNotIncluded { tx_hash, secs } => write!(
                 f,
-                "S103 TxNotIncluded: transaction {tx_hash} was sent but the registry shows no change after {secs} s. Nothing was registered."
+                "S103 TxNotIncluded: transaction {tx_hash} was sent but the registry shows no change after {secs} s. It may still be included later: check with `osm lookup` before sending again."
             ),
             AdapterError::TxRejected(m) => write!(f, "S104 TxRejected: the network rejected the transaction: {m}"),
             AdapterError::InsufficientFunds { have, need } => write!(
@@ -129,7 +129,14 @@ impl Adapter {
             wallet,
             program_b58: program_b58.to_string(),
             rpc: rpc.to_string(),
-            confirm_timeout: Duration::from_secs(120),
+            // The public v0.3 testnet has taken over 2 minutes to include a transaction
+            // (2026-11-23); OSM_CONFIRM_SECS overrides the wait.
+            confirm_timeout: Duration::from_secs(
+                std::env::var("OSM_CONFIRM_SECS")
+                    .ok()
+                    .and_then(|s| s.parse().ok())
+                    .unwrap_or(600),
+            ),
         })
     }
 

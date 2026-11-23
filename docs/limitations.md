@@ -28,6 +28,9 @@ Written as found, not at the end. Each line says what, why, and what a user shou
   other services, so it is capped at 30 GiB of data and 700 MB of memory with low CPU and I/O
   priority. Map data registered by us is fetchable by anyone while it runs; nothing is registered
   on a public chain yet (testnet 0.4 is not live).
+- **Public testnets can be slow to include a transaction.** On the public v0.3 testnet a
+  `register` took more than 2 minutes to appear; writes now wait up to 600 s (`OSM_CONFIRM_SECS`)
+  and S103 says the transaction may still land, so check with `osm lookup` before sending again.
 - **Timestamps on v0.3 are client-supplied** but bound to block time: the program declares the
   transaction valid only within ±10 minutes of the value, in milliseconds.
 - **Fee reserve.** Each write needs 38,400,000 lepta available up front (the sequencer reserves

@@ -28,7 +28,7 @@ once released in the alpha (SC-A.4); new codes are added, existing ones never ch
 | S100 | `RpcUnreachable` [3] | Cannot reach the sequencer at {url}. Check the network setting. |
 | S101 | `WrongNetwork` [3] | The sequencer at {url} is not the {profile} network. |
 | S102 | `ProgramNotFound` [3] | The registry program {id} is not deployed on this network. Check the profile. |
-| S103 | `TxNotIncluded` [4] | The transaction was sent but is not in a block after {secs} s. Nothing was registered. |
+| S103 | `TxNotIncluded` [4] | The transaction was sent but the registry shows no change after {secs} s (default 600, `OSM_CONFIRM_SECS`). It may still be included later: check with `osm lookup` before sending again. |
 | S104 | `TxRejected` [4] | The network rejected the transaction: {reason}. |
 | S105 | `InsufficientFunds` [4] | The paying account has {have}; about {need} is needed. |
 | S106 | `WalletLocked` [4] | The wallet is locked. Enter the wallet password. |

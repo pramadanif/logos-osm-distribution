@@ -225,7 +225,13 @@ def _():
         source = json.load(open(os.path.join(ROOT, path, "metadata.json")))["version"]
         if newest["manifest"]["version"] != source:
             bad.append(f"{name}: catalog {newest['manifest']['version']} vs source {source}")
-    return not bad, "; ".join(bad) if bad else "every package matches its index entry and source version"
+    # The catalog builds from its submodule; that submodule must sit at the pinned commit.
+    catalog_repo = re.match(r"https://raw\.githubusercontent\.com/([^/]+/[^/]+)/", url)
+    if catalog_repo:
+        sub = gh_json(f"repos/{catalog_repo.group(1)}/contents/submodules/logos-osm-distribution").get("sha")
+        if sub != PIN:
+            bad.append(f"catalog submodule at {str(sub)[:12]}, pin is {PIN[:12]}")
+    return not bad, "; ".join(bad) if bad else "every package matches its index entry and source version; catalog built from the pin"
 
 
 # Catalogs of other LP-0018 entries whose module names we must not reuse (docs/adr/0008).

@@ -8,8 +8,8 @@ namespace {
 
 // Downloads and uploads of country files can take hours on a slow link.
 constexpr int kLongMs = 6 * 60 * 60 * 1000;
-// A write waits up to 120 s for the read-back inside the module; leave room for the fee check.
-constexpr int kWriteMs = 5 * 60 * 1000;
+// A write waits up to 600 s for the read-back inside the module; leave room for the fee check.
+constexpr int kWriteMs = 12 * 60 * 1000;
 constexpr int kReadMs = 2 * 60 * 1000;
 
 QString failure(const QString& code, const QString& message)
