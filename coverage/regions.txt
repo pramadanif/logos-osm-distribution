@@ -1,0 +1,32 @@
+# The coverage set (docs/status/coverage-plan.md): 30 entries, 26 countries, small extracts.
+# Decomposed countries appear with two subregions each, as the prize's 25-entry floor asks for depth.
+us/pennsylvania
+us/georgia
+india/north-eastern-zone
+india/western-zone
+china/henan
+china/shandong
+russia/siberian-fed-district
+russia/northwestern-fed-district
+indonesia
+malaysia-singapore-brunei
+thailand
+vietnam
+philippines
+ethiopia
+pakistan
+bulgaria
+egypt
+iran
+morocco
+peru
+south-korea
+hungary
+romania
+colombia
+greece
+chile
+belarus
+kenya
+bangladesh
+ireland-and-northern-ireland
