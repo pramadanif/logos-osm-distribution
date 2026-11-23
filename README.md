@@ -112,7 +112,10 @@ arguments as `osm-chain`:
 
 `scripts/localnet-v04.sh` starts a local 0.4-rc chain, deploys the program and runs the probes;
 `scripts/port-testnet.sh` with a 0.4 profile deploys and replays coverage on a new network.
-SPEL does not support 0.4 yet, so there is no 0.4 IDL (docs/status/lez-04-port.md).
+SPEL does not support 0.4 yet, so there is no SPEL IDL for 0.4. The 0.4 program's interface
+(messages in Borsh order, field types, doc comments) is generated from its source by `lez-call iface`
+(jzaki/lez-prog-call, the 0.4 tooling named in lambda-prize PR 188) into
+[idl/osm_registry_v04.iface.json](idl/osm_registry_v04.iface.json); CI regenerates it and diffs.
 
 ## Basecamp
 

@@ -59,8 +59,9 @@ CID, update check, download and local import.
 local v0.4.0-rc1 sequencer with the same data layout (signed host actor → clock-asserted
 timestamp → region actor through a PDA seed), including a batch message; CI builds LEZ from the
 tag and our guest from the commit and passes 18 of 18 probes. `osm-chain-v04` speaks the same
-command line as the v0.3 signer, so the CLI drives either network. *Pending:* SPEL support for
-0.4 (so no 0.4 IDL) and the public deployment.
+command line as the v0.3 signer, so the CLI drives either network. The 0.4 interface is generated
+from the guest source by `lez-call iface` (`idl/osm_registry_v04.iface.json`, regenerated and
+diffed in CI). *Pending:* a SPEL IDL for 0.4 (SPEL has no 0.4 support) and the public deployment.
 
 ### Basecamp
 

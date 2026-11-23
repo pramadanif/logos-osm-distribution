@@ -91,6 +91,29 @@ jobs:
           diff -u idl/osm_registry.json "$RUNNER_TEMP/osm_registry.json"
           diff -u programs/osm_registry/osm_registry-idl.json "$RUNNER_TEMP/osm_registry.json"
 
+  idl-v04:
+    # H1 on LEZ 0.4: SPEL has no 0.4 support, so the 0.4 program's interface is generated from its
+    # source by lez-call (jzaki/lez-prog-call, the tool lambda-prize PR 188 names for 0.4 IDLs)
+    # and must equal the committed file byte for byte.
+    runs-on: ubuntu-latest
+    env:
+      LEZ_CALL_REV: 67856f640f05084323f64f1d52133a918a6c1515
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Build lez-call at the pinned commit
+        run: |
+          set -eu
+          git clone -q https://github.com/jzaki/lez-prog-call "$RUNNER_TEMP/lez-prog-call"
+          git -C "$RUNNER_TEMP/lez-prog-call" checkout -q "$LEZ_CALL_REV"
+          cargo build --release --locked -q --manifest-path "$RUNNER_TEMP/lez-prog-call/Cargo.toml"
+      - name: Regenerate the 0.4 interface and diff
+        run: |
+          set -eu
+          "$RUNNER_TEMP/lez-prog-call/target/release/lez-call" --json iface programs/osm_registry_v04/guest/src/bin/osm_registry_v04.rs \
+            | sed -n 's/^LEZCALL //p' \
+            | python3 -I -c 'import json,sys; print(json.dumps(json.load(sys.stdin), indent=2, sort_keys=True))' > "$RUNNER_TEMP/iface.json"
+          diff -u idl/osm_registry_v04.iface.json "$RUNNER_TEMP/iface.json"
+
   ffi-sanitizers:
     # H37: the C ABI called from C, and the app's C++, under AddressSanitizer and UndefinedBehaviorSanitizer.
     runs-on: ubuntu-latest

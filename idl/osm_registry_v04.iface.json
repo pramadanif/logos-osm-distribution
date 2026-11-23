@@ -1,0 +1,195 @@
+{
+  "handler": "handle",
+  "message": "enum Msg",
+  "methods": [
+    {
+      "doc": "From a transaction, to the host's actor.",
+      "fields": " { region: String, parent: String, level: u8, cid: String, source_url: String, checksum: String, version: u32, size_bytes: u64, timestamp: u64 }",
+      "hints": [
+        "signed"
+      ],
+      "index": 0,
+      "name": "Register",
+      "params": [
+        {
+          "hint": "text",
+          "name": "region",
+          "ty": "String"
+        },
+        {
+          "hint": "text",
+          "name": "parent",
+          "ty": "String"
+        },
+        {
+          "hint": "decimal",
+          "name": "level",
+          "ty": "u8"
+        },
+        {
+          "hint": "text",
+          "name": "cid",
+          "ty": "String"
+        },
+        {
+          "hint": "text",
+          "name": "source_url",
+          "ty": "String"
+        },
+        {
+          "hint": "text",
+          "name": "checksum",
+          "ty": "String"
+        },
+        {
+          "hint": "decimal",
+          "name": "version",
+          "ty": "u32"
+        },
+        {
+          "hint": "decimal",
+          "name": "size_bytes",
+          "ty": "u64"
+        },
+        {
+          "hint": "decimal",
+          "name": "timestamp",
+          "ty": "u64"
+        }
+      ]
+    },
+    {
+      "doc": "From a transaction, to the host's actor.",
+      "fields": " { region: String, cid: String }",
+      "hints": [
+        "signed"
+      ],
+      "index": 1,
+      "name": "Unhost",
+      "params": [
+        {
+          "hint": "text",
+          "name": "region",
+          "ty": "String"
+        },
+        {
+          "hint": "text",
+          "name": "cid",
+          "ty": "String"
+        }
+      ]
+    },
+    {
+      "doc": "From the host's actor, to the region actor.",
+      "fields": " { region: String, parent: String, level: u8, entry: Entry }",
+      "hints": [
+        "signed",
+        "internal"
+      ],
+      "index": 2,
+      "name": "Apply",
+      "params": [
+        {
+          "hint": "text",
+          "name": "region",
+          "ty": "String"
+        },
+        {
+          "hint": "text",
+          "name": "parent",
+          "ty": "String"
+        },
+        {
+          "hint": "decimal",
+          "name": "level",
+          "ty": "u8"
+        },
+        {
+          "hint": "text",
+          "name": "entry.cid",
+          "ty": "String"
+        },
+        {
+          "hint": "text",
+          "name": "entry.source_url",
+          "ty": "String"
+        },
+        {
+          "hint": "0x\u2026 hex",
+          "name": "entry.checksum",
+          "ty": "[u8; 16]"
+        },
+        {
+          "hint": "decimal",
+          "name": "entry.version",
+          "ty": "u32"
+        },
+        {
+          "hint": "decimal",
+          "name": "entry.size_bytes",
+          "ty": "u64"
+        },
+        {
+          "hint": "true / false",
+          "name": "entry.hosted",
+          "ty": "bool"
+        },
+        {
+          "hint": "decimal",
+          "name": "entry.timestamp",
+          "ty": "u64"
+        },
+        {
+          "hint": "0x\u2026 hex",
+          "name": "entry.registered_by",
+          "ty": "[u8; 32]"
+        },
+        {
+          "hint": "comma-separated: 0x\u2026 hex",
+          "name": "entry.hosts",
+          "ty": "Vec<[u8; 32]>"
+        }
+      ]
+    },
+    {
+      "doc": "From the host's actor, to the region actor.",
+      "fields": " { cid: String }",
+      "hints": [
+        "signed",
+        "internal"
+      ],
+      "index": 3,
+      "name": "Remove",
+      "params": [
+        {
+          "hint": "text",
+          "name": "cid",
+          "ty": "String"
+        }
+      ]
+    },
+    {
+      "doc": "From a transaction, to the host's actor: up to `MAX_BATCH` registrations, one clock check.",
+      "fields": " { entries: Vec<NewEntry>, timestamp: u64 }",
+      "hints": [
+        "signed"
+      ],
+      "index": 4,
+      "name": "RegisterBatch",
+      "params": [
+        {
+          "hint": "comma-separated: hex of its Borsh encoding",
+          "name": "entries",
+          "ty": "Vec<NewEntry>"
+        },
+        {
+          "hint": "decimal",
+          "name": "timestamp",
+          "ty": "u64"
+        }
+      ]
+    }
+  ],
+  "seeds": [],
+  "source": "programs/osm_registry_v04/guest/src/bin/osm_registry_v04.rs"
+}

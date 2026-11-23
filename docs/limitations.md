@@ -13,7 +13,8 @@ Written as found, not at the end. Each line says what, why, and what a user shou
   directly (ADR 0005).
 - **LEZ 0.4 only on a local rc sequencer.** The actor program passes the probes on a local
   v0.4.0-rc1 sequencer; testnet 0.4 is not live. SPEL has no 0.4 support, so the 0.4 program is
-  hand-written against LEZ's actor API and there is no 0.4 IDL (docs/status/lez-04-port.md). v0.3
+  hand-written against LEZ's actor API and there is no SPEL IDL for 0.4; its interface is generated
+  from source by `lez-call iface` instead (idl/osm_registry_v04.iface.json, docs/status/lez-04-port.md). v0.3
   evidence never counts for the prize.
 - **Basecamp writes are v0.3 only.** The distribution module signs through `lez_core` 0.5.1, which
   is built on LEZ v0.3.1. On 0.4 the module reads (discover, resolve, fetch, status) but cannot

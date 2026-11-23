@@ -33,7 +33,9 @@ renders and the headless load test; a look in Basecamp at 0.1.3 is pending (need
 **M4 (open). Coverage is only on the v0.3 rehearsal network.** One region (`china/henan`) is
 registered on the public v0.3 testnet; the 15/25 coverage must be on testnet 0.4.
 
-**L3 (open). No SPEL IDL for 0.4.** Needs SPEL support for LEZ 0.4.
+**L3 (partly open). No SPEL IDL for 0.4.** Needs SPEL support for LEZ 0.4. Meanwhile the 0.4
+interface is generated from the guest source by `lez-call iface` (the 0.4 tooling lambda-prize
+PR 188 points to) and checked in CI.
 
 **L5 (fixed).** Long operations report progress: the distribution module emits `progress`
 events and the app shows a progress bar on the running job (E67).
@@ -72,7 +74,7 @@ events and the app shows a progress bar on the running job (E67).
 | 28 | QML regex bug | PASS | no regex in QML/C++ (claim 14 in docs/claims.md); arithmetic formatter |
 | 29 | Stale panel after a poll | PASS | panels replace their content on each answer; jobs show their own state |
 | 30 | Signer usable once | PASS | same host registers many times (probes p03a–c) |
-| 31 | SPEL for the target LEZ | PARTIAL | SPEL IDL for v0.3 (CI regenerates and diffs); none for 0.4 |
+| 31 | SPEL for the target LEZ | PARTIAL | SPEL IDL for v0.3 (CI regenerates and diffs); for 0.4, SPEL has no support, so the interface is generated from source by `lez-call iface` (`idl/osm_registry_v04.iface.json`, CI job `idl-v04`) |
 | 32 | Fake fixtures | PASS | Geofabrik index and registry accounts captured live (e2e live capture, `fixture_live`) |
 | 33 | Rejected tx shown as success | PASS | every write confirmed by read-back, else S103 "may still land" |
 | 34 | Unsigned calls | PASS | every write signed by the host |
