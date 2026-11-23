@@ -24,8 +24,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -49,7 +49,7 @@ jobs:
         run: |
           set -eu
           find -L out -name '*.lgx' -exec sha256sum {} + 2>/dev/null || find -L out -name '*.lgx' -exec shasum -a 256 {} +
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: lgx-${{ matrix.os }}
           path: out/*/*.lgx
@@ -69,8 +69,8 @@ jobs:
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 300
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -88,7 +88,7 @@ jobs:
           build "./examples/consumer-module#packages.$sys.lgx-portable" $S
           build "./examples/distribution-consumer-app#packages.$sys.lgx-portable" $D
           find -L out -name '*.lgx' -exec sha256sum {} +
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: lgx-${{ matrix.variant }}
           path: out/*/*.lgx
@@ -105,8 +105,8 @@ jobs:
     env:
       BASECAMP_RELEASE: pre-release-4cea4bb-1433
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -158,7 +158,7 @@ jobs:
           if grep -nE '(Main\.qml|format\.js)[^ ]*:[0-9]+' "$log"; then
             echo "QML warnings or errors from our view (above)"; exit 1
           fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: basecamp-gui
@@ -170,8 +170,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -189,8 +189,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 240
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: cachix/install-nix-action@3dc140bfc76c49fbd4dd958429132e3746bcb086 # v31
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes

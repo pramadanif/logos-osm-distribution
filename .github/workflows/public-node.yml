@@ -23,8 +23,8 @@ jobs:
       STORAGE_VERSION: v0.5.3
       STORAGE_SHA256: 1086fae4f283cab882f133abe4d5a88cfae8d61edba9f0094c7f75b368ec9d56
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: storage.zip
           key: logos-storage-${{ env.STORAGE_VERSION }}-${{ env.STORAGE_SHA256 }}
@@ -42,7 +42,7 @@ jobs:
           echo "$STORAGE_SHA256  storage.zip" | sha256sum -c -
           unzip -q storage.zip -d storage-bin && chmod +x storage-bin/*
       - run: rustup show active-toolchain || rustup toolchain install
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
       - run: cargo build --locked -p osm_cli
       - name: Fetch the test CID, a registered region and three staged coverage regions from the public node
         run: STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" OSM_BIN="$PWD/target/debug/osm" COVERAGE=3 scripts/check-public-node.sh
