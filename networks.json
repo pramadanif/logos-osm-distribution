@@ -5,8 +5,8 @@
     "v03-public": {
       "lez": "v0.3.1",
       "rpc": "https://testnet.lez.logos.co",
-      "program": "5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS",
-      "program_image_id": "f329edb220bdaade9d69250bb36969b95b672b4ea9d44c7a0092557762305e85",
+      "program": "9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw",
+      "program_image_id": "60bb8c60c0517e6226b2af1ab302c19293fdeeb73038775039b768b298c3e770",
       "explorer": "https://explorer.testnet.lez.logos.co",
       "faucet": "https://rog-devbox.tail957e2.ts.net:8443",
       "counts_for_prize": false,

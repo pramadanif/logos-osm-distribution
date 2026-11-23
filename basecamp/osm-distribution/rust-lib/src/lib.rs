@@ -59,7 +59,7 @@ include!(concat!(env!("CARGO_MANIFEST_DIR"), "/generated/provider_gen.rs"));
 fn default_settings() -> Value {
     json!({
         "rpc": "https://testnet.lez.logos.co",
-        "program": "5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS",
+        "program": "9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw",
         "storage": "http://127.0.0.1:8080/api/storage/v1",
         "geofabrik": true
     })

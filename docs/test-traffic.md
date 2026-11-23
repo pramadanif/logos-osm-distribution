@@ -14,3 +14,4 @@ local Storage nodes are not listed (they are not shared).
 
 Nothing has been uploaded to a public Logos Storage network yet.
 | 2026-11-21 | Logos Storage testnet (`logos.test`) | our public node `139.190.104.17:8070` joined the network; one 1 MiB random test file uploaded to it (CID `zDvZRwzm5R1mLaFHkPqqFqSJFMUJKvAXzTCSGJWEQaZuGvCyvaEG`) and fetched once by a local node | 1 MiB |
+| 2026-11-23 | LEZ v0.3 public testnet | program redeploy for Geofabrik's new layout (header + 5 segments), program `9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw`, ImageID `60bb8c60…` (built and tested in CI e2e run 44884998387); one earlier attempt stopped at segment 4 (`transaction did not finalize`) | about 4.1 M lepta for both attempts |

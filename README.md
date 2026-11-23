@@ -27,9 +27,13 @@ Basecamp GUI yet. See [docs/limitations.md](docs/limitations.md).
 
 | Network | Program id | ImageID |
 |---------|------------|---------|
-| LEZ v0.3 public testnet (`https://testnet.lez.logos.co`), rehearsal only | `5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS` | `f329edb220bdaade9d69250bb36969b95b672b4ea9d44c7a0092557762305e85` |
+| LEZ v0.3 public testnet (`https://testnet.lez.logos.co`), rehearsal only | `9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw` | `60bb8c60c0517e6226b2af1ab302c19293fdeeb73038775039b768b298c3e770` |
 | Logos testnet 0.4 | not deployed yet (not launched) | |
 | local LEZ v0.4.0-rc1 (`scripts/localnet-v04.sh`) | new id each run | CI-built guest `13bda53e3ec2492031b9206d9d29751b51cf966f674849c92187edb935d6c77c` |
+
+The v0.3 program was redeployed on 2026-11-23 after Geofabrik's URL layout change
+(docs/status/geofabrik.md); the earlier deployment `5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS` is
+no longer used.
 
 Each region lives in its own account derived from the program id and the region id
 (`["osm-region", region]`); there is no global registry account ([ADR 0001](docs/adr/0001-registry-layout.md)).
@@ -73,7 +77,7 @@ Every command takes `--json`; exit codes and messages are in [docs/error-codes.m
 `--no-geofabrik` never contacts Geofabrik. A write is reported only after the change is visible
 on-chain; an included-but-not-applied transaction is an error (S103).
 
-For the v0.3 testnet: `--rpc https://testnet.lez.logos.co --program 5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS`.
+For the v0.3 testnet: `--rpc https://testnet.lez.logos.co --program 9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw`.
 Funds for fees come from the [lez-faucet](https://github.com/logos-co/lez-faucet) app (0.1 LEZ per
 claim); each transaction needs 38,400,000 lepta available for the fee reserve. The wallet writes
 `storage.json` world-readable; run `chmod 600 "$LEE_WALLET_HOME_DIR/storage.json"`. The LEZ 0.4

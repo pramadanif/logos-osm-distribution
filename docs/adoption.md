@@ -22,7 +22,7 @@ returns JSON, e.g.
 
 ```c
 char *r = osm_resolve("{\"rpc\":\"https://testnet.lez.logos.co\","
-                      "\"program\":\"5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS\","
+                      "\"program\":\"9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw\","
                       "\"region\":\"kenya\"}");
 /* {"ok":true,"data":{"cid":"…","checksum":"…","version":261101,…}} or {"ok":false,"code":"S1xx",…} */
 osm_free(r);
@@ -56,7 +56,7 @@ new entry (ADR 0002).
 3. Host. Either download the snapshot from Geofabrik and host it:
 
        osm host --region kenya --cache-dir ./cache --storage http://127.0.0.1:8080/api/storage/v1 \
-                --rpc https://testnet.lez.logos.co --program 5VZeCZKSzkQyYb2nPm4ShDAKpkwncvbQh58XSg4cCAcS \
+                --rpc https://testnet.lez.logos.co --program 9zuXeX1kzeukr1crbuWN92JirV3m7KMy9pvho9BCLhWw \
                 --host <your account> --chain-bin osm-chain
 
    or mirror what is already hosted, without touching Geofabrik:
