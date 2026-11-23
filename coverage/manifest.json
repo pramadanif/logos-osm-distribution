@@ -1,0 +1,52 @@
+{
+  "entries": [
+    {
+      "cid": "zDvZRwzmA5LrY5Be279q4gpJqxk6v6XrS59rHkKakguRwwFPEMfH",
+      "md5": "5f3c041353b4886c9984cf6e7724fd10",
+      "region": "china/henan",
+      "size_bytes": 50702303,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/china/henan/henan-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzmDfkjzVu4UBhkFLGhkNi4B92SL4Wqs5fQ1e2UE4uURzB9",
+      "md5": "65f1b6241d6c59d7de62d5331546cffe",
+      "region": "china/shandong",
+      "size_bytes": 71932835,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/china/shandong/shandong-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm4NL6uEJEkdMycKtjB9KDygHroTCHrLfrugtLN6d1QgTs",
+      "md5": "354a6200b644faee2ffc4c2cd39252de",
+      "region": "india/north-eastern-zone",
+      "size_bytes": 109879639,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/india/north-eastern-zone/north-eastern-zone-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm7k5J29E1RMpwE1LsoGCE7qv33X5qrShL73ZM1tLrFyWy",
+      "md5": "b33315194530e38eb0c432418af9deaa",
+      "region": "india/western-zone",
+      "size_bytes": 221868283,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/india/western-zone/western-zone-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzmCYoc2DkkPFfA3i7s8rYcoikTbeuiSbWULudAbtmEuN3z",
+      "md5": "a8972764374c90b4fb31caa516289f62",
+      "region": "us/georgia",
+      "size_bytes": 358242277,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/north-america/us/georgia/georgia-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm7ifEJ4kL6vuEzoicV71zDTAit8PNzPUhvsdAtbsZ9Q7k",
+      "md5": "0733ce989f4e513a2437a5c5fe948af7",
+      "region": "us/pennsylvania",
+      "size_bytes": 349673557,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/north-america/us/pennsylvania/pennsylvania-261101.osm.pbf"
+    }
+  ]
+}

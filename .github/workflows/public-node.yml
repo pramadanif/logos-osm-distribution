@@ -1,14 +1,15 @@
 name: public-node
 
 # H27 / F.2: the project's public Logos Storage node serves the test CID to a GitHub runner,
-# a machine it has never seen (scripts/check-public-node.sh). Daily, and when the node's setup
+# a machine it has never seen, and three files of the staged coverage set (coverage/manifest.json)
+# with their Geofabrik MD5 (scripts/check-public-node.sh). Daily, and when the node's setup
 # or record changes.
 on:
   schedule:
     - cron: "41 4 * * *"
   push:
     branches: [main]
-    paths: ["deploy/storage-node/**", "scripts/check-public-node.sh", "networks.json", ".github/workflows/public-node.yml"]
+    paths: ["deploy/storage-node/**", "coverage/manifest.json", "scripts/check-public-node.sh", "networks.json", ".github/workflows/public-node.yml"]
   workflow_dispatch:
 
 permissions:
@@ -17,7 +18,7 @@ permissions:
 jobs:
   retrieve:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     env:
       STORAGE_VERSION: v0.5.3
       STORAGE_SHA256: 1086fae4f283cab882f133abe4d5a88cfae8d61edba9f0094c7f75b368ec9d56
@@ -43,5 +44,5 @@ jobs:
       - run: rustup show active-toolchain || rustup toolchain install
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --locked -p osm_cli
-      - name: Fetch the test CID, then a registered region, from the public node
-        run: STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" OSM_BIN="$PWD/target/debug/osm" scripts/check-public-node.sh
+      - name: Fetch the test CID, a registered region and three staged coverage regions from the public node
+        run: STORAGE_BIN="$(ls "$PWD"/storage-bin/logos-storage-*)" OSM_BIN="$PWD/target/debug/osm" COVERAGE=3 scripts/check-public-node.sh

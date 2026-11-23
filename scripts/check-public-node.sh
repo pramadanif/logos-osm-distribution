@@ -6,6 +6,8 @@
 # With OSM_BIN, also downloads REGION (default china/henan) the way a user does: resolve it in the
 # registry of networks.json's default profile, fetch its CID through the same outside node with
 # Geofabrik disabled, and check the MD5 the registry holds.
+# With COVERAGE=<n>, also fetches the n smallest entries of coverage/manifest.json (the staged
+# coverage set) through the same outside node and checks each against the MD5 recorded there.
 set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 : "${STORAGE_BIN:?}"
@@ -32,5 +34,23 @@ if [ -n "${OSM_BIN:-}" ]; then
   "$OSM_BIN" --no-geofabrik download --region "$region" --dir "$work/maps" --storage "$api" --rpc "$rpc" --program "$program" \
     || { echo "FAIL $region: not downloaded from the registry through $addr"; exit 1; }
   echo "PASS $region resolved on $rpc ($program), fetched by CID through $addr, MD5 equals the registry"
+fi
+if [ -n "${COVERAGE:-}" ]; then
+  n=0
+  while read -r region ccid cmd5; do
+    curl -fsS --max-time 900 "$api/data/$ccid/network/stream" -o "$work/cov" \
+      || { echo "FAIL $region: $ccid not retrieved through $addr"; exit 1; }
+    got="$(python3 -I -c 'import hashlib,sys
+h=hashlib.md5()
+with open(sys.argv[1],"rb") as f:
+    for b in iter(lambda: f.read(1<<20), b""): h.update(b)
+print(h.hexdigest())' "$work/cov")"
+    [ "$got" = "$cmd5" ] || { echo "FAIL $region: md5 $got, manifest $cmd5"; exit 1; }
+    echo "PASS $region: $ccid ($(wc -c < "$work/cov" | tr -d ' ') bytes) through $addr, MD5 equals Geofabrik's"
+    rm -f "$work/cov"; n=$((n + 1))
+  done < <(python3 -I -c 'import json,sys
+es=sorted(json.load(open(sys.argv[1]))["entries"], key=lambda e: e["size_bytes"])
+for e in es[:int(sys.argv[2])]: print(e["region"], e["cid"], e["md5"])' "$root/coverage/manifest.json" "$COVERAGE")
+  [ "$n" -ge "$COVERAGE" ] || { echo "FAIL coverage: $n of $COVERAGE entries in coverage/manifest.json"; exit 1; }
 fi
 

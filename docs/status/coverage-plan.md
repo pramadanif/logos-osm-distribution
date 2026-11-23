@@ -9,6 +9,16 @@ measured 2026-11-09. They change a little every day.
 - VPS disk: 40 GB is enough for this set with room to re-host the next monthly snapshot
   alongside the old one; 80–100 GB if all 72 regions are ever hosted.
 
+## Staging status
+
+The set is staged on our public Storage node (erp-gsm, `deploy/storage-node/public-node.json`)
+by `scripts/stage-coverage.sh`: each file is downloaded from Geofabrik, its MD5 checked against
+Geofabrik's `.md5`, uploaded, and recorded in `coverage/manifest.json` (region, snapshot, CID,
+MD5, size, source URL). Nothing is registered on-chain at this step; registration waits for
+testnet 0.4. On 2026-11-23, 6 of the 30 regions are staged for snapshot 261101 (see the
+manifest); staging continues. The public-node job fetches the three smallest staged files
+through the node on a GitHub runner and checks each MD5 (`COVERAGE=3`).
+
 | Region | Size (MB) | Why |
 |--------|-----------|-----|
 | `us/pennsylvania` | 350 | decomposed depth |
