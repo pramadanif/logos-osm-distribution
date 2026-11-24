@@ -15,8 +15,9 @@ The set is staged on our public Storage node (erp-gsm, `deploy/storage-node/publ
 by `scripts/stage-coverage.sh`: each file is downloaded from Geofabrik, its MD5 checked against
 Geofabrik's `.md5`, uploaded, and recorded in `coverage/manifest.json` (region, snapshot, CID,
 MD5, size, source URL). Nothing is registered on-chain at this step; registration waits for
-testnet 0.4. On 2026-11-23, 6 of the 30 regions are staged for snapshot 261101 (see the
-manifest); staging continues. The public-node job fetches the three smallest staged files
+testnet 0.4. On 2026-11-24 all 30 regions (26 countries, 10.52 GB) are staged for snapshot
+261101 (see the manifest); Geofabrik failures (HTTP 503, dropped connections) were retried by the
+script. The public-node job fetches the three smallest staged files
 through the node on a GitHub runner and checks each MD5 (`COVERAGE=3`).
 
 | Region | Size (MB) | Why |

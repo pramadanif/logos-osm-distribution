@@ -1,6 +1,38 @@
 {
   "entries": [
     {
+      "cid": "zDvZRwzm7NCrvtWjyiicQvWLPuXE7wR96HYwFfV35Q8NBmYRopFC",
+      "md5": "802892b5a1b6d4e77be243dd8ef089b0",
+      "region": "bangladesh",
+      "size_bytes": 355938853,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/bangladesh/bangladesh-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzmBvGFD2RKS8yGPjSrt1XZvRiR8ywuZNbjVq81T4EJTV8A",
+      "md5": "710f1f458db7bb745a44a0aa8207d8d6",
+      "region": "belarus",
+      "size_bytes": 351381112,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/europe/belarus/belarus-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzmDEJhVtF3cNdfJ3YcSqd7y2L1xxLsd3WRwzwKtqzSMQhZ",
+      "md5": "7ffaf07311889f819202558a8cd21413",
+      "region": "bulgaria",
+      "size_bytes": 176841652,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/europe/bulgaria/bulgaria-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm5g8gbRRK6so78TKBxKHQx8tTkK2DUJ6undUoC6hiTmXt",
+      "md5": "6bb93e6a0fe5e0aa4ac4db8b0a2b9c91",
+      "region": "chile",
+      "size_bytes": 350897984,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/south-america/chile/chile-261101.osm.pbf"
+    },
+    {
       "cid": "zDvZRwzmA5LrY5Be279q4gpJqxk6v6XrS59rHkKakguRwwFPEMfH",
       "md5": "5f3c041353b4886c9984cf6e7724fd10",
       "region": "china/henan",
@@ -15,6 +47,46 @@
       "size_bytes": 71932835,
       "snapshot": 261101,
       "source_url": "https://download.geofabrik.de/asia/china/shandong/shandong-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm2ScHJo1ETK9Ww554x4nUfx5gKHL2a1p9U19WS1ugJ14P",
+      "md5": "7647cea3860f75e8c187fb3ed6a0f034",
+      "region": "colombia",
+      "size_bytes": 333682818,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/south-america/colombia/colombia-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm7G1gAfkyL5Z2pKKUYjiF6ddFZT9gL37eVi7zBkduMFEe",
+      "md5": "3ac39cfba7b72ed484ee15df75d43010",
+      "region": "egypt",
+      "size_bytes": 178978164,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/africa/egypt/egypt-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm2hsbjAYHBEJ7dgtnuWm3uqZ2jNbcYEcS77U9qetyg6DY",
+      "md5": "a4c8e7837d2b695ed50675c4c868a0a5",
+      "region": "ethiopia",
+      "size_bytes": 140134784,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/africa/ethiopia/ethiopia-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzkyTsj4pvzATz9Hi1ScnGG2ZnkUL1s2BYanB8kMXUMyNUz",
+      "md5": "63a580a3203235129ae274b2d26bd872",
+      "region": "greece",
+      "size_bytes": 342588747,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/europe/greece/greece-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzmAU4xt4C2QJeqwBL1Z368cu8UmrbLcbrsoTdrgNHc32SW",
+      "md5": "0a3a8349b55a0073fbfdd4f5867932b1",
+      "region": "hungary",
+      "size_bytes": 328520641,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/europe/hungary/hungary-261101.osm.pbf"
     },
     {
       "cid": "zDvZRwzm4NL6uEJEkdMycKtjB9KDygHroTCHrLfrugtLN6d1QgTs",
@@ -33,6 +105,118 @@
       "source_url": "https://download.geofabrik.de/asia/india/western-zone/western-zone-261101.osm.pbf"
     },
     {
+      "cid": "zDvZRwzkziTB2rrasZK4tWk1ZnN8szU6RzrwiJhJugsHzTio9Qyo",
+      "md5": "ec2b2054b4c59bfe5f33a9b640601b40",
+      "region": "indonesia",
+      "size_bytes": 1740776581,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/indonesia/indonesia-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm6QA5bNRnrFpHpxzKyCibeFmP9QVXmuYhGz8DRRkVfmPB",
+      "md5": "60ee3f51298c500659fbd59c77a21f60",
+      "region": "iran",
+      "size_bytes": 229968936,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/iran/iran-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzkxvpsM49qnqQvYFRNheoNfjB4sdmzJkwJyPxdo11ED3vr",
+      "md5": "26d6cb79514b3adbbd411354624996d2",
+      "region": "ireland-and-northern-ireland",
+      "size_bytes": 417196701,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/europe/ireland-and-northern-ireland/ireland-and-northern-ireland-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm3ifddtwwVXymxjc8TEwDRJ9VHfNv62WCeecEb4ky1P2U",
+      "md5": "468e8225c08bda17cbb072ae2228ce92",
+      "region": "kenya",
+      "size_bytes": 351733207,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/africa/kenya/kenya-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm8hutaDRsFGUpAHdGJ523bnvi6m9VEe56H8fHF21t27hZ",
+      "md5": "f9bbc1b7b16548ed1b7cb3eba880f9dc",
+      "region": "malaysia-singapore-brunei",
+      "size_bytes": 252694201,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/malaysia-singapore-brunei/malaysia-singapore-brunei-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzkyR92ef4VcZS5KPcVbhq5YKD6z6Xrx7YHcywEZXQSudPD",
+      "md5": "1b8242141250876d4b3917baed742e2e",
+      "region": "morocco",
+      "size_bytes": 244313872,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/africa/morocco/morocco-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzkzSqN73dNRuWJS1BV6RMnYrZwmKx4bVKaAwC57eouyZic",
+      "md5": "962348e53e60dca8da80050ad7226e8b",
+      "region": "pakistan",
+      "size_bytes": 157674721,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/pakistan/pakistan-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzkzbQVGkB6KKnbfBBXY5tPQc4t3HyWy5QRM3GeWHp3rdow",
+      "md5": "8dbea381957048203e2a0d3d670c65b5",
+      "region": "peru",
+      "size_bytes": 257208471,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/south-america/peru/peru-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzmDQat7RqTNvcuwvry4EK433g34qU9DRSu8PfArLB7XpWX",
+      "md5": "26169f597050805bcde8443418b27cbe",
+      "region": "philippines",
+      "size_bytes": 612512721,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/philippines/philippines-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm6nmt5CaydBfMcTfwNKPTq5KFevAmq1rSX3bJCjd8QDxg",
+      "md5": "57c38c01a23619a6a48af77a581d3ad0",
+      "region": "romania",
+      "size_bytes": 332616847,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/europe/romania/romania-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm3CNuYPU1VFBijTiu19jRLiD1Dxf9KvK9vZaPs94SgyTK",
+      "md5": "d8ec74842ace4a88349b464f745fca90",
+      "region": "russia/northwestern-fed-district",
+      "size_bytes": 656353401,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/russia/northwestern-fed-district/northwestern-fed-district-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm3nenPx3rUrR8oPShTfyN3vuAAcEjJGXqA8y4MfkYcnMp",
+      "md5": "70f40925ca1a622cab9df7ab383d5641",
+      "region": "russia/siberian-fed-district",
+      "size_bytes": 588983890,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/russia/siberian-fed-district/siberian-fed-district-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm4kNNYbBxWFtUnh8QXBCgw6mQVRXwqY5MpdeDRKiWgdZE",
+      "md5": "e3aaa8605935fad541ceb77b73c7ced6",
+      "region": "south-korea",
+      "size_bytes": 290637828,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/south-korea/south-korea-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm2tpsMoGKbGnHodK4UTiauDWhkMPtrpXqX8HkvwFrkutb",
+      "md5": "4d083fe58e1c09e27d2c031dcc11f8d6",
+      "region": "thailand",
+      "size_bytes": 329645367,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/thailand/thailand-261101.osm.pbf"
+    },
+    {
       "cid": "zDvZRwzmCYoc2DkkPFfA3i7s8rYcoikTbeuiSbWULudAbtmEuN3z",
       "md5": "a8972764374c90b4fb31caa516289f62",
       "region": "us/georgia",
@@ -47,6 +231,14 @@
       "size_bytes": 349673557,
       "snapshot": 261101,
       "source_url": "https://download.geofabrik.de/north-america/us/pennsylvania/pennsylvania-261101.osm.pbf"
+    },
+    {
+      "cid": "zDvZRwzm2Jbhfm8pNfMRpivGrTFFVMYyLkzHNKAkQUdD6efJT5EL",
+      "md5": "d6aca64e78070d08f0543cf12c966014",
+      "region": "vietnam",
+      "size_bytes": 332038421,
+      "snapshot": 261101,
+      "source_url": "https://download.geofabrik.de/asia/vietnam/vietnam-261101.osm.pbf"
     }
   ]
 }
