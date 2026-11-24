@@ -1,8 +1,14 @@
 # Building on the OSM registry and hosting maps
 
 For two groups: developers who want map data in their own Logos module, and people who want to
-help by hosting (mirroring) regions. Status: alpha on LEZ v0.3. The Basecamp modules and two templates are written but not yet
-proven in Basecamp; the paths below that are proven use the SDK, the C ABI and the CLI.
+help by hosting (mirroring) regions. Status: alpha on LEZ v0.3, moving to testnet 0.4 when it
+launches. The Basecamp modules and both templates are released through our catalog and load in
+Basecamp and logosctl (CI jobs `load`, `basecamp-gui`, `side-by-side`).
+
+Catalog: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`,
+packages signed by
+`did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6ImxkcmZVLWIzNkdyWlhSbGZUbkpDbng4X1hmN3hUY2JCQUszRFpnN2dQaFUifQ`
+from release 0.1.3 on.
 
 ## Use map data in your module
 
@@ -37,6 +43,10 @@ Call it off the UI thread; network calls have timeouts but can take seconds.
   API number; the 0.4 port changes the backend, not this API.
 - A file you get from `fetch` has the MD5 that was registered for it; anything else is an error.
 - Your module never needs a wallet or Geofabrik to read hosted data.
+- Moving to testnet 0.4 does not need a change in your module: the 0.4 sequencer and program id
+  arrive as new defaults in a new release of our modules, and the SDK already reads both the v0.3
+  and the 0.4 account format. Do not hard-code the RPC URL or program id with `configure`; if
+  you pin our package, pin the signer DID rather than one `rootHash`.
 
 **Rules for the LP-0018 adoption count** (prize text): your own idea, your own forge account with
 real history, commits spread over time, at least one public repository. Nobody from this project

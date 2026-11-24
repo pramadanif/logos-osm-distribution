@@ -4,8 +4,10 @@
 resolve a region to its content id (CID) and metadata, download it, and check it. It reads the
 on-chain registry over the sequencer's JSON-RPC and talks to a Storage node over its REST API.
 
-Status: alpha, LEZ v0.3 only. The Basecamp module wrapping this API is not built yet; see
-[limitations.md](limitations.md).
+Status: alpha. Reads work on LEZ v0.3 and 0.4 (the account formats of both); the public
+deployment is on v0.3 until testnet 0.4 launches. Basecamp modules use the same API through
+`pramadani_osm_sdk` (read-only) and `pramadani_osm_distribution` from our catalog; see
+[adoption.md](adoption.md) and [limitations.md](limitations.md).
 
 ## Worked example: region → CID + metadata → verified file
 
