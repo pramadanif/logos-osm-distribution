@@ -31,6 +31,19 @@ Signer DID:
 
     did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6ImxkcmZVLWIzNkdyWlhSbGZUbkpDbng4X1hmN3hUY2JCQUszRFpnN2dQaFUifQ
 
+## Rolling index and immutability (PR 189, decision 4)
+
+PR 189 expects the catalog's rolling `index` release to keep working if it exists before
+immutability is turned on. On this catalog it did not: the `index` release (created 2026-11-21)
+reports `immutable: true` after the first rebuild that edited it with immutability on, and every
+rebuild since fails with `Cannot delete asset from an immutable release` (catalog run
+45293399944). Per-version releases are not affected: the pinned softprops/action-gh-release
+v2.6.2 keeps a release as a draft until its assets are uploaded. Since catalog `6e7371e` the
+rebuild publishes `index.json` and its icon sidecars to the `catalog-index` branch and
+`indexUrl` points at
+`https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/catalog-index/index.json`.
+Worth reporting on PR 189 together with the submission.
+
 ## Order from here
 
 1. Modules CI green at a commit; bump the catalog submodule to it.
