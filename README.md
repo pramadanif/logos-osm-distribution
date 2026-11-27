@@ -127,11 +127,21 @@ SPEL does not support 0.4 yet, so there is no SPEL IDL for 0.4. The 0.4 program'
 | `pramadani_osm_consumer_module`, `pramadani_osm_consumer_app` | `examples/` | templates |
 
 Build one with `nix build ./basecamp/osm-distribution#lgx-portable`. `module.json` indexes them.
-The catalog's packages are not signed (`signing_mode: none` in the catalog's release workflow), so
-the package manager installs them as unsigned packages; their sha256 is in the catalog index.
-If the package manager refuses an unsigned package, install the downloaded file directly:
+Install (the only canonical source of these modules):
 
-    lgpm --allow-unsigned install --file pramadani_osm_app-<version>.lgx
+1. In Basecamp, add the catalog
+   `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`.
+2. Check that it lists the signer
+   `did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6ImxkcmZVLWIzNkdyWlhSbGZUbkpDbng4X1hmN3hUY2JCQUszRFpnN2dQaFUifQ`.
+3. Install **OSM Maps** (`pramadani_osm_app` 0.1.3, `rootHash`
+   `4ddef23f72cc785ea398c9fe76e54e3ba7fb1722a5b6305b9f56fe6b7df9a2ab`); it pulls
+   `pramadani_osm_distribution` 0.1.3. The `rootHash` of every package is in
+   [docs/SOLUTION_DRAFT.md](docs/SOLUTION_DRAFT.md#release-integrity).
+
+From 0.1.3 (templates 0.1.2) every package is signed by that DID and published as an immutable
+GitHub release; earlier versions are unsigned. Never install these modules from a link sent in a
+message or from another catalog. To check a file by hand, `lgx verify` needs `lgx` from
+logos-package `4bdd904` or later.
 
 Funding a LEZ account for hosting: `PROFILE=v03-public ACCOUNT=<your account> scripts/fund-testnet.sh`
 (the profile's faucet; one claim per account per day).
@@ -149,7 +159,7 @@ with Geofabrik. **Host** hosts the ticked regions (one transaction per 16); **Im
 local file after the MD5 check. **Activity** shows each action as submitting, confirmed (read back
 from the chain) or failed with its error code ([docs/error-codes.md](docs/error-codes.md)).
 Catalog: `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`
-(modules 0.1.1, built from `eb5c950` on Linux and macOS).
+(modules 0.1.3 and templates 0.1.2, built from `461eac9` for Linux amd64 and macOS arm64).
 
 ## For module developers
 

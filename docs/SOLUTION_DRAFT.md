@@ -32,24 +32,27 @@ Following lambda-prize PR 189 (docs/status/release-integrity.md). Every value is
 release sidecar JSON or `lgx manifest` of the signed release, never typed by hand.
 
 - **Security tier:** *pending (not stated in LP-0018; no keys, no personal data)*
-- **Source commit:** *pending (the pin the signed release is built from)*
+- **Source commit:** `461eac9c4bd8cbe9898d30d4f39406f2f80c5d20` (catalog `46e7b93` pins it)
 - **Catalog URL:** `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`
 - **Signer DID:** `did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6ImxkcmZVLWIzNkdyWlhSbGZUbkpDbng4X1hmN3hUY2JCQUszRFpnN2dQaFUifQ`
-- **Logos Storage CID:** *pending*
+- **Logos Storage CID:** n/a (the release workflow does not upload the `.lgx` to Logos Storage)
 
 | Package | Version | Release URL (immutable) | `rootHash` | SHA-256 of `.lgx` | Built variants |
 |---------|---------|-------------------------|------------|-------------------|----------------|
-| `pramadani_osm_distribution` | *pending* | *pending* | *pending* | *pending* | darwin-arm64, linux-amd64 |
-| `pramadani_osm_sdk` | *pending* | *pending* | *pending* | *pending* | darwin-arm64, linux-amd64 |
-| `pramadani_osm_app` | *pending* | *pending* | *pending* | *pending* | darwin-arm64, linux-amd64 |
-| `pramadani_osm_consumer_module` | *pending* | *pending* | *pending* | *pending* | darwin-arm64, linux-amd64 |
-| `pramadani_osm_consumer_app` | *pending* | *pending* | *pending* | *pending* | darwin-arm64, linux-amd64 |
+| `pramadani_osm_distribution` | 0.1.3 | https://github.com/pramadanif/pramadani-osm-modules/releases/tag/pramadani_osm_distribution-v0.1.3 | `67a75247c63c6c66d40a277c771cd87407bf0b7bae6612fccb13a3dcb2fac564` | `30ec1d494cdc723e9714cff0d138410b62cea8f775dfaa4f6fb2b1895320b87b` | darwin-arm64, linux-amd64 |
+| `pramadani_osm_sdk` | 0.1.3 | https://github.com/pramadanif/pramadani-osm-modules/releases/tag/pramadani_osm_sdk-v0.1.3 | `31ade9e8ab3c08c96be1395149a99c7c664d5f0c47e085f9fbc5b6649118b7eb` | `62af08f4dccaff52872fc803be7ce0a86d58b21bebe8ac6a6f4b8a3cbe962a22` | darwin-arm64, linux-amd64 |
+| `pramadani_osm_app` | 0.1.3 | https://github.com/pramadanif/pramadani-osm-modules/releases/tag/pramadani_osm_app-v0.1.3 | `4ddef23f72cc785ea398c9fe76e54e3ba7fb1722a5b6305b9f56fe6b7df9a2ab` | `f176f85af5710a0aedb94d9ca9afb0727bbbca59bae674e75c3429661c3a292a` | darwin-arm64, linux-amd64 |
+| `pramadani_osm_consumer_module` | 0.1.2 | https://github.com/pramadanif/pramadani-osm-modules/releases/tag/pramadani_osm_consumer_module-v0.1.2 | `e07c7633fd169ebe4cd338d6d4b3e78be94a00ba3447c5738896c87709c078d0` | `0e18d6ecb7e5f31dd87233ca4882daf41d98d83b34e7fa434931bc7f07000c8a` | darwin-arm64, linux-amd64 |
+| `pramadani_osm_consumer_app` | 0.1.2 | https://github.com/pramadanif/pramadani-osm-modules/releases/tag/pramadani_osm_consumer_app-v0.1.2 | `1acce2794d62a2f2b1090cdb627b749608fe0c4ae26dfd8991d99a19c73a9475` | `e1f8e3f6ce9c57199c9fa3a12cbc7761b6ebbb82a6244be660efae3353a8dad5` | darwin-arm64, linux-amd64 |
 
 ### Install Instructions
 
 1. In Basecamp, add the catalog `https://raw.githubusercontent.com/pramadanif/pramadani-osm-modules/main/logos-repo.json`.
 2. Check that the catalog lists signer `did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia3R5IjoiT0tQIiwieCI6ImxkcmZVLWIzNkdyWlhSbGZUbkpDbng4X1hmN3hUY2JCQUszRFpnN2dQaFUifQ`.
-3. Install `pramadani_osm_app` and check that its `rootHash` is the one in the table above.
+3. Install `pramadani_osm_app` 0.1.3 and check that its `rootHash` is
+   `4ddef23f72cc785ea398c9fe76e54e3ba7fb1722a5b6305b9f56fe6b7df9a2ab`.
+4. To check a downloaded file by hand: `lgx verify <file>.lgx` with `lgx` from logos-package
+   `4bdd904` (an older `lgx` 0.1.0 build from 2026-09 reports a valid signature as failed).
 
 ## Approach
 

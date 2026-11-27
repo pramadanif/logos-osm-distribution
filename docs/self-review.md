@@ -91,7 +91,7 @@ events and the app shows a progress bar on the running job (E67).
 | 45 | Unlock without password | PASS | no password stored; 0.4 wallet password only in env |
 | 46 | Several names, unstyled widgets | PASS | "OSM Maps (LP-0018)" everywhere; Logos Design System controls |
 | 47 | Script exits 0 on failure | PASS | `tests/scripts.sh` strictness test |
-| 48 | Unsigned packages | PASS | README says the catalog's packages are unsigned |
+| 48 | Unsigned packages | PASS | from 0.1.3 every package is signed by the declared DID and released immutable; README gives catalog URL, DID and `rootHash` |
 | 49 | Empty board after restart | PASS | StateView (spinner) while regions load |
 | 50 | Untested list | PASS | "Not tested" below |
 | 51 | Video, subtitles | FAIL | not recorded yet (human) |

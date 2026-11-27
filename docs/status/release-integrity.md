@@ -7,16 +7,16 @@ the checks it adds to the submission validator are warnings; we follow it now so
 does not depend on how it is merged. The reviewer pages at https://data.vpavlin.xyz/reviews/ were
 checked on 2026-11-23: none newer than 2026-11-02, all identical to the copies we already read.
 
-## Baseline requirements and where we stand (2026-11-23)
+## Baseline requirements and where we stand (2026-11-27)
 
 | # | Requirement | Status | Evidence / what is left |
 |---|-------------|--------|-------------------------|
-| 1 | Packages signed with `lgx sign`, signer DID in `trustedSigners` | configured | catalog `_release-module.yml` `signing_mode: inline` with the `LOGOS_SIGNING_KEY` Actions secret (set by the owner 2026-11-23); `logos-repo.json` `trustedSigners` holds the DID below; signing and `lgx verify` tested locally on sdk 0.1.2 ("Signature is valid"). First signed release: next "Release all modules" |
-| 2 | Signer DID declared up front (solution PR and README) | to do | DID below; goes into the README install section and the solution PR with the first signed release |
-| 3 | Immutable GitHub releases | done | release immutability enabled on `pramadani-osm-modules` and `logos-osm-distribution` (API `immutable-releases`: `enabled: true`, 2026-11-23); the rolling `index` release existed before. Releases 0.1.0–0.1.2 were published before this and are not immutable; only releases from 0.1.3 on are submitted |
+| 1 | Packages signed with `lgx sign`, signer DID in `trustedSigners` | done | catalog run 45998717620 (2026-11-27) released sdk, distribution, app 0.1.3 and both templates 0.1.2, signed inline (`LOGOS_SIGNING_KEY`); `trustedSigners` holds the DID below as a `{did, name}` object. All five downloaded files pass `lgx verify` ("Signature is valid", "Signer is trusted") with `lgx` from logos-package `4bdd904`, the build the release workflow uses; the Homebrew `lgx` 0.1.0 from 2026-09 reports three of them as failed, so the README names the `lgx` to use |
+| 2 | Signer DID declared up front (solution PR and README) | done | README Basecamp section and docs/SOLUTION_DRAFT.md "Release Integrity" |
+| 3 | Immutable GitHub releases | done | release immutability enabled on `pramadani-osm-modules` and `logos-osm-distribution` (API `immutable-releases`: `enabled: true`, 2026-11-23); the rolling `index` release existed before. Releases 0.1.0–0.1.2 were published before this and are not immutable; the five releases of 2026-11-27 report `immutable: true` and are the ones submitted |
 | 4 | Freeze rule: never replace or delete a published release | done | catalog workflow `skip_if_published: true`, `force_build` ignored; changes ship as a new version |
-| 5 | Release integrity manifest in the solution PR | to do | after the signed release: source commit SHA, catalog URL, package, version, release URL, `rootHash`, SHA-256, variants, DID, taken from the release sidecar JSON / `lgx manifest` |
-| 6 | Canonical install instructions (catalog URL + DID + `rootHash`) | to do | README Basecamp section, after the signed release; remove the `--allow-unsigned` fallback then |
+| 5 | Release integrity manifest in the solution PR | done | docs/SOLUTION_DRAFT.md: source commit `461eac9`, catalog URL, DID, and per package version, release URL, `rootHash`, SHA-256 (recomputed from the download, equal to the sidecar) and variants |
+| 6 | Canonical install instructions (catalog URL + DID + `rootHash`) | done | README Basecamp section; the `--allow-unsigned` fallback is gone |
 | 7 | Catalog on a GitHub organisation account | owner decision | today `pramadanif/pramadani-osm-modules` (personal account); moving means a new catalog URL, so decide before the release that is submitted |
 | 8 | 2FA, protected default branch and release tags, actions pinned to SHAs, signing key only in a secret | partly | actions and reusable workflows pinned to full SHAs in both repos, checked by the ci `scripts` job (`62b97d0`, catalog `7a2dcd8`); key only in the Actions secret and in `~/.config/logos/keys/` on the owner's Mac, never in a repository. Owner: 2FA, rulesets for `main` and tags |
 | 9 | Secure development basics: no secrets in the repo, lockfiles | done | `Cargo.lock` and a `flake.lock` for every module (four were missing, added in `62b97d0`, builder pinned to `5f74cdb3`); CI fails on a module without a lock |
@@ -46,8 +46,6 @@ Worth reporting on PR 189 together with the submission.
 
 ## Order from here
 
-1. Modules CI green at a commit; bump the catalog submodule to it.
-2. Owner clicks "Release all modules": signed, immutable 0.1.3 releases (consumer app 0.1.2).
-3. Check each release: Immutable badge, `lgx verify` with the DID, sha256 against the index.
-4. Fill the manifest (solution draft) and the README install section; preflight 11 and 16.
-5. Owner: decide on the organisation account, 2FA, rulesets.
+1. Owner: decide on the organisation account, 2FA, rulesets.
+2. Before submission: re-release at the final pin only if the source changes (new versions,
+   never a replaced asset), refill the manifest, rerun preflight 11 and 16.
